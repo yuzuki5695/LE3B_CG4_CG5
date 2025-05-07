@@ -89,8 +89,15 @@ void ParticleManager::Update() {
 
             // world行列の計算
             Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
+            // 回転行列を各軸ごとに作成して合成
+            Matrix4x4 rotateXMatrix = MakeRotateXMatrix((*particleIterator).transform.rotate.x);
+            Matrix4x4 rotateYMatrix = MakeRotateYMatrix((*particleIterator).transform.rotate.y);
+            Matrix4x4 rotateZMatrix = MakeRotateZMatrix((*particleIterator).transform.rotate.z);
+            // 回転順序: Z → X → Y（用途により調整）
+            Matrix4x4 rotateMatrix = Multiply(Multiply(rotateZMatrix, rotateXMatrix), rotateYMatrix);
             Matrix4x4 translateMatrix = MakeTranslateMatrix((*particleIterator).transform.translate);
-            Matrix4x4 worldMatrix = Multiply(Multiply(scaleMatrix, billboardMatrix), translateMatrix);
+            // SRT順にビルボードを含めて合成
+            Matrix4x4 worldMatrix = Multiply(Multiply(Multiply(scaleMatrix, rotateMatrix), billboardMatrix), translateMatrix);
 
             // worldViewProjection行列の計算
             Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
@@ -342,7 +349,7 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
-        Vector3 rotate = Vector3(distRotate(randomEngine), distRotate(randomEngine), distRotate(randomEngine));
+        Vector3 rotate = Vector3(0.0f,0.0f, distRotate(randomEngine));
         Vector3 scale = Vector3(0.05f, distScale(randomEngine), 1.0f);
 
         Particle newParticle;

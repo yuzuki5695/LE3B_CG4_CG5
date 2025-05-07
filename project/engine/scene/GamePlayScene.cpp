@@ -31,8 +31,9 @@ void GamePlayScene::Initialize() {
     TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
     TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
     TextureManager::GetInstance()->LoadTexture("Resources/circle.png");
-    TextureManager::GetInstance()->LoadTexture("Resources/grass.png");
-    
+    TextureManager::GetInstance()->LoadTexture("Resources/grass.png");    
+    TextureManager::GetInstance()->LoadTexture("Resources/circle2.png");
+
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
     ModelManager::GetInstance()->LoadModel("axis.obj");
@@ -59,7 +60,7 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->SetParticleModel("Resources", "plane.obj");
     // テクスチャ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png");
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png");
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
