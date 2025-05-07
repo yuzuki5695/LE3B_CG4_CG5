@@ -66,25 +66,25 @@ void GamePlayScene::Initialize() {
         Vector3{ 0.0f, -0.5f, 0.0f }, // 位置
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
         0.0f,                         // 経過時間（基本は0から開始）
-        3,                            // 発生数
+        8,                            // 発生数
         "Particles",                  // パーティクルグループ名
         Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
     );
 
-    emitter->Emit();
+    //emitter->Emit();
 }
 
 void GamePlayScene::Update() {
 
-    if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
-        soundfige = 1;
-    }
+    //if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
+    //    soundfige = 1;
+    //}
 
-    if (soundfige == 1) {
-        // 音声再生
-        SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
-        soundfige = 2;
-    }
+    //if (soundfige == 1) {
+    //    // 音声再生
+    //    SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
+    //    soundfige = 2;
+    //}
 
 #pragma region  ImGuiの更新処理開始
     // デモウィンドウの表示
@@ -94,13 +94,13 @@ void GamePlayScene::Update() {
     //sprite->DebugUpdate();
     
     // object3d
-    object3d->DebugUpdata("Object3d");
-    grass->DebugUpdata("Grass");
+    //bject3d->DebugUpdata("Object3d");
+    //grass->DebugUpdata("Grass");
 
     // Camera
-    camera->DebugUpdate();
+    //camera->DebugUpdate();
 
-    ParticleManager::GetInstance()->DebugUpdata();
+    //ParticleManager::GetInstance()->DebugUpdata();
 
     emitter->DebugUpdata();
 
@@ -118,9 +118,8 @@ void GamePlayScene::Update() {
     grass->Update();
 
 
-   // ParticleManager::GetInstance()->Update();
-    
-    //emitter->Update();
+    ParticleManager::GetInstance()->Update();   
+    emitter->Update();
 
 
 #pragma endregion 全てのObject3d個々の更新処理
@@ -146,9 +145,9 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
-    object3d->Draw();
+   // object3d->Draw();
 
-    grass->Draw();
+   // grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
@@ -162,7 +161,7 @@ void GamePlayScene::Draw() {
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
     
-    sprite->Draw();
+   // sprite->Draw();
 
 
 

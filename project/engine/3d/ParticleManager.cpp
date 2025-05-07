@@ -83,7 +83,9 @@ void ParticleManager::Update() {
             (*particleIterator).color.w = alpha;
 
 
-            particleIterator->transform.translate.x += particleIterator->Velocity.x;
+            //particleIterator->transform.translate.x += particleIterator->Velocity.x;
+            //particleIterator->transform.translate.y += particleIterator->Velocity.y;
+            //particleIterator->transform.translate.z += particleIterator->Velocity.z;
 
             // world行列の計算
             Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
@@ -333,21 +335,24 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
     if (count == 0) return;
 
     // ランダムオフセット
-    std::uniform_real_distribution<float> dist(-1.5f, 1.5f);
+    std::uniform_real_distribution<float> dist(0.0f, 0.0f);
     std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
+    std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+    std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
+        Vector3 rotate = Vector3(distRotate(randomEngine), distRotate(randomEngine), distRotate(randomEngine));
+        Vector3 scale = Vector3(0.05f, distScale(randomEngine), 1.0f);
 
         Particle newParticle;
         newParticle.transform.translate = { position.x + offset.x,position.y + offset.y ,position.z + offset.z };
-        newParticle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-        newParticle.transform.scale = { 1.0f, 1.0f, 1.0f };
+        newParticle.transform.rotate = rotate;
+        newParticle.transform.scale = scale;
         newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };
         newParticle.lifetime = lifetime;
         newParticle.currentTime = 0.0f;
         newParticle.Velocity = velocity;  // 渡されたベロシティを使う
-
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);
