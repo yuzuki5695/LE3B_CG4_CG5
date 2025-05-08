@@ -97,7 +97,7 @@ void GamePlayScene::Update() {
     
     // object3d
     object3d->DebugUpdata("Object3d");
-    grass->DebugUpdata("Grass");
+   // grass->DebugUpdata("Grass");
 
     // Camera
     camera->DebugUpdate();
@@ -117,7 +117,7 @@ void GamePlayScene::Update() {
     // 更新処理
     object3d->Update();
 
-    grass->Update();
+    //grass->Update();
 
 
     ParticleManager::GetInstance()->Update();   
@@ -149,7 +149,7 @@ void GamePlayScene::Draw() {
 
     object3d->Draw();
 
-    grass->Draw();
+    //grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();

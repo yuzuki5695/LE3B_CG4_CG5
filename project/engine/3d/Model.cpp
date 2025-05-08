@@ -5,6 +5,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+#include <numbers>
 
 using namespace MatrixVector;
 
@@ -64,29 +65,47 @@ void Model::VertexDatacreation() {
     //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(Model::VertexData) * modelDate.vertices.size());
 
 
-    kSubdivision = 16;
+    //kSubdivision = 16;
 
-    vertexCount = kSubdivision * kSubdivision * 6; //球の頂点数
+    //vertexCount = kSubdivision * kSubdivision * 6; //球の頂点数
 
+    //// 関数化したResouceで作成
+    //vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * vertexCount);
+
+    ////頂点バッファビューを作成する
+    //// リソースの先頭のアドレスから使う
+    //vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
+    //// 使用するリソースのサイズはの頂点のサイズ
+    //vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexCount;
+    //// 1頂点当たりのサイズ
+    //vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+    //// 頂点リソースにデータを書き込むためのアドレスを取得
+    //vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+
+    //// 球の頂点にデータを入力
+    //DrawSphere(kSubdivision, vertexData);
+
+
+
+    const uint32_t KRingDivide = 32;
+    const float KOuterRadius = 1.0f;
+    const float KInnerRadius = 0.2f;
+    vertexCount = KRingDivide * 6;
     // 関数化したResouceで作成
     vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * vertexCount);
-
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
     vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
     // 使用するリソースのサイズはの頂点のサイズ
     vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexCount;
-
     // 1頂点当たりのサイズ
     vertexBufferView.StrideInBytes = sizeof(VertexData);
 
-    //頂点リソースにデータを書き込む
-    vertexData = nullptr;
-    //書き込むためのアドレスを取得
+    // 頂点リソースにデータを書き込むためのアドレスを取得
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
-    // 球の頂点にデータを入力
-    DrawSphere(kSubdivision, vertexData);
+    DrawRing(vertexData, KRingDivide, KOuterRadius, KInnerRadius);
 }
 
 void Model::MaterialGenerate() {
@@ -267,5 +286,50 @@ void Model::DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
             vertexdata[start + 5].normal.y = vertexdata[start + 5].position.y;
             vertexdata[start + 5].normal.z = vertexdata[start + 5].position.z;
         }
+    }
+}
+
+void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius, float innerRadius) {
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(divide);
+
+    for (uint32_t i = 0; i < divide; ++i) {
+        float angle = i * radianPerDivide;
+        float nextAngle = (i + 1) * radianPerDivide;
+
+        float sin = std::sin(angle);
+        float cos = std::cos(angle);
+        float sinNext = std::sin(nextAngle);
+        float cosNext = std::cos(nextAngle);
+
+        float u = float(i) / float(divide);
+        float uNext = float(i + 1) / float(divide);
+
+        uint32_t index = i * 6;
+
+        // 外周 (a) と 内周 (c)
+        vertexData[index + 0].position = { -sin * outerRadius, cos * outerRadius, 0.0f, 1.0f };
+        vertexData[index + 0].texcoord = { u, 0.0f };
+        vertexData[index + 0].normal = { 0.0f, 0.0f, 1.0f };
+
+        vertexData[index + 1].position = { -sinNext * outerRadius, cosNext * outerRadius, 0.0f, 1.0f };
+        vertexData[index + 1].texcoord = { uNext, 0.0f };
+        vertexData[index + 1].normal = { 0.0f, 0.0f, 1.0f };
+
+        vertexData[index + 2].position = { -sin * innerRadius, cos * innerRadius, 0.0f, 1.0f };
+        vertexData[index + 2].texcoord = { u, 1.0f };
+        vertexData[index + 2].normal = { 0.0f, 0.0f, 1.0f };
+
+        // 三角形2 (b, d, c)
+        vertexData[index + 3].position = { -sinNext * outerRadius, cosNext * outerRadius, 0.0f, 1.0f };
+        vertexData[index + 3].texcoord = { uNext, 0.0f };
+        vertexData[index + 3].normal = { 0.0f, 0.0f, 1.0f };
+
+        vertexData[index + 4].position = { -sinNext * innerRadius, cosNext * innerRadius, 0.0f, 1.0f };
+        vertexData[index + 4].texcoord = { uNext, 1.0f };
+        vertexData[index + 4].normal = { 0.0f, 0.0f, 1.0f };
+
+        vertexData[index + 5].position = { -sin * innerRadius, cos * innerRadius, 0.0f, 1.0f };
+        vertexData[index + 5].texcoord = { u, 1.0f };
+        vertexData[index + 5].normal = { 0.0f, 0.0f, 1.0f };
     }
 }

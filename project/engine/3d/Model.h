@@ -61,6 +61,9 @@ public: // メンバ関数
 	// 球の作成
 	void DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
 
+	// 
+	void DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius, float innerRadius);
+
 private:
 	// 頂点データ作成
 	void VertexDatacreation();

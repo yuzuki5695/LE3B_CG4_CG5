@@ -150,7 +150,7 @@ std::unique_ptr<Object3d> Object3d::Create(std::string filePath, Transform trans
     object3d->Initialize(Object3dCommon::GetInstance());
     // モデルを検索してセットする
     object3d->model = ModelManager::GetInstance()->FindModel(filePath);
-   // object3d->SetCamera(Object3dCommon::GetInstance()->GetDefaultCamera());
+    // object3d->SetCamera(Object3dCommon::GetInstance()->GetDefaultCamera());
     // 座標をセット
     object3d->transform_ = transform;
   
