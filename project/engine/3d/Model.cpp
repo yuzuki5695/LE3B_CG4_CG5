@@ -1,8 +1,10 @@
-
 #include "Model.h"
 #include "Object3d.h"
 #include "MatrixVector.h"
 #include "TextureManager.h"
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 using namespace MatrixVector;
 
@@ -36,26 +38,55 @@ void Model::Draw() {
     modelCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelDate.material.textureFilePath));
 
     // 描画！(今回は球)
-    modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelDate.vertices.size()), 1, 0, 0);
+   // modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelDate.vertices.size()), 1, 0, 0);
+
+
+    // 描画！(今回は球)
+    modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(vertexCount, 1, 0, 0);
 }
 
 void Model::VertexDatacreation() {
 
+    //// 関数化したResouceで作成
+    //vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Model::VertexData) * modelDate.vertices.size());
+
+    ////頂点バッファビューを作成する
+    //// リソースの先頭のアドレスから使う
+    //vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
+    //// 使用するリソースのサイズはの頂点のサイズ
+    //vertexBufferView.SizeInBytes = UINT(sizeof(Model::VertexData) * modelDate.vertices.size());
+    //// 1頂点当たりのサイズ
+    //vertexBufferView.StrideInBytes = sizeof(Model::VertexData);
+
+    //// 頂点リソースにデータを書き込むためのアドレスを取得
+    //vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+    //// 頂点データをリソースにコピー
+    //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(Model::VertexData) * modelDate.vertices.size());
+
+
+    kSubdivision = 16;
+
+    vertexCount = kSubdivision * kSubdivision * 6; //球の頂点数
+
     // 関数化したResouceで作成
-    vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Model::VertexData) * modelDate.vertices.size());
+    vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * vertexCount);
 
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
     vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
     // 使用するリソースのサイズはの頂点のサイズ
-    vertexBufferView.SizeInBytes = UINT(sizeof(Model::VertexData) * modelDate.vertices.size());
-    // 1頂点当たりのサイズ
-    vertexBufferView.StrideInBytes = sizeof(Model::VertexData);
+    vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexCount;
 
-    // 頂点リソースにデータを書き込むためのアドレスを取得
+    // 1頂点当たりのサイズ
+    vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+    //頂点リソースにデータを書き込む
+    vertexData = nullptr;
+    //書き込むためのアドレスを取得
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-    // 頂点データをリソースにコピー
-    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(Model::VertexData) * modelDate.vertices.size());
+
+    // 球の頂点にデータを入力
+    DrawSphere(kSubdivision, vertexData);
 }
 
 void Model::MaterialGenerate() {
@@ -174,4 +205,67 @@ void Model::ChangeTexture(const std::string& newTexturePath) {
     modelDate.material.textureFilePath = newTexturePath; // 新しいテクスチャファイルのパスを設定
     TextureManager::GetInstance()->LoadTexture(newTexturePath); // 新しいテクスチャをロード
     modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(newTexturePath); // 新しいテクスチャインデックスを取得
+}
+
+void Model::DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
+    // 球の頂点数を計算する
+    //経度分割1つ分の角度 
+    const float kLonEvery = (float)M_PI * 2.0f / float(ksubdivision);
+    //緯度分割1つ分の角度 
+    const float kLatEvery = (float)M_PI / float(ksubdivision);
+    //経度の方向に分割
+    for (uint32_t latIndex = 0; latIndex < ksubdivision; ++latIndex)
+    {
+        float lat = -(float)M_PI / 2.0f + kLatEvery * latIndex;	// θ
+        //経度の方向に分割しながら線を描く
+        for (uint32_t lonIndex = 0; lonIndex < ksubdivision; ++lonIndex)
+        {
+            float u = float(lonIndex) / float(ksubdivision);
+            float v = 1.0f - float(latIndex) / float(ksubdivision);
+
+            //頂点位置を計算する
+            uint32_t start = (latIndex * ksubdivision + lonIndex) * 6;
+            float lon = lonIndex * kLonEvery;	// Φ
+            //頂点にデータを入力する。基準点 a
+            vertexdata[start + 0].position = { cos(lat) * cos(lon) ,sin(lat) , cos(lat) * sin(lon) ,1.0f };
+            vertexdata[start + 0].texcoord = { u,v };
+            vertexdata[start + 0].normal.x = vertexdata[start + 0].position.x;
+            vertexdata[start + 0].normal.y = vertexdata[start + 0].position.y;
+            vertexdata[start + 0].normal.z = vertexdata[start + 0].position.z;
+
+            //基準点 b
+            vertexdata[start + 1].position = { cos(lat + kLatEvery) * cos(lon),sin(lat + kLatEvery),cos(lat + kLatEvery) * sin(lon) ,1.0f };
+            vertexdata[start + 1].texcoord = { u ,v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 1].normal.x = vertexdata[start + 1].position.x;
+            vertexdata[start + 1].normal.y = vertexdata[start + 1].position.y;
+            vertexdata[start + 1].normal.z = vertexdata[start + 1].position.z;
+
+            //基準点 c
+            vertexdata[start + 2].position = { cos(lat) * cos(lon + kLonEvery),sin(lat), cos(lat) * sin(lon + kLonEvery) ,1.0f };
+            vertexdata[start + 2].texcoord = { u + 1.0f / float(ksubdivision),v };
+            vertexdata[start + 2].normal.x = vertexdata[start + 2].position.x;
+            vertexdata[start + 2].normal.y = vertexdata[start + 2].position.y;
+            vertexdata[start + 2].normal.z = vertexdata[start + 2].position.z;
+
+            //基準点 d
+            vertexdata[start + 3].position = { cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery) , cos(lat + kLatEvery) * sin(lon + kLonEvery) ,1.0f };
+            vertexdata[start + 3].texcoord = { u + 1.0f / float(ksubdivision), v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 3].normal.x = vertexdata[start + 3].position.x;
+            vertexdata[start + 3].normal.y = vertexdata[start + 3].position.y;
+            vertexdata[start + 3].normal.z = vertexdata[start + 3].position.z;
+
+            // 頂点4 (b, c, d)
+            vertexdata[start + 4].position = { cos(lat) * cos(lon + kLonEvery),sin(lat),cos(lat) * sin(lon + kLonEvery),1.0f };
+            vertexdata[start + 4].texcoord = { u + 1.0f / float(ksubdivision) ,v };
+            vertexdata[start + 4].normal.x = vertexdata[start + 4].position.x;
+            vertexdata[start + 4].normal.y = vertexdata[start + 4].position.y;
+            vertexdata[start + 4].normal.z = vertexdata[start + 4].position.z;
+
+            vertexdata[start + 5].position = { cos(lat + kLatEvery) * cos(lon),sin(lat + kLatEvery),cos(lat + kLatEvery) * sin(lon),1.0f };
+            vertexdata[start + 5].texcoord = { u,v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 5].normal.x = vertexdata[start + 5].position.x;
+            vertexdata[start + 5].normal.y = vertexdata[start + 5].position.y;
+            vertexdata[start + 5].normal.z = vertexdata[start + 5].position.z;
+        }
+    }
 }

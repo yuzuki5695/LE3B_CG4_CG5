@@ -12,6 +12,12 @@
 #include<string>
 #include<vector>
 
+// Model.h
+enum class ModelType {
+	Custom,  // .objファイルなどから読み込んだモデル
+	Sphere   // 手動生成した球体
+};
+
 class Model
 {
 public:
@@ -49,7 +55,11 @@ public: // メンバ関数
 	// .objファイルの読み取り
 	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
+	// テクスチャ変更
 	void ChangeTexture(const std::string& newTexturePath);
+
+	// 球の作成
+	void DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
 
 private:
 	// 頂点データ作成
@@ -70,6 +80,11 @@ private:
 	// バッファリソース内のデータを指すポインタ
 	VertexData* vertexData = nullptr;
 	Material* materialData = nullptr;
+
+
+	uint32_t kSubdivision; //球の分割数
+	uint32_t vertexCount; //球の頂点数
+
 public:
 	// getter
 
