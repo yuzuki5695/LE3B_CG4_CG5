@@ -53,6 +53,7 @@ void GamePlayScene::Initialize() {
 
     // オブジェクト作成
     object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
+
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクル 
@@ -95,11 +96,11 @@ void GamePlayScene::Update() {
     //sprite->DebugUpdate();
     
     // object3d
-    //bject3d->DebugUpdata("Object3d");
-    //grass->DebugUpdata("Grass");
+    object3d->DebugUpdata("Object3d");
+    grass->DebugUpdata("Grass");
 
     // Camera
-    //camera->DebugUpdate();
+    camera->DebugUpdate();
 
     //ParticleManager::GetInstance()->DebugUpdata();
 
@@ -146,9 +147,9 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
-   // object3d->Draw();
+    object3d->Draw();
 
-   // grass->Draw();
+    grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();

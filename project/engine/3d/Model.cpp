@@ -168,3 +168,10 @@ Model::ModelDate Model::LoadObjFile(const std::string& directoryPath, const std:
     // 4. ModelDateを返す
     return modelDate;
 }
+
+void Model::ChangeTexture(const std::string& newTexturePath) {
+    // 新しいテクスチャファイルを読み込む
+    modelDate.material.textureFilePath = newTexturePath; // 新しいテクスチャファイルのパスを設定
+    TextureManager::GetInstance()->LoadTexture(newTexturePath); // 新しいテクスチャをロード
+    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(newTexturePath); // 新しいテクスチャインデックスを取得
+}

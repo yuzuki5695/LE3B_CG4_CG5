@@ -137,6 +137,13 @@ void Object3d::SetModel(const std::string& filePath) {
     model = ModelManager::GetInstance()->FindModel(filePath);
 }
 
+void Object3d::SetTexture(const std::string& textureFilePath) {
+    // テクスチャが指定されていれば変更する
+    if (!textureFilePath.empty()) {
+        model->ChangeTexture(textureFilePath);
+    }
+}
+
 std::unique_ptr<Object3d> Object3d::Create(std::string filePath, Transform transform) {
     std::unique_ptr<Object3d> object3d = std::make_unique<Object3d>();   
     // 初期化

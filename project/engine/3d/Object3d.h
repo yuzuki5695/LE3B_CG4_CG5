@@ -103,6 +103,7 @@ public:
 
 	// setter
 	void SetModel(const std::string& filePath);
+	void SetTexture(const std::string& textureFilePath);
 	void SetScale(const Vector3& scale) { this->transform_.scale = scale; }
 	void SetRotate(const Vector3& rotate) { this->transform_.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { this->transform_.translate = translate; }

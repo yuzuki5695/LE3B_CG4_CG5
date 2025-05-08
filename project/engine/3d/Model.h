@@ -47,8 +47,10 @@ public: // メンバ関数
 	// .mtlファイルの読み取り
 	static Model::MaterialDate LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	// .objファイルの読み取り
-	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename)
-		;
+	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
+
+	void ChangeTexture(const std::string& newTexturePath);
+
 private:
 	// 頂点データ作成
 	void VertexDatacreation();
