@@ -42,7 +42,7 @@ void Model::Draw() {
    // modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelDate.vertices.size()), 1, 0, 0);
 
 
-    // 描画！(今回は球)
+    // 描画！
     modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(vertexCount, 1, 0, 0);
 }
 
@@ -87,10 +87,10 @@ void Model::VertexDatacreation() {
     //DrawSphere(kSubdivision, vertexData);
 
 
-
     const uint32_t KRingDivide = 32;
     const float KOuterRadius = 1.0f;
     const float KInnerRadius = 0.2f;
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(KRingDivide);
     vertexCount = KRingDivide * 6;
     // 関数化したResouceで作成
     vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * vertexCount);
@@ -104,8 +104,9 @@ void Model::VertexDatacreation() {
 
     // 頂点リソースにデータを書き込むためのアドレスを取得
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-
+    // Ringの頂点データを入力
     DrawRing(vertexData, KRingDivide, KOuterRadius, KInnerRadius);
+
 }
 
 void Model::MaterialGenerate() {
@@ -288,10 +289,11 @@ void Model::DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
         }
     }
 }
-void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius, float innerRadius) {
-    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(divide);
 
-    for (uint32_t i = 0; i < divide; ++i) {
+void Model::DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius) {
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(KRingDivide);
+
+    for (uint32_t i = 0; i < KRingDivide; ++i) {
         float angle = i * radianPerDivide;
         float nextAngle = (i + 1) * radianPerDivide;
 
@@ -300,35 +302,32 @@ void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius,
         float sinNext = std::sin(nextAngle);
         float cosNext = std::cos(nextAngle);
 
-        float u = float(i) / float(divide);
-        float uNext = float(i + 1) / float(divide);
+        float u = float(i) / float(KRingDivide);
+        float uNext = float(i + 1) / float(KRingDivide);
 
         uint32_t index = i * 6;
 
-        // 三角形1 (a:外周, b:外周(次), c:内周)
-        vertexData[index + 0].position = { -sin * outerRadius, cos * outerRadius, 0.0f, 1.0f };
+        // XY平面（Z = 0）にリングを構築
+        vertexData[index + 0].position = { cos * KOuterRadius, sin * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 1].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 2].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
+
+        vertexData[index + 3].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 4].position = { cosNext * KInnerRadius, sinNext * KInnerRadius, 0.0f, 1.0f };
+        vertexData[index + 5].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
+
+        // テクスチャ座標（仮の設定。必要なら調整）
         vertexData[index + 0].texcoord = { u, 0.0f };
-        vertexData[index + 0].normal = { 0.0f, 0.0f, 1.0f };
-
-        vertexData[index + 1].position = { -sinNext * outerRadius, cosNext * outerRadius, 0.0f, 1.0f };
         vertexData[index + 1].texcoord = { uNext, 0.0f };
-        vertexData[index + 1].normal = { 0.0f, 0.0f, 1.0f };
-
-        vertexData[index + 2].position = { -sin * innerRadius, cos * innerRadius, 0.0f, 1.0f };
         vertexData[index + 2].texcoord = { u, 1.0f };
-        vertexData[index + 2].normal = { 0.0f, 0.0f, 1.0f };
 
-        // 三角形2 (b:外周(次), d:内周(次), c:内周)
-        vertexData[index + 3].position = { -sinNext * outerRadius, cosNext * outerRadius, 0.0f, 1.0f };
         vertexData[index + 3].texcoord = { uNext, 0.0f };
-        vertexData[index + 3].normal = { 0.0f, 0.0f, 1.0f };
-
-        vertexData[index + 4].position = { -sinNext * innerRadius, cosNext * innerRadius, 0.0f, 1.0f };
         vertexData[index + 4].texcoord = { uNext, 1.0f };
-        vertexData[index + 4].normal = { 0.0f, 0.0f, 1.0f };
-
-        vertexData[index + 5].position = { -sin * innerRadius, cos * innerRadius, 0.0f, 1.0f };
         vertexData[index + 5].texcoord = { u, 1.0f };
-        vertexData[index + 5].normal = { 0.0f, 0.0f, 1.0f };
+
+        // 法線はZ+方向（XY平面の正面）
+        for (int j = 0; j < 6; ++j) {
+            vertexData[index + j].normal = { 0.0f, 0.0f, 1.0f };
+        }
     }
 }

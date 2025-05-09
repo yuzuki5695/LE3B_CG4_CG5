@@ -10,6 +10,12 @@
 #include<Camera.h>
 #include<Model.h>
 
+enum class VertexType {
+	OBJ,
+	Sphere,
+	Ring
+};
+
 // 3Dオブジェクト共通部
 class ParticleManager
 {
@@ -86,7 +92,7 @@ public: // メンバ関数
 	void Draw();
 
 	//　パーティクルモデル生成
-	void SetParticleModel(const std::string& directorypath, const std::string& filename);
+	void SetParticleModel(const std::string& directorypath, const std::string& filename, VertexType type);
 
 	// パーティクルグループの作成
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath);
@@ -96,13 +102,20 @@ public: // メンバ関数
 
 	void DebugUpdata();
 
+	// 球の作成
+	void DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
+
+	// 
+	void DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
+
+
 private:
 	// .mtlファイルの読み取り
 	static ParticleManager::MaterialDate LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	// .objファイルの読み取り
 	static ParticleManager::ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
 	// 頂点データ作成
-	void VertexDatacreation();
+	void VertexDatacreation(VertexType type);
 	// マテリアル
 	void MaterialGenerate();
 private: // メンバ変数
@@ -128,6 +141,8 @@ private: // メンバ変数
 	Matrix4x4 backToFrontMatrix;
 	// パーティクルグループコンテナ
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
+
+	uint32_t vertexCount; //球の頂点数
 
 public:
 	// getter

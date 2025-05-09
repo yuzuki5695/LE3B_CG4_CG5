@@ -9,6 +9,9 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 using namespace MatrixVector;
 using namespace Microsoft::WRL;
@@ -141,32 +144,64 @@ void ParticleManager::Draw() {
     }
 }
 
-void ParticleManager::SetParticleModel(const std::string& directorypath, const std::string& filename) {
+void ParticleManager::SetParticleModel(const std::string& directorypath, const std::string& filename, VertexType type) {
     // モデルデータを取得
     modelDate = LoadObjFile(directorypath, filename);
     // 頂点データを作成
-    VertexDatacreation();
+    VertexDatacreation(type);
     // .objの参照しているテクスチャ読み込み
     TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
     // 読み込んだテクスチャの番号を取得
     modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
 }
 
-void ParticleManager::VertexDatacreation() {
-    // 関数化したResouceで作成
-    vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
-    //頂点バッファビューを作成する
-    // リソースの先頭のアドレスから使う
-    vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
-    // 使用するリソースのサイズはの頂点のサイズ
-    vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelDate.vertices.size());
-    // 1頂点当たりのサイズ
-    vertexBufferView.StrideInBytes = sizeof(VertexData);
-    // 頂点リソースにデータを書き込むためのアドレスを取得
-    vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-    // 頂点データをリソースにコピー
-    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
+void ParticleManager::VertexDatacreation(VertexType type) {
+    switch (type) {
+    case VertexType::OBJ: {
+        size_t size = sizeof(VertexData) * modelDate.vertices.size();
+        vertexResoruce = dxCommon_->CreateBufferResource(size);
+        vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
+        vertexBufferView.SizeInBytes = UINT(size);
+        vertexBufferView.StrideInBytes = sizeof(VertexData);
+        vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+        std::memcpy(vertexData, modelDate.vertices.data(), size);
+        break;
+    }
+
+    case VertexType::Sphere: {
+        const uint32_t kSubdivision = 16;
+        vertexCount = kSubdivision * kSubdivision * 6;
+        size_t size = sizeof(VertexData) * vertexCount;
+        vertexResoruce = dxCommon_->CreateBufferResource(size);
+        vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
+        vertexBufferView.SizeInBytes = size;
+        vertexBufferView.StrideInBytes = sizeof(VertexData);
+        vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+        DrawSphere(kSubdivision, vertexData); // 自作関数
+        break;
+    }
+
+    case VertexType::Ring: {
+        const uint32_t KRingDivide = 32;
+        const float KOuterRadius = 1.0f;
+        const float KInnerRadius = 0.2f;
+        vertexCount = KRingDivide * 6;
+        size_t size = sizeof(VertexData) * vertexCount;
+        vertexResoruce = dxCommon_->CreateBufferResource(size);
+        vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
+        vertexBufferView.SizeInBytes = size;
+        vertexBufferView.StrideInBytes = sizeof(VertexData);
+        vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+        DrawRing(vertexData, KRingDivide, KOuterRadius, KInnerRadius); // 自作関数
+        break;
+    }
+
+    default:
+        assert(false && "不正な頂点タイプ");
+        break;
+    }
 }
+
 
 void ParticleManager::MaterialGenerate() {
     // マテリアル用のリソース
@@ -349,14 +384,15 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
-        Vector3 rotate = Vector3(0.0f,0.0f, distRotate(randomEngine));
-        Vector3 scale = Vector3(0.05f, distScale(randomEngine), 1.0f);
+        Vector3 rotate = Vector3(0.0f,3.0f, 0.0f);
+        Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 
         Particle newParticle;
         newParticle.transform.translate = { position.x + offset.x,position.y + offset.y ,position.z + offset.z };
         newParticle.transform.rotate = rotate;
         newParticle.transform.scale = scale;
-        newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };
+        //newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };
+        newParticle.color = { 1.0f,1.0f,1.0f,1.0f };
         newParticle.lifetime = lifetime;
         newParticle.currentTime = 0.0f;
         newParticle.Velocity = velocity;  // 渡されたベロシティを使う
@@ -390,4 +426,109 @@ void ParticleManager::DebugUpdata() {
     }
     ImGui::End();
 #endif // USE_IMGUI
+}
+
+void ParticleManager::DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
+    // 球の頂点数を計算する
+    //経度分割1つ分の角度 
+    const float kLonEvery = (float)M_PI * 2.0f / float(ksubdivision);
+    //緯度分割1つ分の角度 
+    const float kLatEvery = (float)M_PI / float(ksubdivision);
+    //経度の方向に分割
+    for (uint32_t latIndex = 0; latIndex < ksubdivision; ++latIndex)
+    {
+        float lat = -(float)M_PI / 2.0f + kLatEvery * latIndex;	// θ
+        //経度の方向に分割しながら線を描く
+        for (uint32_t lonIndex = 0; lonIndex < ksubdivision; ++lonIndex)
+        {
+            float u = float(lonIndex) / float(ksubdivision);
+            float v = 1.0f - float(latIndex) / float(ksubdivision);
+
+            //頂点位置を計算する
+            uint32_t start = (latIndex * ksubdivision + lonIndex) * 6;
+            float lon = lonIndex * kLonEvery;	// Φ
+            //頂点にデータを入力する。基準点 a
+            vertexdata[start + 0].position = { cos(lat) * cos(lon) ,sin(lat) , cos(lat) * sin(lon) ,1.0f };
+            vertexdata[start + 0].texcoord = { u,v };
+            vertexdata[start + 0].normal.x = vertexdata[start + 0].position.x;
+            vertexdata[start + 0].normal.y = vertexdata[start + 0].position.y;
+            vertexdata[start + 0].normal.z = vertexdata[start + 0].position.z;
+
+            //基準点 b
+            vertexdata[start + 1].position = { cos(lat + kLatEvery) * cos(lon),sin(lat + kLatEvery),cos(lat + kLatEvery) * sin(lon) ,1.0f };
+            vertexdata[start + 1].texcoord = { u ,v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 1].normal.x = vertexdata[start + 1].position.x;
+            vertexdata[start + 1].normal.y = vertexdata[start + 1].position.y;
+            vertexdata[start + 1].normal.z = vertexdata[start + 1].position.z;
+
+            //基準点 c
+            vertexdata[start + 2].position = { cos(lat) * cos(lon + kLonEvery),sin(lat), cos(lat) * sin(lon + kLonEvery) ,1.0f };
+            vertexdata[start + 2].texcoord = { u + 1.0f / float(ksubdivision),v };
+            vertexdata[start + 2].normal.x = vertexdata[start + 2].position.x;
+            vertexdata[start + 2].normal.y = vertexdata[start + 2].position.y;
+            vertexdata[start + 2].normal.z = vertexdata[start + 2].position.z;
+
+            //基準点 d
+            vertexdata[start + 3].position = { cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery) , cos(lat + kLatEvery) * sin(lon + kLonEvery) ,1.0f };
+            vertexdata[start + 3].texcoord = { u + 1.0f / float(ksubdivision), v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 3].normal.x = vertexdata[start + 3].position.x;
+            vertexdata[start + 3].normal.y = vertexdata[start + 3].position.y;
+            vertexdata[start + 3].normal.z = vertexdata[start + 3].position.z;
+
+            // 頂点4 (b, c, d)
+            vertexdata[start + 4].position = { cos(lat) * cos(lon + kLonEvery),sin(lat),cos(lat) * sin(lon + kLonEvery),1.0f };
+            vertexdata[start + 4].texcoord = { u + 1.0f / float(ksubdivision) ,v };
+            vertexdata[start + 4].normal.x = vertexdata[start + 4].position.x;
+            vertexdata[start + 4].normal.y = vertexdata[start + 4].position.y;
+            vertexdata[start + 4].normal.z = vertexdata[start + 4].position.z;
+
+            vertexdata[start + 5].position = { cos(lat + kLatEvery) * cos(lon),sin(lat + kLatEvery),cos(lat + kLatEvery) * sin(lon),1.0f };
+            vertexdata[start + 5].texcoord = { u,v - 1.0f / float(ksubdivision) };
+            vertexdata[start + 5].normal.x = vertexdata[start + 5].position.x;
+            vertexdata[start + 5].normal.y = vertexdata[start + 5].position.y;
+            vertexdata[start + 5].normal.z = vertexdata[start + 5].position.z;
+        }
+    }
+}
+
+void ParticleManager::DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius) {
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(KRingDivide);
+
+    for (uint32_t i = 0; i < KRingDivide; ++i) {
+        float angle = i * radianPerDivide;
+        float nextAngle = (i + 1) * radianPerDivide;
+
+        float sin = std::sin(angle);
+        float cos = std::cos(angle);
+        float sinNext = std::sin(nextAngle);
+        float cosNext = std::cos(nextAngle);
+
+        float u = float(i) / float(KRingDivide);
+        float uNext = float(i + 1) / float(KRingDivide);
+
+        uint32_t index = i * 6;
+
+        // XY平面（Z = 0）にリングを構築
+        vertexData[index + 0].position = { cos * KOuterRadius, sin * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 1].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 2].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
+
+        vertexData[index + 3].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
+        vertexData[index + 4].position = { cosNext * KInnerRadius, sinNext * KInnerRadius, 0.0f, 1.0f };
+        vertexData[index + 5].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
+
+        // テクスチャ座標（仮の設定。必要なら調整）
+        vertexData[index + 0].texcoord = { u, 0.0f };
+        vertexData[index + 1].texcoord = { uNext, 0.0f };
+        vertexData[index + 2].texcoord = { u, 1.0f };
+
+        vertexData[index + 3].texcoord = { uNext, 0.0f };
+        vertexData[index + 4].texcoord = { uNext, 1.0f };
+        vertexData[index + 5].texcoord = { u, 1.0f };
+
+        // 法線はZ+方向（XY平面の正面）
+        for (int j = 0; j < 6; ++j) {
+            vertexData[index + j].normal = { 0.0f, 0.0f, 1.0f };
+        }
+    }
 }

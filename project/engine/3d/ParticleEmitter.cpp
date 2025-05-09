@@ -35,9 +35,9 @@ void ParticleEmitter::Emit()
 	ParticleManager::GetInstance()->Emit(name_, position_, count, velocity_, frequency);
 }
 
-void ParticleEmitter::DebugUpdata() {
+void ParticleEmitter::DebugUpdata(const std::string& name) {
 #ifdef USE_IMGUI
-	ImGui::Begin("ParticleEmit");
+	ImGui::Begin(name.c_str());
 	
 	ImGui::Checkbox("Auto Emit", &isAutoEmit_);
 	// 現在のパーティクル数と最大数を取得
@@ -51,7 +51,7 @@ void ParticleEmitter::DebugUpdata() {
 	// Emit ボタン
 	if (ImGui::Button("Emit Particles")) {
 		if (availableToEmit > 0) {
-			ParticleManager::GetInstance()->Emit("Circle", position_, availableToEmit, velocity_, frequency);
+			ParticleManager::GetInstance()->Emit(name.c_str(), position_, availableToEmit, velocity_, frequency);
 		}
 	}
 

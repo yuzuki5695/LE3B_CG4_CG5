@@ -14,7 +14,7 @@ public:
 	// パーティクル発生
 	void Emit();
 	// imgui
-	void DebugUpdata();
+	void DebugUpdata(const std::string& name);
 
 private:
 	// 名前

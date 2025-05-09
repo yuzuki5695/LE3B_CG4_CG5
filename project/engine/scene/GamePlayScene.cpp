@@ -50,7 +50,7 @@ void GamePlayScene::Initialize() {
 
 
     // スプライトの初期化
-    sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
+    sprite = Sprite::Create("Resources/gradationLine.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
 
     // オブジェクト作成
     object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, 3.15f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
@@ -60,7 +60,7 @@ void GamePlayScene::Initialize() {
 
     // パーティクル 
     // モデル生成
-    ParticleManager::GetInstance()->SetParticleModel("Resources", "plane.obj");
+    ParticleManager::GetInstance()->SetParticleModel("Resources", "plane.obj", VertexType::Ring);
     // テクスチャ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png");
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png");
@@ -72,19 +72,19 @@ void GamePlayScene::Initialize() {
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
         0.0f,                         // 経過時間（基本は0から開始）
         8,                            // 発生数
-        "Ring",                  // パーティクルグループ名
+        "Circle",                  // パーティクルグループ名
         Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
     );
     
-    //// 発生
-    //emitter2 = std::make_unique <ParticleEmitter>(
-    //    Vector3{ 1.0f, -0.5f, 0.0f }, // 位置
-    //    3.0f,                         // 発生周期 or 寿命（自由に定義可能）
-    //    0.0f,                         // 経過時間（基本は0から開始）
-    //    8,                            // 発生数
-    //    "Ring",                  // パーティクルグループ名
-    //    Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
-    //);
+    // 発生
+    emitter2 = std::make_unique <ParticleEmitter>(
+        Vector3{ 1.0f, -0.5f, 0.0f }, // 位置
+        3.0f,                         // 発生周期 or 寿命（自由に定義可能）
+        0.0f,                         // 経過時間（基本は0から開始）
+        8,                            // 発生数
+        "Ring",                  // パーティクルグループ名
+        Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
+    );
 
 
     //emitter->Emit();
@@ -118,8 +118,8 @@ void GamePlayScene::Update() {
 
     //ParticleManager::GetInstance()->DebugUpdata();
 
-    emitter->DebugUpdata();
-   // emitter2->DebugUpdata();
+    emitter->DebugUpdata("Particles");
+    emitter2->DebugUpdata("Ring");
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -137,7 +137,7 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->Update();   
     emitter->Update();
-    //emitter2->Update();
+    emitter2->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 
@@ -162,7 +162,7 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
-    object3d->Draw();
+    //object3d->Draw();
 
     //grass->Draw();
 
@@ -177,10 +177,7 @@ void GamePlayScene::Draw() {
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
     
-   // sprite->Draw();
-
-
-
+    //sprite->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }

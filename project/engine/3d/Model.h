@@ -62,7 +62,7 @@ public: // メンバ関数
 	void DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
 
 	// 
-	void DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius, float innerRadius);
+	void DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
 
 private:
 	// 頂点データ作成
