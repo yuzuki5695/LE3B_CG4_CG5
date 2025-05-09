@@ -140,7 +140,7 @@ void Object3d::SetModel(const std::string& filePath) {
 void Object3d::SetTexture(const std::string& textureFilePath) {
     // テクスチャが指定されていれば変更する
     if (!textureFilePath.empty()) {
-        model->ChangeTexture(textureFilePath);
+        model->ChangeTexture("Resources/" + textureFilePath);
     }
 }
 

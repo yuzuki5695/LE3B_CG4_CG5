@@ -288,7 +288,6 @@ void Model::DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
         }
     }
 }
-
 void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius, float innerRadius) {
     const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(divide);
 
@@ -306,7 +305,7 @@ void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius,
 
         uint32_t index = i * 6;
 
-        // 外周 (a) と 内周 (c)
+        // 三角形1 (a:外周, b:外周(次), c:内周)
         vertexData[index + 0].position = { -sin * outerRadius, cos * outerRadius, 0.0f, 1.0f };
         vertexData[index + 0].texcoord = { u, 0.0f };
         vertexData[index + 0].normal = { 0.0f, 0.0f, 1.0f };
@@ -319,7 +318,7 @@ void Model::DrawRing(VertexData* vertexData, uint32_t divide, float outerRadius,
         vertexData[index + 2].texcoord = { u, 1.0f };
         vertexData[index + 2].normal = { 0.0f, 0.0f, 1.0f };
 
-        // 三角形2 (b, d, c)
+        // 三角形2 (b:外周(次), d:内周(次), c:内周)
         vertexData[index + 3].position = { -sinNext * outerRadius, cosNext * outerRadius, 0.0f, 1.0f };
         vertexData[index + 3].texcoord = { uNext, 0.0f };
         vertexData[index + 3].normal = { 0.0f, 0.0f, 1.0f };

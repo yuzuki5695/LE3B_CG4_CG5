@@ -39,5 +39,6 @@ private: // メンバ変数
 
     // エミッター生成
     std::unique_ptr <ParticleEmitter> emitter;
+   // std::unique_ptr <ParticleEmitter> emitter2;
     Vector3 windPower;
 };

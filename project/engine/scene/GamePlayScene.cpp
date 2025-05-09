@@ -33,6 +33,7 @@ void GamePlayScene::Initialize() {
     TextureManager::GetInstance()->LoadTexture("Resources/circle.png");
     TextureManager::GetInstance()->LoadTexture("Resources/grass.png");    
     TextureManager::GetInstance()->LoadTexture("Resources/circle2.png");
+    TextureManager::GetInstance()->LoadTexture("Resources/gradationLine.png");
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -53,6 +54,7 @@ void GamePlayScene::Initialize() {
 
     // オブジェクト作成
     object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
+    object3d->SetTexture("gradationLine.png");
 
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
@@ -62,6 +64,7 @@ void GamePlayScene::Initialize() {
     // テクスチャ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png");
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png");
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
@@ -69,9 +72,20 @@ void GamePlayScene::Initialize() {
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
         0.0f,                         // 経過時間（基本は0から開始）
         8,                            // 発生数
-        "Particles",                  // パーティクルグループ名
+        "Ring",                  // パーティクルグループ名
         Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
     );
+    
+    //// 発生
+    //emitter2 = std::make_unique <ParticleEmitter>(
+    //    Vector3{ 1.0f, -0.5f, 0.0f }, // 位置
+    //    3.0f,                         // 発生周期 or 寿命（自由に定義可能）
+    //    0.0f,                         // 経過時間（基本は0から開始）
+    //    8,                            // 発生数
+    //    "Ring",                  // パーティクルグループ名
+    //    Vector3{ 0.001f, 0.0f, 0.0f }  // ← 風
+    //);
+
 
     //emitter->Emit();
 }
@@ -104,7 +118,8 @@ void GamePlayScene::Update() {
 
     //ParticleManager::GetInstance()->DebugUpdata();
 
-    emitter->DebugUpdata();
+    //emitter->DebugUpdata();
+   // emitter2->DebugUpdata();
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -122,7 +137,7 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->Update();   
     emitter->Update();
-
+    //emitter2->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 
@@ -155,7 +170,6 @@ void GamePlayScene::Draw() {
     ParticleCommon::GetInstance()->Commondrawing();
 
     ParticleManager::GetInstance()->Draw();
-
 
 #pragma endregion 全てのObject3d個々の描画処理
 
