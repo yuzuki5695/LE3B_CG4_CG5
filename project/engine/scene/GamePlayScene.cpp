@@ -19,9 +19,10 @@ void GamePlayScene::Initialize() {
 
     // カメラの初期化
     camera = std::make_unique<Camera>();
-    camera->SetTranslate(Vector3(0.0f, 8.0f, -21.0f));
-    camera->SetRotate(Vector3(0.3f, 0.0f, 0.0f));
+    camera->SetTranslate(Vector3(0.0f, 3.0f, -15.0f));
+    camera->SetRotate(Vector3(0.1f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(camera.get());
+    ParticleCommon::GetInstance()->SetDefaultCamera(camera.get());
 
     // カメラの現在の位置と回転を取得
     Cameraposition = camera->GetTranslate();
@@ -32,7 +33,8 @@ void GamePlayScene::Initialize() {
     TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
     TextureManager::GetInstance()->LoadTexture("Resources/circle.png");
     TextureManager::GetInstance()->LoadTexture("Resources/grass.png");
-    
+    TextureManager::GetInstance()->LoadTexture("Resources/circle2.png");
+
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
     ModelManager::GetInstance()->LoadModel("axis.obj");
@@ -52,6 +54,23 @@ void GamePlayScene::Initialize() {
     // オブジェクト作成
     object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
+
+    // パーティクル 
+    // モデル生成
+    ParticleManager::GetInstance()->SetParticleModel("Resources", "plane.obj");
+    // テクスチャ生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png");
+
+    // 発生
+    emitter = std::make_unique <ParticleEmitter>(
+        Vector3{ 0.0f, 2.0f, 0.0f }, // 位置
+        3.0f,                         // 発生周期 or 寿命（自由に定義可能）
+        0.0f,                         // 経過時間（基本は0から開始）
+        8,                            // 発生数
+        "Particles",                  // パーティクルグループ名
+        Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
+    );
 
 }
 
@@ -75,6 +94,10 @@ void GamePlayScene::Update() {
     // Camera
     camera->DebugUpdate();
 
+    ParticleManager::GetInstance()->DebugUpdata();
+
+    emitter->DebugUpdata();
+
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
     /*--------------Cameraの更新処理---------------*/
@@ -87,6 +110,8 @@ void GamePlayScene::Update() {
     object3d->Update();
     grass->Update();
 
+    ParticleManager::GetInstance()->Update();
+    emitter->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 
@@ -119,7 +144,6 @@ void GamePlayScene::Draw() {
     ParticleCommon::GetInstance()->Commondrawing();
 
     ParticleManager::GetInstance()->Draw();
-
 
 #pragma endregion 全てのObject3d個々の描画処理
 

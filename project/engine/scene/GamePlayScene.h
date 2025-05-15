@@ -38,6 +38,6 @@ private: // メンバ変数
     uint32_t soundfige;
 
     // エミッター生成
-  /*  std::unique_ptr <ParticleEmitter> emitter;
-    Vector3 windPower;*/
+    std::unique_ptr <ParticleEmitter> emitter;
+    Vector3 windPower;
 };
