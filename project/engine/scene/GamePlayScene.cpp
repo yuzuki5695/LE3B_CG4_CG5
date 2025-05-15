@@ -46,7 +46,6 @@ void GamePlayScene::Initialize() {
     // 音声プレイフラグ
     soundfige = 0;
 
-
     // スプライトの初期化
     sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
 
@@ -58,15 +57,15 @@ void GamePlayScene::Initialize() {
 
 void GamePlayScene::Update() {
 
-    if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
-        soundfige = 1;
-    }
+    //if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
+    //    soundfige = 1;
+    //}
 
-    if (soundfige == 1) {
-        // 音声再生
-        SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
-        soundfige = 2;
-    }
+    //if (soundfige == 1) {
+    //    // 音声再生
+    //    SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
+    //    soundfige = 2;
+    //}
 
 #pragma region  ImGuiの更新処理開始    
     // object3d
