@@ -85,15 +85,15 @@ public: // メンバ関数
 	// 描画処理
 	void Draw();
 
-	//　パーティクルモデル生成
-	void SetParticleModel(const std::string& directorypath, const std::string& filename);
-
 	// パーティクルグループの作成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename);
 	
 	// 発生
 	void Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime);
 
+	void SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath);
+	void SetModelToGroup(const std::string& groupName, const std::string& modelFileName);
+	
 	void DebugUpdata();
 
 private:

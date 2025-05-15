@@ -140,17 +140,6 @@ void ParticleManager::Draw() {
     }
 }
 
-void ParticleManager::SetParticleModel(const std::string& directorypath, const std::string& filename) {
-    // モデルデータを取得
-    modelDate = LoadObjFile(directorypath, filename);
-    // 頂点データを作成
-    VertexDatacreation();
-    // .objの参照しているテクスチャ読み込み
-    TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
-    // 読み込んだテクスチャの番号を取得
-    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
-}
-
 void ParticleManager::VertexDatacreation() {
     // 関数化したResouceで作成
     vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
@@ -274,7 +263,16 @@ ParticleManager::ModelDate ParticleManager::LoadObjFile(const std::string& direc
     return modelDate;
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath) {
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename) { 
+    // モデルデータを取得
+    modelDate = LoadObjFile("Resources", filename);
+    // 頂点データを作成
+    VertexDatacreation();
+    // .objの参照しているテクスチャ読み込み
+    TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
+    // 読み込んだテクスチャの番号を取得
+    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
+
     // すでにテクスチャがロードされているか確認
     if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
         // マテリアルのテクスチャファイルをロード
@@ -390,4 +388,19 @@ void ParticleManager::DebugUpdata() {
     }
     ImGui::End();
 #endif // USE_IMGUI
+}
+
+void ParticleManager::SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath) {
+    auto it = particleGroups.find(name);
+    if (it == particleGroups.end()) {
+        throw std::runtime_error("Particle group not found: " + name);
+    }
+
+    // テクスチャがすでに読み込まれていなければ読み込む
+    if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
+        TextureManager::GetInstance()->LoadTexture(textureFilepath);
+    }
+
+    it->second.materialData.textureFilePath = textureFilepath;
+    it->second.materialData.textureindex = TextureManager::GetInstance()->GetSrvIndex(textureFilepath);
 }
