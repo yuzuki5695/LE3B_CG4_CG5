@@ -50,7 +50,7 @@ void GamePlayScene::Initialize() {
     sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
 
     // オブジェクト作成
-    object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
+    object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
 }
