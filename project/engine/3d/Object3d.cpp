@@ -92,13 +92,18 @@ void Object3d::DirectionalLightGenerate() {
     directionalLightDate->intensity = 1.0f;
 }
 
-void Object3d::CameraForGPUGenerate(){
+void Object3d::CameraForGPUGenerate() {
     // カメラ用リソースを作る
     cameraResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::CameraForGPU));
     // 書き込むためのアドレスを取得
     cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraForGPUData));
     // 単位行列を書き込んでおく
-    cameraForGPUData->worldPosition = { 0.0f, 0.0f, -1000.0f };
+    if (camera) {
+        cameraForGPUData->worldPosition = camera->GetTranslate();
+    } else {
+        // カメラがない場合デフォルト位置にしておく
+        cameraForGPUData->worldPosition = { 0.0f, 0.0f, -100.0f };
+    }
 }
 
 void Object3d::PointlightSourceGenerate() {
