@@ -114,6 +114,7 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
+    <ClCompile Include="Ringobject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -230,6 +231,7 @@
     <ClInclude Include="engine\base\WinApp.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="Ringobject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
