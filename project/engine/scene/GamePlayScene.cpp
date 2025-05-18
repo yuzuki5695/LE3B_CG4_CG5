@@ -34,6 +34,7 @@ void GamePlayScene::Initialize() {
     TextureManager::GetInstance()->LoadTexture("Resources/circle.png");
     TextureManager::GetInstance()->LoadTexture("Resources/grass.png");
     TextureManager::GetInstance()->LoadTexture("Resources/circle2.png");
+    TextureManager::GetInstance()->LoadTexture("Resources/gradationLine.png");
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -56,7 +57,7 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクルグループ生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj");
+    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj");
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj");
 
     // 発生
