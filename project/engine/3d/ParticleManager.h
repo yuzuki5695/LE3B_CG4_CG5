@@ -96,6 +96,8 @@ public: // メンバ関数
 	
 	void DebugUpdata();
 
+	void DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
+
 private:
 	// .mtlファイルの読み取り
 	static ParticleManager::MaterialDate LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
@@ -128,6 +130,11 @@ private: // メンバ変数
 	Matrix4x4 backToFrontMatrix;
 	// パーティクルグループコンテナ
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
+
+
+
+	uint32_t kSubdivision; //球の分割数
+	uint32_t vertexCount; //球の頂点数
 
 public:
 	// getter

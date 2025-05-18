@@ -65,7 +65,7 @@ void GamePlayScene::Initialize() {
         Vector3{ 0.0f, 2.0f, 0.0f }, // 位置
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
         0.0f,                         // 経過時間（基本は0から開始）
-        8,                            // 発生数
+        1,                            // 発生数
         "Particles",                  // パーティクルグループ名
         Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
     );
