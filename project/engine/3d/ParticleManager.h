@@ -131,9 +131,6 @@ private: // メンバ変数
 	// パーティクルグループコンテナ
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 
-
-
-	uint32_t kSubdivision; //球の分割数
 	uint32_t vertexCount; //球の頂点数
 
 public:

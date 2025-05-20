@@ -163,10 +163,8 @@ void ParticleManager::VertexDatacreation() {
     // 頂点データ生成
     DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
 
-
     // 頂点データをリソースにコピー
     //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
-
 }
 
 void ParticleManager::MaterialGenerate() {
