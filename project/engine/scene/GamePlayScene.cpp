@@ -58,7 +58,7 @@ void GamePlayScene::Initialize() {
 
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj");
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj");
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/uvChecker.png", "plane.obj");
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(

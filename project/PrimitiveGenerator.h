@@ -1,12 +1,15 @@
 #pragma once
+#include<Vertex.h>
+#include<Material.h>
+#include<MaterialDate.h>
+#include<ModelDate.h>
 
 namespace PrimitiveGenerator
 {
+ 
+	// リングの頂点データを生成する関数
+	std::vector<VertexData> DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
 
-
-
-
-	// 
-	//DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
-
+	// 球の頂点データを生成する関数
+	std::vector<VertexData> DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
 };

@@ -1,10 +1,7 @@
 #pragma once
 #include<Model.h>
 #include<DirectXCommon.h>	
-#include<Vertex.h>
-#include<Material.h>
-#include<MaterialDate.h>
-#include<ModelDate.h>
+#include<PrimitiveGenerator.h>
 
 // パーティクルモデル
 class ParticleModel
@@ -14,9 +11,6 @@ public:
 	void Initialize(DirectXCommon* birectxcommon);
 	// 描画処理
 	void Draw();
-
-	void DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
-
 
 private:
 	// .mtlファイルの読み取り

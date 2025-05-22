@@ -9,6 +9,7 @@
 
 using namespace MatrixVector;
 using namespace Microsoft::WRL;
+using namespace PrimitiveGenerator;
 
 void ParticleModel::Initialize(DirectXCommon* birectxcommon) {
     // NULL検出
@@ -34,14 +35,19 @@ void ParticleModel::Draw() {
     dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 }
 
-
 void ParticleModel::VertexDatacreation() {
-    const uint32_t kRingDivide = 32;
-    const float kOuterRadius = 1.0f;
-    const float kInnerRadius = 0.2f;;
-    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
-    vertexCount = kRingDivide * 6; // 1区画につき6頂点（2三角形）
-    // modelDate.vertices.resize(vertexCount); // ここを忘れずに！
+    //const uint32_t kRingDivide = 32;
+    //const float kOuterRadius = 1.0f;
+    //const float kInnerRadius = 0.2f;;
+    //const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
+    //vertexCount = kRingDivide * 6; // 1区画につき6頂点（2三角形）
+    //
+    //
+    const uint32_t kSubdivision = 16; //球の分割数
+    vertexCount = kSubdivision * kSubdivision * 6; //球の頂点数
+
+    
+    modelDate.vertices.resize(vertexCount); // ここを忘れずに！
 
      // 関数化したResouceで作成
     vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
@@ -56,10 +62,14 @@ void ParticleModel::VertexDatacreation() {
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
     // 頂点データ生成
-    //DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
+   // DrawRing(vertexData,kRingDivide, kOuterRadius, kInnerRadius);
+
+
+    // 頂点データ生成
+    DrawSphere(kSubdivision, vertexData);
 
     // 頂点データをリソースにコピー
-    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
+    //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
 }
 
 void ParticleModel::MaterialGenerate() {
@@ -167,46 +177,3 @@ ModelDate ParticleModel::LoadObjFile(const std::string& directoryPath, const std
     // 4. ModelDateを返す
     return modelDate;
 }
-
-void ParticleModel::DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius) {
-    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(KRingDivide);
-
-    for (uint32_t i = 0; i < KRingDivide; ++i) {
-        float angle = i * radianPerDivide;
-        float nextAngle = (i + 1) * radianPerDivide;
-
-        float sin = std::sin(angle);
-        float cos = std::cos(angle);
-        float sinNext = std::sin(nextAngle);
-        float cosNext = std::cos(nextAngle);
-
-        float u = float(i) / float(KRingDivide);
-        float uNext = float(i + 1) / float(KRingDivide);
-
-        uint32_t index = i * 6;
-
-        // XY平面（Z = 0）にリングを構築
-        vertexData[index + 0].position = { cos * KOuterRadius, sin * KOuterRadius, 0.0f, 1.0f };
-        vertexData[index + 1].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
-        vertexData[index + 2].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
-
-        vertexData[index + 3].position = { cosNext * KOuterRadius, sinNext * KOuterRadius, 0.0f, 1.0f };
-        vertexData[index + 4].position = { cosNext * KInnerRadius, sinNext * KInnerRadius, 0.0f, 1.0f };
-        vertexData[index + 5].position = { cos * KInnerRadius, sin * KInnerRadius, 0.0f, 1.0f };
-
-        // テクスチャ座標（仮の設定。必要なら調整）
-        vertexData[index + 0].texcoord = { u, 0.0f };
-        vertexData[index + 1].texcoord = { uNext, 0.0f };
-        vertexData[index + 2].texcoord = { u, 1.0f };
-
-        vertexData[index + 3].texcoord = { uNext, 0.0f };
-        vertexData[index + 4].texcoord = { uNext, 1.0f };
-        vertexData[index + 5].texcoord = { u, 1.0f };
-
-        // 法線はZ+方向（XY平面の正面）
-        for (int j = 0; j < 6; ++j) {
-            vertexData[index + j].normal = { 0.0f, 0.0f, 1.0f };
-        }
-    }
-}
-
