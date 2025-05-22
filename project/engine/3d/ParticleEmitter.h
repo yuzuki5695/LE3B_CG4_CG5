@@ -1,6 +1,7 @@
 #pragma once
 #include<Vector3.h>
 #include <string>
+#include <vector>
 
 // パーティクル発生器
 class ParticleEmitter
@@ -31,4 +32,9 @@ private:
 	float frequencyTime;
 	// 自動発生するかどうかの
 	bool isAutoEmit_ = false;
+	// テクスチャ変更フラグ
+	bool isTextureChange_ = false;
+	// テクスチャリスト
+	static std::vector<std::string> textureList_;
+
 };

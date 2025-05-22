@@ -81,7 +81,7 @@ void ParticleManager::Update() {
             (*particleIterator).color.w = alpha;
 
 
-            //particleIterator->transform.translate.x += particleIterator->Velocity.x;
+            particleIterator->transform.translate.x += particleIterator->Velocity.x;
 
 
             // world行列の計算

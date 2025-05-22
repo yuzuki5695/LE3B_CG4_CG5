@@ -57,8 +57,8 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクルグループ生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/monsterBall.png", "monsterBallUV.obj", VertexType::Sphere);
+	ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/uvChecker.png", "monsterBallUV.obj", VertexType::Model); // モデルで生成
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
@@ -73,21 +73,10 @@ void GamePlayScene::Initialize() {
 }
 
 void GamePlayScene::Update() {
-
-    //if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
-    //    soundfige = 1;
-    //}
-
-    //if (soundfige == 1) {
-    //    // 音声再生
-    //    SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
-    //    soundfige = 2;
-    //}
-
 #pragma region  ImGuiの更新処理開始    
     // object3d
-    object3d->DebugUpdata("Object3d");
-    grass->DebugUpdata("Grass");
+    //object3d->DebugUpdata("Object3d");
+    //grass->DebugUpdata("Grass");
 
     // Camera
     camera->DebugUpdate();
@@ -114,12 +103,9 @@ void GamePlayScene::Update() {
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
-
     
     // 更新処理
    // sprite->Update();
-
-
 
 #pragma endregion 全てのSprite個々の更新処理
 #ifdef USE_IMGUI
@@ -136,13 +122,11 @@ void GamePlayScene::Draw() {
 
 
     grass->Draw();
-    object3d->Draw();
+    //object3d->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
-
     ParticleManager::GetInstance()->Draw();
-
 #pragma endregion 全てのObject3d個々の描画処理
 
 #pragma region 全てのSprite個々の描画処理
