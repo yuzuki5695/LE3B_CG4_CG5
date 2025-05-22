@@ -36,5 +36,6 @@ private:
 	bool isTextureChange_ = false;
 	// テクスチャリスト
 	static std::vector<std::string> textureList_;
-
+	// モデルリスト
+	static std::vector<std::string> modelList_;
 };

@@ -70,8 +70,8 @@ public: // メンバ関数
 	void Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime);
 
 	void SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath);
-	void SetModelToGroup(const std::string& groupName, const std::string& modelFileName);
-	
+	void SetParticleGroupModel(const std::string& name, const std::string& modelFilepath);
+
 	void DebugUpdata();
 
 private: // メンバ変数

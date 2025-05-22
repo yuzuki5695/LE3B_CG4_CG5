@@ -274,3 +274,26 @@ void ParticleManager::SetParticleGroupTexture(const std::string& name, const std
     it->second.materialData.textureFilePath = textureFilepath;
     it->second.materialData.textureindex = TextureManager::GetInstance()->GetSrvIndex(textureFilepath);
 }
+
+void ParticleManager::SetParticleGroupModel(const std::string& name, const std::string& modelFilepath) {
+    auto it = particleGroups.find(name);
+    if (it == particleGroups.end()) {
+        throw std::runtime_error("Particle group not found: " + name);
+    }
+
+    // モデルがまだ読み込まれていない場合は読み込む
+    if (!ModelManager::GetInstance()->FindModel(modelFilepath)) {
+        ModelManager::GetInstance()->LoadModel(modelFilepath);
+    }
+
+    // モデル差し替え
+    if (it->second.model) {
+        // モデルが既に存在する場合は再初期化する
+        it->second.model->Initialize(dxCommon_, modelFilepath);
+    } else {
+        // モデルがなければ新たに作成して初期化
+        it->second.model = std::make_unique<ParticleModel>();
+        it->second.model->SetVertexType(VertexType::Model); // 必要なら別途引数で指定
+        it->second.model->Initialize(dxCommon_, modelFilepath);
+    }
+}
