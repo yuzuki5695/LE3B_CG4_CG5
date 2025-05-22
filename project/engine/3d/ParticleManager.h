@@ -9,35 +9,18 @@
 #include <Transform.h>
 #include<Camera.h>
 #include<Model.h>
+#include<ParticleModel.h>
 
 // 3Dオブジェクト共通部
 class ParticleManager
 {
-public:
-	// 頂点データ
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-	// マテリアル
-	struct Material {
-		Vector4 color;
-		int32_t endbleLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
+public:	
 	// マテリアルデータ
 	struct MaterialDate {
 		std::string textureFilePath;
 		uint32_t textureindex = 0;
 	};
-	// モデルデータ
-	struct ModelDate {
-		std::vector<VertexData> vertices;
-		MaterialDate material;
-	};
+
 	// パーティクル
 	struct Particle {
 		Transform transform;
@@ -96,42 +79,20 @@ public: // メンバ関数
 	
 	void DebugUpdata();
 
-	void DrawRing(VertexData* vertexData, uint32_t KRingDivide, float KOuterRadius, float KInnerRadius);
-
-private:
-	// .mtlファイルの読み取り
-	static ParticleManager::MaterialDate LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	// .objファイルの読み取り
-	static ParticleManager::ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
-	// 頂点データ作成
-	void VertexDatacreation();
-	// マテリアル
-	void MaterialGenerate();
 private: // メンバ変数
 	// ポインタ
 	DirectXCommon* dxCommon_;
 	SrvManager* srvmanager_;
 	Camera* camera_;
+	std::unique_ptr <ParticleModel> ParticleModel_;
 	// ランダムエンジン
 	std::mt19937 randomEngine;
-	// Objファイルのデータ
-	ModelDate modelDate;
-	// バッファリソース
-	Microsoft::WRL::ComPtr <ID3D12Resource> vertexResoruce;
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;;
-	// バッファリソース内のデータを指すポインタ
-	VertexData* vertexData = nullptr;
-	Material* materialData = nullptr;
-	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	//最大インスタンス
 	uint32_t MaxInstanceCount = 200;
 	//ビルボード行列
 	Matrix4x4 backToFrontMatrix;
 	// パーティクルグループコンテナ
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
-
-	uint32_t vertexCount; //球の頂点数
 
 public:
 	// getter
