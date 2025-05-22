@@ -64,7 +64,7 @@ void ParticleModel::VertexDatacreation() {
 
 void ParticleModel::MaterialGenerate() {
     // マテリアル用のリソース
-    materialResource = dxCommon_->CreateBufferResource(sizeof(Model::Material));
+    materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
     // マテリアル用にデータを書き込むためのアドレスを取得
     materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     // マテリアルデータの初期値を書き込む
@@ -73,7 +73,7 @@ void ParticleModel::MaterialGenerate() {
     materialData->uvTransform = MakeIdentity4x4();
 }
 
-ParticleModel::MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
+MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
     // 1. 中で必要となる変数の宣言
     MaterialDate materialDate; // 構築するMaterialDate
     std::string line; // ファイルから読んだ1行を格納するもの
@@ -96,7 +96,7 @@ ParticleModel::MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::s
     return materialDate;
 }
 
-ParticleModel::ModelDate ParticleModel::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
+ModelDate ParticleModel::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
     // 1. 中で必要となる変数の宣言
     ModelDate modelDate; // 構築するModelDate
     std::vector<Vector4> positions; // 位置

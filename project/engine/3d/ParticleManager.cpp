@@ -122,13 +122,8 @@ void ParticleManager::Update() {
 }
 
 void ParticleManager::Draw() {
-    //// VertexBufferView を設定
-    //dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
-    //// マテリアル用の定数バッファを設定
-    //dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
-    
+	// モデルを描画するためのコマンドリストを取得
 	ParticleModel_->Draw();
-
 
     // パーティクルグループごとに描画処理を行う
     for (const auto& [name, particleGroup] : particleGroups) {
@@ -146,15 +141,6 @@ void ParticleManager::Draw() {
 }
 
 void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename) { 
-    //// モデルデータを取得
-    //modelDate = LoadObjFile("Resources", filename);
-    //// 頂点データを作成
-    //VertexDatacreation();
-    //// .objの参照しているテクスチャ読み込み
-    //TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
-    //// 読み込んだテクスチャの番号を取得
-    //modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
-
     // すでにテクスチャがロードされているか確認
     if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
         // マテリアルのテクスチャファイルをロード

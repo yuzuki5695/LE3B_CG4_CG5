@@ -115,6 +115,7 @@
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
     <ClCompile Include="ParticleModel.cpp" />
+    <ClCompile Include="PrimitiveGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -146,15 +147,6 @@
     </ClInclude>
     <ClInclude Include="engine\base\Logger.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Matrix4x4.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Matrix3x3.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\MatrixVector.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Model.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
@@ -216,22 +208,44 @@
     <ClInclude Include="engine\scene\TitleScene.h">
       <Filter>ヘッダーファイル\engine\scene</Filter>
     </ClInclude>
-    <ClInclude Include="engine\math\Vector2.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\Transform.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleModel.h" />
+    <ClInclude Include="PrimitiveGenerator.h" />
+    <ClInclude Include="engine\math\Vector2.h">
+      <Filter>ヘッダーファイル\engine\math\Vector</Filter>
+    </ClInclude>
     <ClInclude Include="engine\math\Vector3.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
+      <Filter>ヘッダーファイル\engine\math\Vector</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector4.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
+      <Filter>ヘッダーファイル\engine\math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix3x3.h">
+      <Filter>ヘッダーファイル\engine\math\Mtarix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix4x4.h">
+      <Filter>ヘッダーファイル\engine\math\Mtarix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\MatrixVector.h">
+      <Filter>ヘッダーファイル\engine\math\Mtarix</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\WinApp.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
+      <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleModel.h" />
+    <ClInclude Include="engine\math\Vertex.h">
+      <Filter>ヘッダーファイル\engine\math\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\ModelDate.h">
+      <Filter>ヘッダーファイル\engine\math\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\MaterialDate.h">
+      <Filter>ヘッダーファイル\engine\math\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Material.h">
+      <Filter>ヘッダーファイル\engine\math\ModelData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
@@ -310,6 +324,15 @@
     </Filter>
     <Filter Include="リソース ファイル\shaders">
       <UniqueIdentifier>{ecc91723-db44-4d90-9e95-0f4e58f71b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\engine\math\Vector">
+      <UniqueIdentifier>{d33e91c3-ec15-40d4-af4a-ef8824f9e0eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\engine\math\Mtarix">
+      <UniqueIdentifier>{9c5c816f-a168-42f6-aa3a-43cef6e5cc86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\engine\math\ModelData">
+      <UniqueIdentifier>{4a2f14e1-0afc-40fa-9499-6a0813092eda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

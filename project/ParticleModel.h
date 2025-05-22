@@ -1,35 +1,14 @@
 #pragma once
 #include<Model.h>
 #include<DirectXCommon.h>	
+#include<Vertex.h>
+#include<Material.h>
+#include<MaterialDate.h>
+#include<ModelDate.h>
 
 // パーティクルモデル
 class ParticleModel
 {
-public:
-	// 頂点データ
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-	// マテリアル
-	struct Material {
-		Vector4 color;
-		int32_t endbleLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
-	// マテリアルデータ
-	struct MaterialDate {
-		std::string textureFilePath;
-		uint32_t textureindex = 0;
-	};
-	// モデルデータ
-	struct ModelDate {
-		std::vector<VertexData> vertices;
-		MaterialDate material;
-	};
 public:
 	// 初期化
 	void Initialize(DirectXCommon* birectxcommon);

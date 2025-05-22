@@ -41,25 +41,25 @@ void Model::Draw() {
 void Model::VertexDatacreation() {
 
     // 関数化したResouceで作成
-    vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Model::VertexData) * modelDate.vertices.size());
+    vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
 
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
     vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
     // 使用するリソースのサイズはの頂点のサイズ
-    vertexBufferView.SizeInBytes = UINT(sizeof(Model::VertexData) * modelDate.vertices.size());
+    vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelDate.vertices.size());
     // 1頂点当たりのサイズ
-    vertexBufferView.StrideInBytes = sizeof(Model::VertexData);
+    vertexBufferView.StrideInBytes = sizeof(VertexData);
 
     // 頂点リソースにデータを書き込むためのアドレスを取得
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
     // 頂点データをリソースにコピー
-    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(Model::VertexData) * modelDate.vertices.size());
+    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
 }
 
 void Model::MaterialGenerate() {
     // マテリアル用のリソース
-    materialResource = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Model::Material));
+    materialResource = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Material));
     // マテリアル用にデータを書き込むためのアドレスを取得
     materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     // マテリアルデータの初期値を書き込む
@@ -73,9 +73,9 @@ void Model::MaterialGenerate() {
 }
 
 
-Model::MaterialDate Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
+MaterialDate Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
     // 1. 中で必要となる変数の宣言
-    Model::MaterialDate materialDate; // 構築するMaterialDate
+    MaterialDate materialDate; // 構築するMaterialDate
     std::string line; // ファイルから読んだ1行を格納するもの
     std::ifstream file(directoryPath + "/" + filename); // 2.ファイルを開く
     assert(file.is_open()); // とりあえず開けなかったら止める
@@ -96,9 +96,9 @@ Model::MaterialDate Model::LoadMaterialTemplateFile(const std::string& directory
     return materialDate;
 }
 
-Model::ModelDate Model::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
+ModelDate Model::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
     // 1. 中で必要となる変数の宣言
-    Model::ModelDate modelDate; // 構築するModelDate
+    ModelDate modelDate; // 構築するModelDate
     std::vector<Vector4> positions; // 位置
     std::vector<Vector3> normals; // 法線
     std::vector<Vector2> texcoords; // テクスチャ座標
@@ -131,7 +131,7 @@ Model::ModelDate Model::LoadObjFile(const std::string& directoryPath, const std:
             normal.x *= -1.0f;// 法線のx成分を反転
             normals.push_back(normal);
         } else if (identifier == "f") {
-            Model::VertexData triangle[3];
+            VertexData triangle[3];
             // 面は三角形限定。その他は未対応
             for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
                 std::string vertexDefinition;
