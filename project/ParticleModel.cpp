@@ -11,21 +11,26 @@ using namespace MatrixVector;
 using namespace Microsoft::WRL;
 using namespace PrimitiveGenerator;
 
-void ParticleModel::Initialize(DirectXCommon* birectxcommon) {
+void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& filename) {
     // NULL検出
     assert(birectxcommon);
     // メンバ変数に記録
     this->dxCommon_ = birectxcommon;
     // マテリアルの生成と初期化
     MaterialGenerate();
-    // モデルデータを取得
-    modelDate = LoadObjFile("Resources", "plane.obj");
-    // 頂点データを作成
-    VertexDatacreation();
-    // .objの参照しているテクスチャ読み込み
-    TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
-    // 読み込んだテクスチャの番号を取得
-    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
+	// 頂点データの作成
+    if (vertexType_ == VertexType::Model) {
+        modelDate = LoadObjFile("Resources", filename);
+        VertexDatacreationModel();  // 頂点データコピー
+        //.objの参照しているテクスチャ読み込み
+        TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
+        // 読み込んだテクスチャの番号を取得
+        modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
+    } else if (vertexType_ == VertexType::Ring) {
+        VertexDatacreationRing();
+    } else if (vertexType_ == VertexType::Sphere) {
+        VertexDatacreationSphere();
+    }
 }
 
 void ParticleModel::Draw() {
@@ -35,21 +40,8 @@ void ParticleModel::Draw() {
     dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 }
 
-void ParticleModel::VertexDatacreation() {
-    //const uint32_t kRingDivide = 32;
-    //const float kOuterRadius = 1.0f;
-    //const float kInnerRadius = 0.2f;;
-    //const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
-    //vertexCount = kRingDivide * 6; // 1区画につき6頂点（2三角形）
-    //
-    //
-    const uint32_t kSubdivision = 16; //球の分割数
-    vertexCount = kSubdivision * kSubdivision * 6; //球の頂点数
-
-    
-    modelDate.vertices.resize(vertexCount); // ここを忘れずに！
-
-     // 関数化したResouceで作成
+void ParticleModel::CreateVertexBuffer() {
+    // 関数化したResouceで作成
     vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
@@ -60,16 +52,36 @@ void ParticleModel::VertexDatacreation() {
     vertexBufferView.StrideInBytes = sizeof(VertexData);
     // 頂点リソースにデータを書き込むためのアドレスを取得
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+}
 
+void ParticleModel::VertexDatacreationModel() {
+    // 共通の頂点バッファビュー処理
+    CreateVertexBuffer();
+    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
+}
+
+void ParticleModel::VertexDatacreationRing() {
+    const uint32_t kRingDivide = 32;
+    const float kOuterRadius = 1.0f;
+    const float kInnerRadius = 0.2f;
+    vertexCount = kRingDivide * 6;
+    // 頂点数を計算
+    modelDate.vertices.resize(vertexCount);
+    // 共通の頂点バッファビュー処理
+    CreateVertexBuffer();
     // 頂点データ生成
-   // DrawRing(vertexData,kRingDivide, kOuterRadius, kInnerRadius);
+    DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
+}
 
-
+void ParticleModel::VertexDatacreationSphere() {
+    const uint32_t kSubdivision = 16;
+    vertexCount = kSubdivision * kSubdivision * 6;
+    // 頂点数を計算
+    modelDate.vertices.resize(vertexCount);
+    // 共通の頂点バッファビュー処理
+    CreateVertexBuffer();
     // 頂点データ生成
     DrawSphere(kSubdivision, vertexData);
-
-    // 頂点データをリソースにコピー
-    //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
 }
 
 void ParticleModel::MaterialGenerate() {

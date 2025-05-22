@@ -15,12 +15,6 @@
 class ParticleManager
 {
 public:	
-	// マテリアルデータ
-	struct MaterialDate {
-		std::string textureFilePath;
-		uint32_t textureindex = 0;
-	};
-
 	// パーティクル
 	struct Particle {
 		Transform transform;
@@ -38,6 +32,7 @@ public:
 	};
 	// パーティクルグループ
 	struct ParticleGroup {
+		std::unique_ptr<ParticleModel> model;                  // パーティクルモデル
 		MaterialDate materialData;                             // マテリアルデータ(テクスチャファイルパスとテクスチャ用SRVインデックス)
 		std::list<Particle> particles;                         // パーティクルのリスト
 		uint32_t srvindex;                                     // インスタンシング用SRVインデックス
@@ -69,7 +64,7 @@ public: // メンバ関数
 	void Draw();
 
 	// パーティクルグループの作成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType);
 	
 	// 発生
 	void Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime);
@@ -84,7 +79,6 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_;
 	SrvManager* srvmanager_;
 	Camera* camera_;
-	std::unique_ptr <ParticleModel> ParticleModel_;
 	// ランダムエンジン
 	std::mt19937 randomEngine;
 	//最大インスタンス

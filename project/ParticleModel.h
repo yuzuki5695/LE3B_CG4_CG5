@@ -3,12 +3,18 @@
 #include<DirectXCommon.h>	
 #include<PrimitiveGenerator.h>
 
+enum class VertexType {
+	Model,
+	Ring,
+	Sphere
+};
+
 // パーティクルモデル
 class ParticleModel
 {
 public:
 	// 初期化
-	void Initialize(DirectXCommon* birectxcommon);
+	void Initialize(DirectXCommon* birectxcommon, const std::string& filename);
 	// 描画処理
 	void Draw();
 
@@ -18,7 +24,11 @@ private:
 	// .objファイルの読み取り
 	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
 	// 頂点データ作成
+	void VertexDatacreationModel();
 	void VertexDatacreation();
+	void VertexDatacreationRing();
+	void VertexDatacreationSphere();
+	void CreateVertexBuffer();        // 共通処理にする
 	// マテリアル
 	void MaterialGenerate();
 private:
@@ -35,7 +45,7 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-
+	VertexType vertexType_ = VertexType::Ring;
 
 	uint32_t vertexCount; //球の頂点数
 public:
@@ -43,7 +53,6 @@ public:
 	size_t GetVertexCount() const { return modelDate.vertices.size(); }
 
 
-
-
+	void SetVertexType(VertexType type) { vertexType_ = type; }
 
 };

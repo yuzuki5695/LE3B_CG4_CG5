@@ -41,10 +41,6 @@ void ParticleManager::Initialize(DirectXCommon* birectxcommon, SrvManager* srvma
     randomEngine = std::mt19937(rd());
     //ビルボード行列作成
     backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
-
-	// パーティクルモデルの初期化
-	ParticleModel_ = std::make_unique<ParticleModel>();
-	ParticleModel_->Initialize(dxCommon_);
 }
 
 void ParticleManager::Update() {
@@ -122,25 +118,24 @@ void ParticleManager::Update() {
 }
 
 void ParticleManager::Draw() {
-	// モデルを描画するためのコマンドリストを取得
-	ParticleModel_->Draw();
-
     // パーティクルグループごとに描画処理を行う
     for (const auto& [name, particleGroup] : particleGroups) {
         // インスタンス数が0の場合は描画しない
         if (particleGroup.kNumInstance == 0) {
             continue;
         }
+        // モデルに必要なバッファをバインド（頂点バッファや定数バッファなど）
+        particleGroup.model->Draw();
         // インスタンシングデータの SRV を設定（テクスチャファイルのパスを指定）
         srvmanager_->SetGraphicsRootDescriptorTable(1, particleGroup.srvindex);
         // SRVで画像を表示
         srvmanager_->SetGraphicsRootDescriptorTable(2, particleGroup.materialData.textureindex);
         // 描画（インスタンシング）を実行
-        dxCommon_->GetCommandList()->DrawInstanced(static_cast<UINT>(ParticleModel_->GetVertexCount()), static_cast<UINT>(particleGroup.kNumInstance), 0, 0);
+        dxCommon_->GetCommandList()->DrawInstanced(static_cast<UINT>(particleGroup.model->GetVertexCount()), static_cast<UINT>(particleGroup.kNumInstance), 0, 0);
     }
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename) { 
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType) {
     // すでにテクスチャがロードされているか確認
     if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
         // マテリアルのテクスチャファイルをロード
@@ -163,6 +158,11 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     } else {
         // 新しいパーティクルグループを作成
         ParticleGroup& newGroup = particleGroups[name];
+        newGroup.model = std::make_unique<ParticleModel>();
+        // 頂点タイプをセット
+        newGroup.model->SetVertexType(vertexType);
+        // モデルの初期化
+        newGroup.model->Initialize(dxCommon_, filename);
 
         // 新しいパーティクルグループにテクスチャパスとインデックスを設定
         newGroup.materialData.textureFilePath = textureFilepath;

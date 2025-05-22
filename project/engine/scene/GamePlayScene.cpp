@@ -57,8 +57,8 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクルグループ生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj");
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/uvChecker.png", "plane.obj");
+    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/monsterBall.png", "monsterBallUV.obj", VertexType::Sphere);
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
