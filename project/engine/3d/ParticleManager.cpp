@@ -146,7 +146,7 @@ void ParticleManager::VertexDatacreation() {
     const float kInnerRadius = 0.2f;;
     const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
     vertexCount = kRingDivide * 6; // 1区画につき6頂点（2三角形）
-    modelDate.vertices.resize(vertexCount); // ここを忘れずに！
+   // modelDate.vertices.resize(vertexCount); // ここを忘れずに！
 
     // 関数化したResouceで作成
     vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
@@ -161,10 +161,10 @@ void ParticleManager::VertexDatacreation() {
     vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
     // 頂点データ生成
-    DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
+    //DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
 
     // 頂点データをリソースにコピー
-    //std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
+    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
 }
 
 void ParticleManager::MaterialGenerate() {
