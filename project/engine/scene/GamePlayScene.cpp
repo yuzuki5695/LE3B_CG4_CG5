@@ -53,12 +53,13 @@ void GamePlayScene::Initialize() {
     sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
 
     // オブジェクト作成
-    object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
+    object3d = Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクルグループ生成
-	ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/gradationLine.png", "plane.obj", VertexType::Model); // リングで生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model); // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model); // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // リングで生成
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
@@ -69,6 +70,15 @@ void GamePlayScene::Initialize() {
         0.0f,                         // 経過時間（基本は0から開始）
         Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
     );
+
+    //emitter_2 = std::make_unique <ParticleEmitter>(
+    //    "Circle",
+    //    1,
+    //    Vector3{ 0.0f, 2.0f, 0.0f },
+    //    3.0f,
+    //    0.0f,
+    //    Vector3{ 0.0f, 0.0f, 0.0f }
+    //);
 
 }
 
