@@ -8,7 +8,7 @@ class ParticleEmitter
 {
 public:
 	//ほとんどのメンバ変数をコンストラクタの引数として受け取り、メンバ変数に代入する
-	ParticleEmitter(const Vector3& position, const float lifetime, const float currentTime, const uint32_t count, const std::string& name, const Vector3& Velocity);
+	ParticleEmitter(const std::string& name,const uint32_t count, const Vector3& position, const float lifetime, const float currentTime, const Vector3& Velocity);
 
 	// 更新処理
 	void Update();

@@ -23,13 +23,13 @@ std::vector<std::string> ParticleEmitter::modelList_ = {
 	"terrain.obj"
 };
 
-ParticleEmitter::ParticleEmitter(const Vector3& position, const float lifetime, const float currentTime, const uint32_t count, const std::string& name, const Vector3& Velocity)
+ParticleEmitter::ParticleEmitter(const std::string& name,const uint32_t count, const Vector3& position, const float lifetime, const float currentTime, const Vector3& Velocity)
 {
+	name_ = name;//名前
+	this->count = count;//count
 	position_ = position;//位置
 	frequency = lifetime;//寿命
 	frequencyTime = currentTime;//現在の寿命
-	this->count = count;//count
-	name_ = name;//名前
 	velocity_ = Velocity; // 風の強さ
 }
 
