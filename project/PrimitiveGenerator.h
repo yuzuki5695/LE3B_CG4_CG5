@@ -12,4 +12,8 @@ namespace PrimitiveGenerator
 
 	// 球の頂点データを生成する関数
 	std::vector<VertexData> DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata);
+
+    // 追加：円柱の頂点データを生成する関数
+    std::vector<VertexData> DrawCylinder(VertexData* vertexData, uint32_t kCylinderDivide, float kTopRadius, float kBottomRadius, float kHeight);
+
 };

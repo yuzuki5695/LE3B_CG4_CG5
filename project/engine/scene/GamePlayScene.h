@@ -40,4 +40,5 @@ private: // メンバ変数
     // エミッター生成
     std::unique_ptr <ParticleEmitter> emitter;
     std::unique_ptr <ParticleEmitter> emitter_2;
+    std::unique_ptr <ParticleEmitter> emitter_3;
 };

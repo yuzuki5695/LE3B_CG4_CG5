@@ -60,10 +60,11 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model); // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model); // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder); // リングで生成
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
-        "Ring",                       // パーティクルグループ名
+        "Particles",                       // パーティクルグループ名
         1,                            // 発生数
         Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } }, // 位置
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
@@ -79,7 +80,14 @@ void GamePlayScene::Initialize() {
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f }
     );
-
+    emitter_3 = std::make_unique <ParticleEmitter>(
+        "Cylinder",
+        8,
+        Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        3.0f,
+        0.0f,
+        Vector3{ 0.0f, 0.0f, 0.0f }
+    );
 }
 
 void GamePlayScene::Update() {
@@ -99,6 +107,9 @@ void GamePlayScene::Update() {
     if (emitter_2) {
         emitter_2->DrawImGuiUI();
     }
+    if (emitter_3) {
+        emitter_3->DrawImGuiUI();
+    }
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -115,6 +126,7 @@ void GamePlayScene::Update() {
     ParticleManager::GetInstance()->Update();
     emitter->Update();
     emitter_2->Update();
+    emitter_3->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 

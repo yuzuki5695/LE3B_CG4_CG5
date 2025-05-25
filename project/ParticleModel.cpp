@@ -30,6 +30,8 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
         VertexDatacreationRing();
     } else if (vertexType_ == VertexType::Sphere) {
         VertexDatacreationSphere();
+    } else if (vertexType_ == VertexType::Cylinder) {
+        VertexDatacreationCylinder();
     }
 }
 
@@ -82,6 +84,21 @@ void ParticleModel::VertexDatacreationSphere() {
     CreateVertexBuffer();
     // 頂点データ生成
     DrawSphere(kSubdivision, vertexData);
+}
+
+void ParticleModel::VertexDatacreationCylinder() {
+    const uint32_t kCylinderDivide = 32;
+    const float kTopRadius = 1.0f;
+    const float kBottomRadius = 1.0f;
+    const float kHeight = 3.0f;
+    const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
+    vertexCount = kCylinderDivide * 6;
+    // 頂点数を計算
+    modelDate.vertices.resize(vertexCount);
+    // 共通の頂点バッファビュー処理
+    CreateVertexBuffer();
+    // 頂点データ生成
+    DrawCylinder(vertexData, kCylinderDivide, kTopRadius, kBottomRadius, kHeight);
 }
 
 void ParticleModel::MaterialGenerate() {

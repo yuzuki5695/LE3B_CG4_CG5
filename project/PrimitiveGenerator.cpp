@@ -114,6 +114,54 @@ namespace PrimitiveGenerator
         return std::vector<VertexData>(vertexdata, vertexdata + ksubdivision * 6);
     }
 
+    std::vector<VertexData> PrimitiveGenerator::DrawCylinder(VertexData* vertexData, uint32_t kCylinderDivide, float kTopRadius, float kBottomRadius, float kHeight) {
+        std::vector<VertexData> vertices;
+        vertices.resize(kCylinderDivide * 6); // 1区画6頂点
+
+        const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);
+
+        for (uint32_t index = 0; index < kCylinderDivide; ++index) {
+            float theta = index * radianPerDivide;
+            float nextTheta = (index + 1) * radianPerDivide;
+
+            float sin = std::sin(theta);
+            float cos = std::cos(theta);
+            float sinNext = std::sin(nextTheta);
+            float cosNext = std::cos(nextTheta);
+
+            float u = float(index) / float(kCylinderDivide);
+            float uNext = float(index + 1) / float(kCylinderDivide);
+
+            Vector4 top1 = { -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f };
+            Vector4 top2 = { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f };
+            Vector4 bottom1 = { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f };
+            Vector4 bottom2 = { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f };
+
+            Vector3 normal1 = { -sin, 0.0f, cos };
+            Vector3 normal2 = { -sinNext, 0.0f, cosNext };
+
+            Vector2 uvTop = { u, 1.0f };
+            Vector2 uvTopNext = { uNext, 1.0f };
+            Vector2 uvBottom = { u, 0.0f };
+            Vector2 uvBottomNext = { uNext, 0.0f };
+
+            // 1区画6頂点（2三角形）
+            vertices[index * 6 + 0] = { top1,     uvTop,       normal1 };
+            vertices[index * 6 + 1] = { top2,     uvTopNext,   normal2 };
+            vertices[index * 6 + 2] = { bottom1,  uvBottom,    normal1 };
+
+            vertices[index * 6 + 3] = { bottom1,  uvBottom,    normal1 };
+            vertices[index * 6 + 4] = { top2,     uvTopNext,   normal2 };
+            vertices[index * 6 + 5] = { bottom2,  uvBottomNext,normal2 };
+        }
+
+        // vertexData にも書き込む（nullチェック付き）
+        if (vertexData) {
+            std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());
+        }
+
+        return vertices;
+    }
 
 
 }
