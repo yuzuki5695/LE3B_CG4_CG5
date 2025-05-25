@@ -52,7 +52,7 @@ void ParticleEmitter::DrawImGuiUI() {
 		ImGui::Separator();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", name_.c_str()); // 黄色で強調
 
-		ImGui::Checkbox(("Auto Emit##" + name_).c_str(), &isAutoEmit_);
+		ImGui::Checkbox(("Update##" + name_).c_str(), &isAutoEmit_);
 
 		// --- テクスチャ選択 Combo ---
 		if (ImGui::BeginCombo(("Texture##" + name_).c_str(), textureList_[textureIndex_].c_str())) {
@@ -73,7 +73,7 @@ void ParticleEmitter::DrawImGuiUI() {
 		uint32_t maxCount = ParticleManager::GetInstance()->GetMaxInstanceCount();
 		uint32_t availableToEmit = static_cast<uint32_t>(std::min<size_t>(count, maxCount - currentCount));
 
-		ImGui::Text("Available Emit Count: %u", availableToEmit);
+		ImGui::Text("Emit Count: %u", availableToEmit);
 
 		// --- Emit ボタン ---
 		if (ImGui::Button(("Emit Particles##" + name_).c_str())) {

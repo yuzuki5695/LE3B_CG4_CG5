@@ -214,20 +214,15 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
-        //Vector3 rotate = Vector3(0.0f, 0.0f, distRotate(randomEngine));
-        Vector3 rotate = transform.rotate;
-        //Vector3 scale = Vector3(0.05f, distScale(randomEngine), 1.0f);
-        Vector3 scale = transform.scale;
 
         Particle newParticle;
         newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
-        newParticle.transform.rotate = rotate;
-        newParticle.transform.scale = scale;
-       // newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };
+        newParticle.transform.rotate = { transform.rotate.x,transform.rotate.y,transform.rotate.z};
+        newParticle.transform.scale = { transform.scale.x,transform.scale.y,transform.scale.z };;
         newParticle.color = { 1.0f,1.0f,1.0f,1.0f };
         newParticle.lifetime = lifetime;
         newParticle.currentTime = 0.0f;
-        newParticle.Velocity = velocity;  // 渡されたベロシティを使う
+        newParticle.Velocity = velocity;
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);
