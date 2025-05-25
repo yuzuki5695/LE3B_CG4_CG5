@@ -63,7 +63,7 @@ void GamePlayScene::Initialize() {
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
-        "Particles",                  // パーティクルグループ名
+        "Ring",                       // パーティクルグループ名
         1,                            // 発生数
         Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } }, // 位置
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
@@ -73,7 +73,7 @@ void GamePlayScene::Initialize() {
 
     emitter_2 = std::make_unique <ParticleEmitter>(
         "Circle",
-        1,
+        8,
         Transform{ { 0.05f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,

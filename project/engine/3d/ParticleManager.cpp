@@ -217,8 +217,8 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
 
         Particle newParticle;
         newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
-        newParticle.transform.rotate = { transform.rotate.x,transform.rotate.y,transform.rotate.z};
-        newParticle.transform.scale = { transform.scale.x,transform.scale.y,transform.scale.z };;
+        newParticle.transform.rotate = { transform.rotate.x,transform.rotate.y,transform.rotate.z + distRotate(randomEngine)};
+        newParticle.transform.scale = { transform.scale.x,distScale(randomEngine),transform.scale.z};
         newParticle.color = { 1.0f,1.0f,1.0f,1.0f };
         newParticle.lifetime = lifetime;
         newParticle.currentTime = 0.0f;
