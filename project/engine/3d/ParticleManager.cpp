@@ -189,7 +189,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     }
 }
 
-void ParticleManager::Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime) {
+void ParticleManager::Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime) {
 
     auto it = particleGroups.find(name);
     if (it == particleGroups.end()) {
@@ -215,12 +215,12 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
         //Vector3 rotate = Vector3(0.0f, 0.0f, distRotate(randomEngine));
-        Vector3 rotate = Vector3(0.0f, 0.0f, 0.0f);
+        Vector3 rotate = transform.rotate;
         //Vector3 scale = Vector3(0.05f, distScale(randomEngine), 1.0f);
-        Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
+        Vector3 scale = transform.scale;
 
         Particle newParticle;
-        newParticle.transform.translate = { position.x + offset.x,position.y + offset.y ,position.z + offset.z };
+        newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
         newParticle.transform.rotate = rotate;
         newParticle.transform.scale = scale;
        // newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };

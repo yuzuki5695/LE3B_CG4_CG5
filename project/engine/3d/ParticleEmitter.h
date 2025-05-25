@@ -2,26 +2,27 @@
 #include<Vector3.h>
 #include <string>
 #include <vector>
+#include <Transform.h>
 
 // パーティクル発生器
 class ParticleEmitter
 {
 public:
 	//ほとんどのメンバ変数をコンストラクタの引数として受け取り、メンバ変数に代入する
-	ParticleEmitter(const std::string& name,const uint32_t count, const Vector3& position, const float lifetime, const float currentTime, const Vector3& Velocity);
+	ParticleEmitter(const std::string& name,const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity);
 
 	// 更新処理
 	void Update();
 	// パーティクル発生
 	void Emit();
 	// imgui
-	void DebugUpdata();
+	void DrawImGuiUI();
 
 private:
 	// 名前
 	std::string name_;
 	// 座標
-	Vector3 position_;
+	Transform transform_;
 	// 数
 	uint32_t count;
 	// 風の強さ
@@ -36,6 +37,6 @@ private:
 	bool isTextureChange_ = false;
 	// テクスチャリスト
 	static std::vector<std::string> textureList_;
-	// モデルリスト
-	static std::vector<std::string> modelList_;
+	// 選択中のモデルインデックス
+	int textureIndex_ = 0;
 };

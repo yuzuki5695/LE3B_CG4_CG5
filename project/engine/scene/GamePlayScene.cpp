@@ -65,20 +65,20 @@ void GamePlayScene::Initialize() {
     emitter = std::make_unique <ParticleEmitter>(
         "Particles",                  // パーティクルグループ名
         1,                            // 発生数
-        Vector3{ 0.0f, 2.0f, 0.0f }, // 位置
+        Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } }, // 位置
         3.0f,                         // 発生周期 or 寿命（自由に定義可能）
         0.0f,                         // 経過時間（基本は0から開始）
         Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
     );
 
-    //emitter_2 = std::make_unique <ParticleEmitter>(
-    //    "Circle",
-    //    1,
-    //    Vector3{ 0.0f, 2.0f, 0.0f },
-    //    3.0f,
-    //    0.0f,
-    //    Vector3{ 0.0f, 0.0f, 0.0f }
-    //);
+    emitter_2 = std::make_unique <ParticleEmitter>(
+        "Circle",
+        1,
+        Transform{ { 0.05f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        3.0f,
+        0.0f,
+        Vector3{ 0.0f, 0.0f, 0.0f }
+    );
 
 }
 
@@ -93,7 +93,12 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->DebugUpdata();
 
-    emitter->DebugUpdata();
+    if (emitter) {
+        emitter->DrawImGuiUI();
+    }
+    if (emitter_2) {
+        emitter_2->DrawImGuiUI();
+    }
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -109,6 +114,7 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->Update();
     emitter->Update();
+    emitter_2->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 

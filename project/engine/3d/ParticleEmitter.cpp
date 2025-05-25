@@ -5,7 +5,7 @@
 #endif // USE_IMGUI
 #include <ModelManager.h>
 
-// 定義
+// テクスチャを定義
 std::vector<std::string> ParticleEmitter::textureList_ = {
 	"Resources/uvChecker.png",
 	"Resources/monsterBall.png",
@@ -15,19 +15,11 @@ std::vector<std::string> ParticleEmitter::textureList_ = {
 	"Resources/gradationLine.png"
 };
 
-std::vector<std::string> ParticleEmitter::modelList_ = {
-	"plane.obj",
-	"axis.obj",
-	"monsterBallUV.obj",
-	"fence.obj",
-	"terrain.obj"
-};
-
-ParticleEmitter::ParticleEmitter(const std::string& name,const uint32_t count, const Vector3& position, const float lifetime, const float currentTime, const Vector3& Velocity)
+ParticleEmitter::ParticleEmitter(const std::string& name,const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity)
 {
 	name_ = name;//名前
 	this->count = count;//count
-	position_ = position;//位置
+	transform_ = transform;//位置
 	frequency = lifetime;//寿命
 	frequencyTime = currentTime;//現在の寿命
 	velocity_ = Velocity; // 風の強さ
@@ -51,85 +43,45 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Emit()
 {
 	//パーティクルを発生
-	ParticleManager::GetInstance()->Emit(name_, position_, count, velocity_, frequency);
+	ParticleManager::GetInstance()->Emit(name_, transform_, count, velocity_, frequency);
 }
 
-void ParticleEmitter::DebugUpdata() {
+void ParticleEmitter::DrawImGuiUI() {
 #ifdef USE_IMGUI
-	ImGui::Begin("ParticleEmit");
-	// テクスチャリストの表示
-	static int currentTextureIndex = 0;
+	if (ImGui::CollapsingHeader(name_.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::Separator();
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", name_.c_str()); // 黄色で強調
 
-	// テクスチャが存在するかチェック
-	if (!textureList_.empty()) {
-		// インデックスがリストサイズを超えていたらリセット
-		if (currentTextureIndex >= textureList_.size()) {
-			currentTextureIndex = 0;
-		}
+		ImGui::Checkbox(("Auto Emit##" + name_).c_str(), &isAutoEmit_);
 
-		// テクスチャ選択コンボボックス
-		if (ImGui::BeginCombo("Texture Selector", textureList_[currentTextureIndex].c_str())) {
-			for (int n = 0; n < (int)textureList_.size(); n++) {
-				bool isSelected = (currentTextureIndex == n);
-				if (ImGui::Selectable(textureList_[n].c_str(), isSelected)) {
-					currentTextureIndex = n;
-					// テクスチャ切り替え
-					ParticleManager::GetInstance()->SetParticleGroupTexture(name_, textureList_[n]);
+		// --- テクスチャ選択 Combo ---
+		if (ImGui::BeginCombo(("Texture##" + name_).c_str(), textureList_[textureIndex_].c_str())) {
+			for (int i = 0; i < textureList_.size(); ++i) {
+				bool selected = (textureIndex_ == i);
+				if (ImGui::Selectable(textureList_[i].c_str(), selected)) {
+					textureIndex_ = i;
+
+					// テクスチャを設定（ここで ParticleManager に反映）
+					ParticleManager::GetInstance()->SetParticleGroupTexture(name_, textureList_[textureIndex_]);
 				}
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
+				if (selected) ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndCombo();
 		}
-	} else {
-		ImGui::Text("No textures available.");
-	}
-	// モデルリストの表示
-	static int currentModelIndex = 0;
-	std::vector<std::string> availableModels;
-	// 使用可能なモデルだけ抽出
-	for (const auto& modelName : modelList_) {
-		if (ModelManager::GetInstance()->FindModel(modelName)) {
-			availableModels.push_back(modelName);
-		}
-	}
-	// モデル選択コンボボックス
-	if (!availableModels.empty()) {
-		if (ImGui::BeginCombo("Model Selector", availableModels[currentModelIndex].c_str())) {
-			for (int i = 0; i < (int)availableModels.size(); ++i) {
-				bool isSelected = (currentModelIndex == i);
-				if (ImGui::Selectable(availableModels[i].c_str(), isSelected)) {
-					currentModelIndex = i;
-					// モデル切り替え処理
-					ParticleManager::GetInstance()->SetParticleGroupModel(name_, availableModels[i]);
-				}
-				if (isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
+		auto& group = ParticleManager::GetInstance()->GetGroup(name_);
+		size_t currentCount = group.particles.size();
+		uint32_t maxCount = ParticleManager::GetInstance()->GetMaxInstanceCount();
+		uint32_t availableToEmit = static_cast<uint32_t>(std::min<size_t>(count, maxCount - currentCount));
+
+		ImGui::Text("Available Emit Count: %u", availableToEmit);
+
+		// --- Emit ボタン ---
+		if (ImGui::Button(("Emit Particles##" + name_).c_str())) {
+			if (availableToEmit > 0) {
+				// 発生
+				ParticleManager::GetInstance()->Emit(name_, transform_, availableToEmit, velocity_, frequency);
 			}
-			ImGui::EndCombo();
-		}
-	} else {
-		ImGui::Text("No Model");
-	}
-
-	ImGui::Checkbox("Auto Emit", &isAutoEmit_);
-	// 現在のパーティクル数と最大数を取得
-	auto& group = ParticleManager::GetInstance()->GetGroup(name_);
-	size_t currentCount = group.particles.size();
-	uint32_t maxCount = ParticleManager::GetInstance()->GetMaxInstanceCount();
-	uint32_t availableToEmit = static_cast<uint32_t>(std::min<size_t>(count, maxCount - currentCount));
-	
-	
-	// 現在のパーティクル数を表示
-	ImGui::Text("Available Emit Count: %u", availableToEmit);
-	// Emit ボタン
-	if (ImGui::Button("Emit Particles")) {
-		if (availableToEmit > 0) {
-			ParticleManager::GetInstance()->Emit("Circle", position_, availableToEmit, velocity_, frequency);
 		}
 	}
-
-	ImGui::End();
-#endif // USE_IMGUI
+#endif
 }
