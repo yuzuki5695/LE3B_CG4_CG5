@@ -10,6 +10,7 @@
 #include<SceneManager.h>
 #include <ParticleCommon.h>
 #include <ParticleManager.h>
+#include <numbers>
 
 void GamePlayScene::Finalize() {
 
@@ -63,33 +64,58 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder); // リングで生成
 
     random_ = { 
+        //座標
         {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f}
+        {0.0f,0.0f,0.0f},
+        // 回転
+        {0.0f,0.0f,-std::numbers::pi_v<float>},
+        {0.0f,0.0f, std::numbers::pi_v<float>},
+        // サイズ
+        {0.0f,0.4f,0.0f},
+        {0.0f,1.5f,0.0f},
+        // カラー
+        0.0f,1.0f
     };
+
     random_2 = {
-        {-3.0f,0.0f,0.0f},
-        {3.0f,0.0f,0.0f}
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},
+        
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},
+
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},       
+        1.0f,1.0f
     };
+
     random_3 = {
         {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f}
+        {0.0f,0.0f,0.0f},
+        
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},
+        
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},
+        1.0f,1.0f
     };
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
-        "Particles",                                                                           // パーティクルグループ名
-        1,                                                                                     // 発生数
-		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },         // サイズ,回転,位置
+        "Circle",                                                                              // パーティクルグループ名
+        8,                                                                                     // 発生数
+		Transform{ { 0.05f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },        // サイズ,回転,位置
         3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
-        Vector3{ 0.0f, 0.0f, 0.0f },                                                            // ← 風
-        random_
+        Vector3{ 0.0f, 0.0f, 0.0f },                                                           // ← 風
+		random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
     );
 
     emitter_2 = std::make_unique <ParticleEmitter>(
-        "Circle",
-        8,
-        Transform{ { 0.05f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        "Ring",
+        1,
+        Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },

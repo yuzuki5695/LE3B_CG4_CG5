@@ -210,19 +210,29 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
     std::uniform_real_distribution<float> distX(randomParameter.offsetMin.x, randomParameter.offsetMax.x);
     std::uniform_real_distribution<float> distY(randomParameter.offsetMin.y, randomParameter.offsetMax.y);
     std::uniform_real_distribution<float> distZ(randomParameter.offsetMin.z, randomParameter.offsetMax.z);
-
-    std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
-    std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-    std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
+    // 回転
+    std::uniform_real_distribution<float> distRotateX(randomParameter.rotateMin.x, randomParameter.rotateMax.x);
+    std::uniform_real_distribution<float> distRotateY(randomParameter.rotateMin.y, randomParameter.rotateMax.y);
+    std::uniform_real_distribution<float> distRotateZ(randomParameter.rotateMin.z, randomParameter.rotateMax.z);
+    // サイズ
+    std::uniform_real_distribution<float> distScaleX(randomParameter.scaleMin.x, randomParameter.scaleMax.x);
+    std::uniform_real_distribution<float> distScaleY(randomParameter.scaleMin.y, randomParameter.scaleMax.y);
+    std::uniform_real_distribution<float> distScaleZ(randomParameter.scaleMin.z, randomParameter.scaleMax.z);
+    // カラー
+    std::uniform_real_distribution<float> colorDist(randomParameter.colorMin, randomParameter.colorMax);
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(distX(randomEngine), distY(randomEngine), distZ(randomEngine));
+        // 回転オフセット
+        Vector3 rotateoffset(distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine));
+        // スケール（Y軸のみランダムで指定されているならそのままでOK）
+        Vector3 scaleoffset(distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine));
 
         Particle newParticle;
         newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
-        newParticle.transform.rotate = { transform.rotate.x,transform.rotate.y,transform.rotate.z};
-        newParticle.transform.scale = { transform.scale.x,distScale(randomEngine),transform.scale.z};
-        newParticle.color = { 1.0f,1.0f,1.0f,1.0f };
+        newParticle.transform.rotate = { transform.rotate.x + rotateoffset.x ,transform.rotate.y + +rotateoffset.y,transform.rotate.z + +rotateoffset.z };
+        newParticle.transform.scale = { transform.scale.x + scaleoffset.x,transform.scale.y + scaleoffset.y,transform.scale.z + scaleoffset.z };
+        newParticle.color = { colorDist(randomEngine),colorDist(randomEngine),colorDist(randomEngine),1.0f };
         newParticle.lifetime = lifetime;
         newParticle.currentTime = 0.0f;
         newParticle.Velocity = velocity;
