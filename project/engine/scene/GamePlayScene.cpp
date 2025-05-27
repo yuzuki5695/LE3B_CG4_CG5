@@ -65,16 +65,17 @@ void GamePlayScene::Initialize() {
 
     random_ = { 
         //座標
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},  // 最小
+		{0.0f,0.0f,0.0f},  // 最大
         // 回転
-        {0.0f,0.0f,-std::numbers::pi_v<float>},
-        {0.0f,0.0f, std::numbers::pi_v<float>},
+        {0.0f,0.0f,-std::numbers::pi_v<float>},  // 最小
+        {0.0f,0.0f, std::numbers::pi_v<float>},  // 最大
         // サイズ
-        {0.0f,0.4f,0.0f},
-        {0.0f,1.5f,0.0f},
+        {0.0f,0.4f,0.0f}, // 最小
+        {0.0f,1.5f,0.0f}, // 最大
         // カラー
-        0.0f,1.0f
+        0.0f,  // 最小
+        1.0f   // 最大
     };
 
     random_2 = {
