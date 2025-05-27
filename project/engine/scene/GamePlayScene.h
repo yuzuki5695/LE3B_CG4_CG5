@@ -41,4 +41,8 @@ private: // メンバ変数
     std::unique_ptr <ParticleEmitter> emitter;
     std::unique_ptr <ParticleEmitter> emitter_2;
     std::unique_ptr <ParticleEmitter> emitter_3;
+    
+    RandomParameter random_;
+    RandomParameter random_2;
+    RandomParameter random_3;
 };

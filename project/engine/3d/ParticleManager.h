@@ -11,6 +11,11 @@
 #include<Model.h>
 #include<ParticleModel.h>
 
+struct RandomParameter {
+	Vector3 offsetMin;
+	Vector3 offsetMax;
+};
+
 // 3Dオブジェクト共通部
 class ParticleManager
 {
@@ -67,7 +72,7 @@ public: // メンバ関数
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType);
 	
 	// 発生
-	void Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime);
+	void Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime, const RandomParameter& randomParameter);
 
 	void SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath);
 	void SetParticleGroupModel(const std::string& name, const std::string& modelFilepath);

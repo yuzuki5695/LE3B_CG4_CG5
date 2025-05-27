@@ -1,5 +1,4 @@
 #include "ParticleEmitter.h"
-#include<ParticleManager.h>
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
@@ -15,14 +14,14 @@ std::vector<std::string> ParticleEmitter::textureList_ = {
 	"Resources/gradationLine.png"
 };
 
-ParticleEmitter::ParticleEmitter(const std::string& name,const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity)
-{
+ParticleEmitter::ParticleEmitter(const std::string& name, const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter) {
 	name_ = name;//名前
 	this->count = count;//count
 	transform_ = transform;//位置
 	frequency = lifetime;//寿命
 	frequencyTime = currentTime;//現在の寿命
 	velocity_ = Velocity; // 風の強さ
+	randomParameter_ = randomParameter; // ランダムパラメータ
 }
 
 void ParticleEmitter::Update()
@@ -43,7 +42,7 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Emit()
 {
 	//パーティクルを発生
-	ParticleManager::GetInstance()->Emit(name_, transform_, count, velocity_, frequency);
+	ParticleManager::GetInstance()->Emit(name_, transform_, count, velocity_, frequency, randomParameter_);
 }
 
 void ParticleEmitter::DrawImGuiUI() {
@@ -79,7 +78,7 @@ void ParticleEmitter::DrawImGuiUI() {
 		if (ImGui::Button(("Emit Particles##" + name_).c_str())) {
 			if (availableToEmit > 0) {
 				// 発生
-				ParticleManager::GetInstance()->Emit(name_, transform_, availableToEmit, velocity_, frequency);
+				ParticleManager::GetInstance()->Emit(name_, transform_, availableToEmit, velocity_, frequency, randomParameter_);
 			}
 		}
 	}

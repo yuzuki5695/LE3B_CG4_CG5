@@ -62,6 +62,19 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // リングで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder); // リングで生成
 
+    random_ = { 
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f}
+    };
+    random_2 = {
+        {-3.0f,0.0f,0.0f},
+        {3.0f,0.0f,0.0f}
+    };
+    random_3 = {
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f}
+    };
+
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
         "Particles",                                                                           // パーティクルグループ名
@@ -69,7 +82,8 @@ void GamePlayScene::Initialize() {
 		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },         // サイズ,回転,位置
         3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
-        Vector3{ 0.0f, 0.0f, 0.0f }                                                            // ← 風
+        Vector3{ 0.0f, 0.0f, 0.0f },                                                            // ← 風
+        random_
     );
 
     emitter_2 = std::make_unique <ParticleEmitter>(
@@ -78,7 +92,8 @@ void GamePlayScene::Initialize() {
         Transform{ { 0.05f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,
-        Vector3{ 0.0f, 0.0f, 0.0f }
+        Vector3{ 0.0f, 0.0f, 0.0f },
+        random_2
     );
     emitter_3 = std::make_unique <ParticleEmitter>(
         "Cylinder",
@@ -86,7 +101,8 @@ void GamePlayScene::Initialize() {
         Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,
-        Vector3{ 0.0f, 0.0f, 0.0f }
+        Vector3{ 0.0f, 0.0f, 0.0f },
+        random_3
     );
 }
 

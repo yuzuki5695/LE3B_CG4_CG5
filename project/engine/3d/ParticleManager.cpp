@@ -189,7 +189,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     }
 }
 
-void ParticleManager::Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime) {
+void ParticleManager::Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime,const RandomParameter& randomParameter) {
 
     auto it = particleGroups.find(name);
     if (it == particleGroups.end()) {
@@ -207,13 +207,16 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
     if (count == 0) return;
 
     // ランダムオフセット
-    std::uniform_real_distribution<float> dist(0.0f, 0.0f);
+    std::uniform_real_distribution<float> distX(randomParameter.offsetMin.x, randomParameter.offsetMax.x);
+    std::uniform_real_distribution<float> distY(randomParameter.offsetMin.y, randomParameter.offsetMax.y);
+    std::uniform_real_distribution<float> distZ(randomParameter.offsetMin.z, randomParameter.offsetMax.z);
+
     std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
     std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
     std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
 
     for (uint32_t i = 0; i < count; ++i) {
-        Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
+        Vector3 offset(distX(randomEngine), distY(randomEngine), distZ(randomEngine));
 
         Particle newParticle;
         newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
