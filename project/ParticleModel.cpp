@@ -19,19 +19,21 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
     // マテリアルの生成と初期化
     MaterialGenerate();
 	// 頂点データの作成
-    if (vertexType_ == VertexType::Model) {
+	if (vertexType_ == VertexType::Model) { // モデルの頂点データを作成
         modelDate = LoadObjFile("Resources", filename);
         VertexDatacreationModel();  // 頂点データコピー
         //.objの参照しているテクスチャ読み込み
         TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
         // 読み込んだテクスチャの番号を取得
         modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
-    } else if (vertexType_ == VertexType::Ring) {
+	} else if (vertexType_ == VertexType::Ring) { // リングの頂点データを作成
         VertexDatacreationRing();
-    } else if (vertexType_ == VertexType::Sphere) {
+	} else if (vertexType_ == VertexType::Sphere) { // 球の頂点データを作成
         VertexDatacreationSphere();
-    } else if (vertexType_ == VertexType::Cylinder) {
+	} else if (vertexType_ == VertexType::Cylinder) { // 円柱の頂点データを作成
         VertexDatacreationCylinder();
+	} else if (vertexType_ == VertexType::Star) { // 星の頂点データを作成
+        VertexDatacreationStar();
     }
 }
 
@@ -72,7 +74,7 @@ void ParticleModel::VertexDatacreationRing() {
     // 共通の頂点バッファビュー処理
     CreateVertexBuffer();
     // 頂点データ生成
-    DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
+    modelDate.vertices = DrawRing(vertexData, kRingDivide, kOuterRadius, kInnerRadius);
 }
 
 void ParticleModel::VertexDatacreationSphere() {
@@ -83,7 +85,7 @@ void ParticleModel::VertexDatacreationSphere() {
     // 共通の頂点バッファビュー処理
     CreateVertexBuffer();
     // 頂点データ生成
-    DrawSphere(kSubdivision, vertexData);
+    modelDate.vertices = DrawSphere(kSubdivision, vertexData);
 }
 
 void ParticleModel::VertexDatacreationCylinder() {
@@ -98,7 +100,21 @@ void ParticleModel::VertexDatacreationCylinder() {
     // 共通の頂点バッファビュー処理
     CreateVertexBuffer();
     // 頂点データ生成
-    DrawCylinder(vertexData, kCylinderDivide, kTopRadius, kBottomRadius, kHeight);
+    modelDate.vertices = DrawCylinder(vertexData, kCylinderDivide, kTopRadius, kBottomRadius, kHeight);
+}
+
+void ParticleModel::VertexDatacreationStar() {
+    const uint32_t kNumPoints = 5;         // 星の角の数
+    const float kOuterRadius = 1.0f;       // 外側の頂点の半径
+    const float kInnerRadius = 0.4f;       // 内側の頂点の半径
+    const float kAngleStep = DirectX::XM_2PI / (kNumPoints * 2);  // 外内交互なので倍
+    vertexCount = kNumPoints * 3 * 2;  // 三角形3つ × 5本の突起（星1つで10三角）
+    // 頂点数を計算
+    modelDate.vertices.resize(vertexCount);
+    // 共通の頂点バッファビュー処理
+    CreateVertexBuffer();
+    // 頂点データ生成
+    modelDate.vertices = DrawStar(vertexData, kNumPoints, kOuterRadius, kInnerRadius);
 }
 
 void ParticleModel::MaterialGenerate() {

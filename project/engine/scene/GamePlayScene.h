@@ -38,11 +38,13 @@ private: // メンバ変数
     uint32_t soundfige;
 
     // エミッター生成
-    std::unique_ptr <ParticleEmitter> emitter;
-    std::unique_ptr <ParticleEmitter> emitter_2;
-    std::unique_ptr <ParticleEmitter> emitter_3;
+    std::unique_ptr <ParticleEmitter> circle_;
+    std::unique_ptr <ParticleEmitter> ring_;
+    std::unique_ptr <ParticleEmitter> cylinder_;
+    std::unique_ptr <ParticleEmitter> star_;
     
     RandomParameter random_;
     RandomParameter random_2;
     RandomParameter random_3;
+    RandomParameter random_4;
 };

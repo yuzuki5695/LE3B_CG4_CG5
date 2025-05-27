@@ -58,10 +58,11 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
     // パーティクルグループ生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model); // モデルで生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model); // モデルで生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring); // リングで生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder); // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);                 // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Star", "Resources/uvChecker.png", "plane.obj", VertexType::Star);          // 星形で生成
 
     random_ = { 
         //座標
@@ -102,8 +103,18 @@ void GamePlayScene::Initialize() {
         1.0f,1.0f
     };
 
+    random_4 = {
+        {0.0f,0.0f,0.0f}, 
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f},
+        {0.0f,0.0f,0.0f}, 
+        {0.0f,0.0f,0.0f}, 
+        {0.0f,0.0f,0.0f}, 
+        1.0f,1.0f
+    };
+
     // 発生
-    emitter = std::make_unique <ParticleEmitter>(
+    circle_ = std::make_unique <ParticleEmitter>(
         "Circle",                                                                              // パーティクルグループ名
         8,                                                                                     // 発生数
 		Transform{ { 0.05f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },        // サイズ,回転,位置
@@ -113,7 +124,7 @@ void GamePlayScene::Initialize() {
 		random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
     );
 
-    emitter_2 = std::make_unique <ParticleEmitter>(
+    ring_ = std::make_unique <ParticleEmitter>(
         "Ring",
         1,
         Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
@@ -122,7 +133,7 @@ void GamePlayScene::Initialize() {
         Vector3{ 0.0f, 0.0f, 0.0f },
         random_2
     );
-    emitter_3 = std::make_unique <ParticleEmitter>(
+    cylinder_ = std::make_unique <ParticleEmitter>(
         "Cylinder",
         1,
         Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
@@ -131,6 +142,18 @@ void GamePlayScene::Initialize() {
         Vector3{ 0.0f, 0.0f, 0.0f },
         random_3
     );
+
+	star_ = std::make_unique <ParticleEmitter>(
+		"Star",
+		1,
+		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+		3.0f,
+		0.0f,
+		Vector3{ 0.0f, 0.0f, 0.0f },
+		random_4
+	);
+
+
 }
 
 void GamePlayScene::Update() {
@@ -144,15 +167,19 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->DebugUpdata();
 
-    if (emitter) {
-        emitter->DrawImGuiUI();
+    if (circle_) {
+        circle_->DrawImGuiUI();
     }
-    if (emitter_2) {
-        emitter_2->DrawImGuiUI();
+    if (ring_) {
+        ring_->DrawImGuiUI();
     }
-    if (emitter_3) {
-        emitter_3->DrawImGuiUI();
+    if (cylinder_) {
+        cylinder_->DrawImGuiUI();
     }
+    if (star_) {
+        star_->DrawImGuiUI();
+    }
+
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -167,10 +194,10 @@ void GamePlayScene::Update() {
     grass->Update();
 
     ParticleManager::GetInstance()->Update();
-    emitter->Update();
-    emitter_2->Update();
-    emitter_3->Update();
-
+    circle_->Update();
+    ring_->Update();
+    cylinder_->Update();
+    star_->Update();
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理

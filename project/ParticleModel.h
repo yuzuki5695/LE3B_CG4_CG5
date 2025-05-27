@@ -7,7 +7,8 @@ enum class VertexType {
 	Model,
 	Ring,
 	Sphere,
-	Cylinder
+	Cylinder,
+	Star,
 };
 
 // パーティクルモデル
@@ -30,6 +31,7 @@ private:
 	void VertexDatacreationRing();
 	void VertexDatacreationSphere();
 	void VertexDatacreationCylinder();
+	void VertexDatacreationStar();
 	void CreateVertexBuffer();        // 共通処理にする
 	// マテリアル
 	void MaterialGenerate();

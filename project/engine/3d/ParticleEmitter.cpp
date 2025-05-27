@@ -47,7 +47,8 @@ void ParticleEmitter::Emit()
 
 void ParticleEmitter::DrawImGuiUI() {
 #ifdef USE_IMGUI
-	if (ImGui::CollapsingHeader(name_.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+	//if (ImGui::CollapsingHeader(name_.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) { // デフォルトで開いておく
+	if (ImGui::CollapsingHeader(name_.c_str())) { // デフォルトで開いておく
 		ImGui::Separator();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", name_.c_str()); // 黄色で強調
 

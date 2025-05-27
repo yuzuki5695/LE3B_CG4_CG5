@@ -3,6 +3,7 @@
 #include <numbers>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <DirectXMath.h>
 
 namespace PrimitiveGenerator
 {
@@ -158,6 +159,46 @@ namespace PrimitiveGenerator
         // vertexData にも書き込む（nullチェック付き）
         if (vertexData) {
             std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());
+        }
+
+        return vertices;
+    }
+
+    std::vector<VertexData> DrawStar(VertexData* vertexData, uint32_t kNumPoints, float kOuterRadius, float kInnerRadius) {
+        const float kAngleStep = DirectX::XM_2PI / (kNumPoints * 2);  // 星の頂点（外と内）交互に配置
+        const uint32_t vertexCount = kNumPoints * 3 * 2; // 三角形×10
+
+        std::vector<VertexData> vertices(vertexCount);
+
+        // 一時的に外周の点を保存
+        std::vector<VertexData> starVertices;
+        for (uint32_t i = 0; i < kNumPoints * 2; ++i) {
+            float angle = i * kAngleStep;
+            float radius = (i % 2 == 0) ? kOuterRadius : kInnerRadius;
+
+            VertexData v{};
+            v.position = { std::cos(angle) * radius, std::sin(angle) * radius, 0.0f };
+            v.normal = { 0.0f, 0.0f, -1.0f }; // 手前向き
+            v.texcoord = { 0.5f + 0.5f * v.position.x, 0.5f - 0.5f * v.position.y }; // 簡単なUV
+            starVertices.push_back(v);
+        }
+
+        // 中心点
+        VertexData center{};
+        center.position = { 0.0f, 0.0f, 0.0f };
+        center.normal = { 0.0f, 0.0f, -1.0f };
+        center.texcoord = { 0.5f, 0.5f };
+
+        for (uint32_t i = 0; i < kNumPoints * 2; ++i) {
+            vertices[i * 3 + 0] = center;
+            vertices[i * 3 + 1] = starVertices[(i + 1) % (kNumPoints * 2)];
+            vertices[i * 3 + 2] = starVertices[i];
+
+        }
+
+        // バッファにコピー（必要なら）
+        if (vertexData) {
+            std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertexCount);
         }
 
         return vertices;
