@@ -48,7 +48,7 @@ namespace PrimitiveGenerator
                 vertexData[index + j].normal = { 0.0f, 0.0f, 1.0f };
             }
         }
-		return std::vector<VertexData>(vertexData, vertexData + KRingDivide * 6);
+        return std::vector<VertexData>(vertexData, vertexData + KRingDivide * 6);
     }
 
     std::vector<VertexData> DrawSphere(const uint32_t ksubdivision, VertexData* vertexdata) {
@@ -164,45 +164,58 @@ namespace PrimitiveGenerator
         return vertices;
     }
 
+
     std::vector<VertexData> DrawStar(VertexData* vertexData, uint32_t kNumPoints, float kOuterRadius, float kInnerRadius) {
-        const float kAngleStep = DirectX::XM_2PI / (kNumPoints * 2);  // 星の頂点（外と内）交互に配置
-        const uint32_t vertexCount = kNumPoints * 3 * 2; // 三角形×10
+        const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kNumPoints * 2);
 
-        std::vector<VertexData> vertices(vertexCount);
+        for (uint32_t i = 0; i < kNumPoints; ++i) {
+            float angleOuter0 = (2 * i) * radianPerDivide;       // 外側頂点 i
+            float angleInner0 = (2 * i + 1) * radianPerDivide;   // 内側頂点 i
+            float angleOuter1 = (2 * i + 2) * radianPerDivide;   // 外側頂点 i+1
 
-        // 一時的に外周の点を保存
-        std::vector<VertexData> starVertices;
-        for (uint32_t i = 0; i < kNumPoints * 2; ++i) {
-            float angle = i * kAngleStep;
-            float radius = (i % 2 == 0) ? kOuterRadius : kInnerRadius;
+            float cosOuter0 = std::cos(angleOuter0);
+            float sinOuter0 = std::sin(angleOuter0);
+            float cosInner0 = std::cos(angleInner0);
+            float sinInner0 = std::sin(angleInner0);
+            float cosOuter1 = std::cos(angleOuter1);
+            float sinOuter1 = std::sin(angleOuter1);
 
-            VertexData v{};
-            v.position = { std::cos(angle) * radius, std::sin(angle) * radius, 0.0f };
-            v.normal = { 0.0f, 0.0f, -1.0f }; // 手前向き
-            v.texcoord = { 0.5f + 0.5f * v.position.x, 0.5f - 0.5f * v.position.y }; // 簡単なUV
-            starVertices.push_back(v);
+            uint32_t index = i * 6;
+
+            // 三角形1
+            vertexData[index + 0].position = { cosOuter0 * kOuterRadius, sinOuter0 * kOuterRadius, 0.0f, 1.0f };
+            vertexData[index + 1].position = { cosInner0 * kInnerRadius, sinInner0 * kInnerRadius, 0.0f, 1.0f };
+            vertexData[index + 2].position = { cosOuter1 * kOuterRadius, sinOuter1 * kOuterRadius, 0.0f, 1.0f };
+
+            // 三角形2
+            vertexData[index + 3].position = { cosOuter1 * kOuterRadius, sinOuter1 * kOuterRadius, 0.0f, 1.0f };
+            vertexData[index + 4].position = { cosInner0 * kInnerRadius, sinInner0 * kInnerRadius, 0.0f, 1.0f };
+            vertexData[index + 5].position = { std::cos(angleOuter1 + radianPerDivide) * kInnerRadius, std::sin(angleOuter1 + radianPerDivide) * kInnerRadius, 0.0f, 1.0f };
+
+            // テクスチャ座標（単純に0～1で割り当て例）
+            float u0 = (cosOuter0 * 0.5f) + 0.5f;
+            float v0 = (sinOuter0 * 0.5f) + 0.5f;
+            float u1 = (cosInner0 * 0.5f) + 0.5f;
+            float v1 = (sinInner0 * 0.5f) + 0.5f;
+            float u2 = (cosOuter1 * 0.5f) + 0.5f;
+            float v2 = (sinOuter1 * 0.5f) + 0.5f;
+            float u3 = (std::cos(angleOuter1 + radianPerDivide) * 0.5f) + 0.5f;
+            float v3 = (std::sin(angleOuter1 + radianPerDivide) * 0.5f) + 0.5f;
+
+            vertexData[index + 0].texcoord = { u0, v0 };
+            vertexData[index + 1].texcoord = { u1, v1 };
+            vertexData[index + 2].texcoord = { u2, v2 };
+            vertexData[index + 3].texcoord = { u2, v2 };
+            vertexData[index + 4].texcoord = { u1, v1 };
+            vertexData[index + 5].texcoord = { u3, v3 };
+
+            // 法線はZ+方向（XY平面の正面）
+            for (int j = 0; j < 6; ++j) {
+                vertexData[index + j].normal = { 0.0f, 0.0f, 1.0f };
+            }
         }
 
-        // 中心点
-        VertexData center{};
-        center.position = { 0.0f, 0.0f, 0.0f };
-        center.normal = { 0.0f, 0.0f, -1.0f };
-        center.texcoord = { 0.5f, 0.5f };
-
-        for (uint32_t i = 0; i < kNumPoints * 2; ++i) {
-            vertices[i * 3 + 0] = center;
-            vertices[i * 3 + 1] = starVertices[(i + 1) % (kNumPoints * 2)];
-            vertices[i * 3 + 2] = starVertices[i];
-
-        }
-
-        // バッファにコピー（必要なら）
-        if (vertexData) {
-            std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertexCount);
-        }
-
-        return vertices;
+        return std::vector<VertexData>(vertexData, vertexData + kNumPoints * 6);
     }
-
 
 }

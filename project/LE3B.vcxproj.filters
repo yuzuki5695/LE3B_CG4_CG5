@@ -72,15 +72,6 @@
     <ClCompile Include="engine\3d\Object3dCommon.cpp">
       <Filter>ソースファイル\application\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp">
-      <Filter>ソースファイル\application\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp">
-      <Filter>ソースファイル\application\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
-      <Filter>ソースファイル\application\engine\3d</Filter>
-    </ClCompile>
     <ClCompile Include="engine\scene\SceneFactory.cpp">
       <Filter>ソースファイル\application\engine\scene</Filter>
     </ClCompile>
@@ -114,8 +105,21 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp" />
-    <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp">
+      <Filter>ソースファイル\application\engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp">
+      <Filter>ソースファイル\application\engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
+      <Filter>ソースファイル\application\engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp">
+      <Filter>ソースファイル\application\engine\3d\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -160,15 +164,6 @@
     <ClInclude Include="engine\3d\Object3dCommon.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Particle\ParticleCommon.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\Particle\ParticleManager.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\ResourceObject.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
@@ -211,8 +206,6 @@
     <ClInclude Include="engine\math\Transform.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\Particle\ParticleModel.h" />
-    <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\math\Vector2.h">
       <Filter>ヘッダーファイル\engine\math\Vector</Filter>
     </ClInclude>
@@ -245,6 +238,21 @@
     </ClInclude>
     <ClInclude Include="engine\math\Material.h">
       <Filter>ヘッダーファイル\engine\math\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\PrimitiveGenerator.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h">
+      <Filter>ヘッダーファイル\engine\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h">
+      <Filter>ヘッダーファイル\engine\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h">
+      <Filter>ヘッダーファイル\engine\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h">
+      <Filter>ヘッダーファイル\engine\3d\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +341,12 @@
     </Filter>
     <Filter Include="ヘッダーファイル\engine\math\ModelData">
       <UniqueIdentifier>{4a2f14e1-0afc-40fa-9499-6a0813092eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\engine\3d\Particle">
+      <UniqueIdentifier>{55324da9-9657-409f-ad9a-cdc03641baa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\application\engine\3d\Particle">
+      <UniqueIdentifier>{7700e705-bb83-4bdc-8348-1f8b43e04074}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

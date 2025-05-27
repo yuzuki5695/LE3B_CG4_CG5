@@ -104,11 +104,10 @@ void ParticleModel::VertexDatacreationCylinder() {
 }
 
 void ParticleModel::VertexDatacreationStar() {
-    const uint32_t kNumPoints = 5;         // 星の角の数
-    const float kOuterRadius = 1.0f;       // 外側の頂点の半径
-    const float kInnerRadius = 0.4f;       // 内側の頂点の半径
-    const float kAngleStep = DirectX::XM_2PI / (kNumPoints * 2);  // 外内交互なので倍
-    vertexCount = kNumPoints * 3 * 2;  // 三角形3つ × 5本の突起（星1つで10三角）
+    const uint32_t kNumPoints = 5;  // 星の先端数
+    const float kOuterRadius = 1.0f;
+    const float kInnerRadius = 0.5f;
+    vertexCount = kNumPoints * 6;
     // 頂点数を計算
     modelDate.vertices.resize(vertexCount);
     // 共通の頂点バッファビュー処理
