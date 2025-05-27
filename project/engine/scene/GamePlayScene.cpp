@@ -64,12 +64,12 @@ void GamePlayScene::Initialize() {
 
     // 発生
     emitter = std::make_unique <ParticleEmitter>(
-        "Particles",                       // パーティクルグループ名
-        1,                            // 発生数
-		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } }, // サイズ,回転,位置
-        3.0f,                         // 発生周期 or 寿命（自由に定義可能）
-        0.0f,                         // 経過時間（基本は0から開始）
-        Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
+        "Particles",                                                                           // パーティクルグループ名
+        1,                                                                                     // 発生数
+		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },         // サイズ,回転,位置
+        3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
+        0.0f,                                                                                  // 経過時間（基本は0から開始）
+        Vector3{ 0.0f, 0.0f, 0.0f }                                                            // ← 風
     );
 
     emitter_2 = std::make_unique <ParticleEmitter>(
