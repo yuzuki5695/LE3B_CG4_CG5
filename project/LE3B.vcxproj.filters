@@ -72,13 +72,13 @@
     <ClCompile Include="engine\3d\Object3dCommon.cpp">
       <Filter>ソースファイル\application\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\ParticleCommon.cpp">
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp">
       <Filter>ソースファイル\application\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp">
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp">
       <Filter>ソースファイル\application\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\ParticleManager.cpp">
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
       <Filter>ソースファイル\application\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\scene\SceneFactory.cpp">
@@ -114,8 +114,8 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleModel.cpp" />
-    <ClCompile Include="PrimitiveGenerator.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp" />
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -160,13 +160,13 @@
     <ClInclude Include="engine\3d\Object3dCommon.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\ParticleCommon.h">
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\ParticleEmitter.h">
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\ParticleManager.h">
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\ResourceObject.h">
@@ -211,8 +211,8 @@
     <ClInclude Include="engine\math\Transform.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleModel.h" />
-    <ClInclude Include="PrimitiveGenerator.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h" />
+    <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\math\Vector2.h">
       <Filter>ヘッダーファイル\engine\math\Vector</Filter>
     </ClInclude>

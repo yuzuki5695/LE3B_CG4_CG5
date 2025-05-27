@@ -100,9 +100,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\3d\ParticleCommon.cpp" />
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp" />
-    <ClCompile Include="engine\3d\ParticleManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
     <ClCompile Include="engine\audio\SoundLoader.cpp" />
     <ClCompile Include="engine\audio\SoundPlayer.cpp" />
     <ClCompile Include="engine\base\Camera.cpp" />
@@ -131,13 +131,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\SrvManager.cpp" />
     <ClCompile Include="engine\scene\MyGame.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
-    <ClCompile Include="ParticleModel.cpp" />
-    <ClCompile Include="PrimitiveGenerator.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp" />
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\3d\ParticleCommon.h" />
-    <ClInclude Include="engine\3d\ParticleEmitter.h" />
-    <ClInclude Include="engine\3d\ParticleManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h" />
     <ClInclude Include="engine\audio\SoundLoader.h" />
     <ClInclude Include="engine\audio\SoundPlayer.h" />
     <ClInclude Include="engine\base\Camera.h" />
@@ -176,8 +176,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\math\Material.h" />
     <ClInclude Include="engine\math\MaterialDate.h" />
     <ClInclude Include="engine\math\ModelDate.h" />
-    <ClInclude Include="ParticleModel.h" />
-    <ClInclude Include="PrimitiveGenerator.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h" />
+    <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\math\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
