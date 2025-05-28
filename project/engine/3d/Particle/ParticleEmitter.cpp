@@ -53,6 +53,21 @@ void ParticleEmitter::DrawImGuiUI() {
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", name_.c_str()); // 黄色で強調
 
 		ImGui::Checkbox(("Update##" + name_).c_str(), &isAutoEmit_);
+		
+		// --- ここに個数変更UIを追加 ---
+		int countInt = static_cast<int>(count);
+		if (ImGui::InputInt(("Emit Count##" + name_).c_str(), &countInt)) {
+			if (countInt < 0) countInt = 0; // 負数防止
+			count = static_cast<uint32_t>(countInt);
+		}
+
+		// Transformの編集
+		if (ImGui::TreeNode(("Transform##" + name_).c_str())) {
+			ImGui::DragFloat3(("Position##" + name_).c_str(), &transform_.translate.x, 0.01f);
+			ImGui::DragFloat3(("Rotation##" + name_).c_str(), &transform_.rotate.x, 0.01f);
+			ImGui::DragFloat3(("Scale##" + name_).c_str(), &transform_.scale.x, 0.01f);
+			ImGui::TreePop();
+		}
 
 		// --- テクスチャ選択 Combo ---
 		if (ImGui::BeginCombo(("Texture##" + name_).c_str(), textureList_[textureIndex_].c_str())) {
@@ -68,6 +83,7 @@ void ParticleEmitter::DrawImGuiUI() {
 			}
 			ImGui::EndCombo();
 		}
+
 		auto& group = ParticleManager::GetInstance()->GetGroup(name_);
 		size_t currentCount = group.particles.size();
 		uint32_t maxCount = ParticleManager::GetInstance()->GetMaxInstanceCount();

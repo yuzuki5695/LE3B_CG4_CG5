@@ -41,7 +41,7 @@ private: // メンバ変数
     std::unique_ptr <ParticleEmitter> circle_;
     std::unique_ptr <ParticleEmitter> ring_;
     std::unique_ptr <ParticleEmitter> cylinder_;
-    std::unique_ptr <ParticleEmitter> star_;
+    std::unique_ptr <ParticleEmitter> test_;
     
     RandomParameter random_;
     RandomParameter random_2;

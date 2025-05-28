@@ -52,4 +52,8 @@ namespace MatrixVector
 
 	// 逆行列を計算して転置する処理
 	Matrix4x4 InverseTranspose(const Matrix4x4& mat);
+
+	// クロス積
+	Vector3 Cross(const Vector3& a, const Vector3& b);
+
 };

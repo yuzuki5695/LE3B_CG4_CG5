@@ -20,7 +20,7 @@ void GamePlayScene::Initialize() {
 
     // カメラの初期化
     camera = std::make_unique<Camera>();
-    camera->SetTranslate(Vector3(0.0f, 3.0f, -15.0f));
+    camera->SetTranslate(Vector3(0.0f, 3.0f, -30.0f));
     camera->SetRotate(Vector3(0.1f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(camera.get());
     ParticleCommon::GetInstance()->SetDefaultCamera(camera.get());
@@ -62,8 +62,7 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);                 // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Star", "Resources/uvChecker.png", "plane.obj", VertexType::Star);          // 星形で生成
-
+    
     random_ = { 
         //座標
         {0.0f,0.0f,0.0f},  // 最小
@@ -79,40 +78,6 @@ void GamePlayScene::Initialize() {
         1.0f   // 最大
     };
 
-    random_2 = {
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-        
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},       
-        1.0f,1.0f
-    };
-
-    random_3 = {
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-        
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-        
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-        1.0f,1.0f
-    };
-
-    random_4 = {
-        {0.0f,0.0f,0.0f}, 
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f},
-        {0.0f,0.0f,0.0f}, 
-        {0.0f,0.0f,0.0f}, 
-        {0.0f,0.0f,0.0f}, 
-        1.0f,1.0f
-    };
-
     // 発生
     circle_ = std::make_unique <ParticleEmitter>(
         "Circle",                                                                              // パーティクルグループ名
@@ -120,9 +85,21 @@ void GamePlayScene::Initialize() {
 		Transform{ { 0.05f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },        // サイズ,回転,位置
         3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
-        Vector3{ 0.0f, 0.0f, 0.0f },                                                           // ← 風
+        Vector3{ 0.05f, 0.0f, 0.0f },                                                           // ← 風
 		random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
     );
+
+    random_2 = {
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+    1.0f,1.0f
+    };
 
     ring_ = std::make_unique <ParticleEmitter>(
         "Ring",
@@ -133,6 +110,19 @@ void GamePlayScene::Initialize() {
         Vector3{ 0.0f, 0.0f, 0.0f },
         random_2
     );
+
+    random_3 = {
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+    1.0f,1.0f
+    };
+
     cylinder_ = std::make_unique <ParticleEmitter>(
         "Cylinder",
         1,
@@ -143,8 +133,24 @@ void GamePlayScene::Initialize() {
         random_3
     );
 
-	star_ = std::make_unique <ParticleEmitter>(
-		"Star",
+    //Star
+    //Spiral
+    ParticleManager::GetInstance()->CreateParticleGroup("Spiral", "Resources/uvChecker.png", "plane.obj", VertexType::Spiral);  // で生成
+
+    random_4 = {
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+    1.0f,1.0f
+    };
+
+	test_ = std::make_unique <ParticleEmitter>(
+		"Spiral",
 		1,
 		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
 		3.0f,
@@ -176,8 +182,8 @@ void GamePlayScene::Update() {
     if (cylinder_) {
         cylinder_->DrawImGuiUI();
     }
-    if (star_) {
-        star_->DrawImGuiUI();
+    if (test_) {
+        test_->DrawImGuiUI();
     }
 
 
@@ -197,7 +203,7 @@ void GamePlayScene::Update() {
     circle_->Update();
     ring_->Update();
     cylinder_->Update();
-    star_->Update();
+    test_->Update();
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理

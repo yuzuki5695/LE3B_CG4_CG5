@@ -80,9 +80,9 @@ void ParticleManager::Update() {
             float alpha = 1.0f - (*particleIterator).currentTime / (*particleIterator).lifetime;
             (*particleIterator).color.w = alpha;
 
-
             particleIterator->transform.translate.x += particleIterator->Velocity.x;
-
+            particleIterator->transform.translate.y += particleIterator->Velocity.y;
+            particleIterator->transform.translate.z += particleIterator->Velocity.z;
 
             // world行列の計算
             Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);

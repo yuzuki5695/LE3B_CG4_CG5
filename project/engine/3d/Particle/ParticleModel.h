@@ -9,6 +9,7 @@ enum class VertexType {
 	Sphere,
 	Cylinder,
 	Star,
+	Spiral,
 };
 
 // パーティクルモデル
@@ -26,12 +27,12 @@ private:
 	// .objファイルの読み取り
 	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
 	// 頂点データ作成
-	void VertexDatacreationModel();
-	void VertexDatacreation();
-	void VertexDatacreationRing();
-	void VertexDatacreationSphere();
-	void VertexDatacreationCylinder();
-	void VertexDatacreationStar();
+	void VertexDataModel();
+	void VertexDataRing();
+	void VertexDataSphere();
+	void VertexDataStar();
+	void VertexDataCylinder();
+	void VertexDataSpiral();
 	void CreateVertexBuffer();        // 共通処理にする
 	// マテリアル
 	void MaterialGenerate();
@@ -49,9 +50,9 @@ private:
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-	VertexType vertexType_ = VertexType::Ring;
+	VertexType vertexType_ = VertexType::Model;
 
-	uint32_t vertexCount; //球の頂点数
+	uint32_t vertexCount; // 頂点数
 public:
 
 	size_t GetVertexCount() const { return modelDate.vertices.size(); }

@@ -4,6 +4,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <DirectXMath.h>
+#include <MatrixVector.h>
+
+using namespace MatrixVector;
 
 namespace PrimitiveGenerator
 {
@@ -216,6 +219,22 @@ namespace PrimitiveGenerator
         }
 
         return std::vector<VertexData>(vertexData, vertexData + kNumPoints * 6);
+    }
+
+    void DrawSpiral(uint32_t kSpiralDiv, float spiralRadius, float spiralHeight, uint32_t spiralTurn, VertexData* vertexData) {
+        for (uint32_t i = 0; i <= kSpiralDiv; ++i) {
+            float t = static_cast<float>(i) / static_cast<float>(kSpiralDiv);
+            float angle = t * spiralTurn * 2.0f * std::numbers::pi_v<float>;
+            float height = t * spiralHeight;
+
+            float x = std::cos(angle) * spiralRadius;
+            float y = height;
+            float z = std::sin(angle) * spiralRadius;
+
+            vertexData[i].position = { x, y, z, 1.0f };
+            vertexData[i].texcoord = { t, 0.0f }; // 仮で流す
+            vertexData[i].normal = { 0.0f, 1.0f, 0.0f }; // 仮の法線
+        }
     }
 
 }

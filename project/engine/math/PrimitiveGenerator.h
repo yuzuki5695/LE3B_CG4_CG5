@@ -19,5 +19,7 @@ namespace PrimitiveGenerator
 	// 星形の頂点データを生成する関数
 	std::vector<VertexData> DrawStar(VertexData* vertexData, uint32_t kNumPoints, float kOuterRadius, float kInnerRadius);
 
+	// スパイラル状の頂点データを生成する関数
+	void DrawSpiral(uint32_t kSpiralDiv, float spiralRadius, float spiralHeight, uint32_t spiralTurn, VertexData* vertexData);
 
 };
