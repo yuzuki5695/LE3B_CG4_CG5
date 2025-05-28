@@ -178,9 +178,7 @@ void GamePlayScene::Initialize() {
 
 
 
-
-
-    ParticleManager::GetInstance()->CreateParticleGroup("Sportclub", "Resources/uvChecker.png", "plane.obj", VertexType::Box);  // 生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/uvChecker.png", "plane.obj", VertexType::Box);  // 生成
 
     random_4 = {
     {0.0f,0.0f,0.0f},
@@ -198,7 +196,7 @@ void GamePlayScene::Initialize() {
     };
 
 	test_ = std::make_unique <ParticleEmitter>(
-		"Sportclub",
+		"Box",
 		1,
 		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
 		3.0f,
