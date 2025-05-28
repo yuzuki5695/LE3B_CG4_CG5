@@ -36,6 +36,8 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
         VertexDataStar();
     } else if (vertexType_ == VertexType::Spiral) { // スパイラル状の頂点データを作成
         VertexDataSpiral();
+    } else if (vertexType_ == VertexType::Circle) { // サークルの頂点データを作成
+        VertexDataCircle();
     }
 }
 
@@ -138,6 +140,17 @@ void ParticleModel::MaterialGenerate() {
     materialData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
     materialData->endbleLighting = true;
     materialData->uvTransform = MakeIdentity4x4();
+}
+
+void ParticleModel::VertexDataCircle() {
+    const uint32_t kSegmentCount = 64;
+    const float kRadius = 1.0f;
+    // 頂点数は線で円を構成するので segmentCount+1（ループ閉じ）
+    vertexCount = (kSegmentCount + 1);
+    modelDate.vertices.resize(vertexCount);
+    // 頂点バッファ作成
+    CreateVertexBuffer();
+    modelDate.vertices = DrawCircle(vertexData, kSegmentCount, kRadius);
 }
 
 MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {

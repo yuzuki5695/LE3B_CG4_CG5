@@ -194,9 +194,7 @@ void GamePlayScene::Initialize() {
 
 
 
-    //Star
-    //Spiral
-    ParticleManager::GetInstance()->CreateParticleGroup("Spiral", "Resources/uvChecker.png", "plane.obj", VertexType::Spiral);  // で生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Sportclub", "Resources/uvChecker.png", "plane.obj", VertexType::Cylinder);  // 生成
 
     random_4 = {
     {0.0f,0.0f,0.0f},
@@ -205,8 +203,8 @@ void GamePlayScene::Initialize() {
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
+    {0.001f,0.0f,0.0f},
+    {3.0f,0.0f,0.0f},
     1.0f,1.0f,
     0.0f,0.0f,
     {0.0f,0.0f,0.0f},
@@ -214,9 +212,9 @@ void GamePlayScene::Initialize() {
     };
 
 	test_ = std::make_unique <ParticleEmitter>(
-		"Spiral",
-		1,
-		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+		"Sportclub",
+		5,
+		Transform{ { 0.0f, 0.1f, 0.2f }, { 0.5f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
 		3.0f,
 		0.0f,
 		Vector3{ 0.0f, 0.0f, 0.0f },

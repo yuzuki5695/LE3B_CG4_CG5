@@ -236,5 +236,28 @@ namespace PrimitiveGenerator
             vertexData[i].normal = { 0.0f, 1.0f, 0.0f }; // 仮の法線
         }
     }
+    std::vector<VertexData> DrawCircle(VertexData* vertexData, uint32_t segmentCount, float radius) {
+        std::vector<VertexData> vertices;
+        vertices.reserve(segmentCount + 1); // 最後に始点と結ぶために +1
+
+        for (uint32_t i = 0; i <= segmentCount; ++i) {
+            float angle = static_cast<float>(i) / segmentCount * 2.0f * float(M_PI);
+            float x = std::cos(angle) * radius;
+            float z = std::sin(angle) * radius;
+
+            VertexData v{};
+            v.position = { x, 0.0f, z, 1.0f };  // w=1.0 の位置ベクトル
+            v.texcoord = { static_cast<float>(i) / segmentCount, 0.0f };  // 任意で設定
+            v.normal = { 0.0f, 1.0f, 0.0f };  // 上方向を向いている想定
+
+            vertices.push_back(v);
+        }
+
+        // GPU用のバッファにコピー
+        std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());
+
+        return vertices;
+    }
+
 
 }

@@ -10,6 +10,7 @@ enum class VertexType {
 	Cylinder,
 	Star,
 	Spiral,
+	Circle,
 };
 
 // パーティクルモデル
@@ -27,13 +28,14 @@ private:
 	// .objファイルの読み取り
 	static ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
 	// 頂点データ作成
+	void CreateVertexBuffer();        // 共通処理にする
 	void VertexDataModel();
 	void VertexDataRing();
 	void VertexDataSphere();
 	void VertexDataStar();
 	void VertexDataCylinder();
 	void VertexDataSpiral();
-	void CreateVertexBuffer();        // 共通処理にする
+	void VertexDataCircle();
 	// マテリアル
 	void MaterialGenerate();
 private:

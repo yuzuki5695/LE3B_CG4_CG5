@@ -21,5 +21,9 @@ namespace PrimitiveGenerator
 
 	// スパイラル状の頂点データを生成する関数
 	void DrawSpiral(uint32_t kSpiralDiv, float spiralRadius, float spiralHeight, uint32_t spiralTurn, VertexData* vertexData);
+	
+	// サークルの頂点データを作成する関数
+	std::vector<VertexData> DrawCircle(VertexData* vertexData, uint32_t segmentCount, float radius);
+
 
 };
