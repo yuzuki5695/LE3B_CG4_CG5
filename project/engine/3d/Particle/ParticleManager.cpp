@@ -206,44 +206,17 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
 
     if (count == 0) return;
 
-    // ランダムオフセット
-    std::uniform_real_distribution<float> distX(randomParameter.offsetMin.x, randomParameter.offsetMax.x);
-    std::uniform_real_distribution<float> distY(randomParameter.offsetMin.y, randomParameter.offsetMax.y);
-    std::uniform_real_distribution<float> distZ(randomParameter.offsetMin.z, randomParameter.offsetMax.z);
-    // 回転
-    std::uniform_real_distribution<float> distRotateX(randomParameter.rotateMin.x, randomParameter.rotateMax.x);
-    std::uniform_real_distribution<float> distRotateY(randomParameter.rotateMin.y, randomParameter.rotateMax.y);
-    std::uniform_real_distribution<float> distRotateZ(randomParameter.rotateMin.z, randomParameter.rotateMax.z);
-    // サイズ
-    std::uniform_real_distribution<float> distScaleX(randomParameter.scaleMin.x, randomParameter.scaleMax.x);
-    std::uniform_real_distribution<float> distScaleY(randomParameter.scaleMin.y, randomParameter.scaleMax.y);
-    std::uniform_real_distribution<float> distScaleZ(randomParameter.scaleMin.z, randomParameter.scaleMax.z);
-    // カラー
-    std::uniform_real_distribution<float> colorDist(randomParameter.colorMin, randomParameter.colorMax);
-    // 寿命
-    std::uniform_real_distribution<float> distLifetime(randomParameter.lifetimeMin, randomParameter.lifetimeMax);
-    // 速度
-    std::uniform_real_distribution<float> distVelX(randomParameter.velocityMin.x, randomParameter.velocityMax.x);
-    std::uniform_real_distribution<float> distVelY(randomParameter.velocityMin.y, randomParameter.velocityMax.y);
-    std::uniform_real_distribution<float> distVelZ(randomParameter.velocityMin.z, randomParameter.velocityMax.z);
-
-
     for (uint32_t i = 0; i < count; ++i) {
-        Vector3 offset(distX(randomEngine), distY(randomEngine), distZ(randomEngine));
-        // 回転オフセット
-        Vector3 rotateoffset(distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine));
-        // スケール（Y軸のみランダムで指定されているならそのままでOK）
-        Vector3 scaleoffset(distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine));
-        Vector3 Velocity = { distVelX(randomEngine),distVelY(randomEngine),distVelZ(randomEngine) };
+        ParticleRandomData randData = GenerateRandomParticleData(randomParameter, velocity, lifetime, randomEngine);
 
         Particle newParticle;
-        newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
-        newParticle.transform.rotate = { transform.rotate.x + rotateoffset.x ,transform.rotate.y + +rotateoffset.y,transform.rotate.z + +rotateoffset.z };
-        newParticle.transform.scale = { transform.scale.x + scaleoffset.x,transform.scale.y + scaleoffset.y,transform.scale.z + scaleoffset.z };
-        newParticle.color = { colorDist(randomEngine),colorDist(randomEngine),colorDist(randomEngine),1.0f };
-        newParticle.lifetime = lifetime + distLifetime(randomEngine);;
+        newParticle.transform.translate = { transform.translate.x + randData.offset.x, transform.translate.y + randData.offset.y, transform.translate.z + randData.offset.z };
+        newParticle.transform.rotate = { transform.rotate.x + randData.rotation.x, transform.rotate.y + randData.rotation.y, transform.rotate.z + randData.rotation.z };
+        newParticle.transform.scale = { transform.scale.x + randData.scale.x, transform.scale.y + randData.scale.y, transform.scale.z + randData.scale.z };
+        newParticle.color = randData.color;
+        newParticle.lifetime = randData.lifetime;
         newParticle.currentTime = 0.0f;
-        newParticle.Velocity = { velocity.x + Velocity.x,  velocity.y + Velocity.y, velocity.z + Velocity.z };
+        newParticle.Velocity = randData.velocity;
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);
@@ -312,4 +285,36 @@ void ParticleManager::SetParticleGroupModel(const std::string& name, const std::
         it->second.model->SetVertexType(VertexType::Model); // 必要なら別途引数で指定
         it->second.model->Initialize(dxCommon_, modelFilepath);
     }
+}
+
+ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParameter& param, const Vector3& baseVelocity, float baseLifetime, std::mt19937& randomEngine) {
+    // ランダム分布の定義
+    std::uniform_real_distribution<float> distX(param.offsetMin.x, param.offsetMax.x);
+    std::uniform_real_distribution<float> distY(param.offsetMin.y, param.offsetMax.y);
+    std::uniform_real_distribution<float> distZ(param.offsetMin.z, param.offsetMax.z);
+
+    std::uniform_real_distribution<float> distRotateX(param.rotateMin.x, param.rotateMax.x);
+    std::uniform_real_distribution<float> distRotateY(param.rotateMin.y, param.rotateMax.y);
+    std::uniform_real_distribution<float> distRotateZ(param.rotateMin.z, param.rotateMax.z);
+
+    std::uniform_real_distribution<float> distScaleX(param.scaleMin.x, param.scaleMax.x);
+    std::uniform_real_distribution<float> distScaleY(param.scaleMin.y, param.scaleMax.y);
+    std::uniform_real_distribution<float> distScaleZ(param.scaleMin.z, param.scaleMax.z);
+
+    std::uniform_real_distribution<float> distVelX(param.velocityMin.x, param.velocityMax.x);
+    std::uniform_real_distribution<float> distVelY(param.velocityMin.y, param.velocityMax.y);
+    std::uniform_real_distribution<float> distVelZ(param.velocityMin.z, param.velocityMax.z);
+
+    std::uniform_real_distribution<float> distLifetime(param.lifetimeMin, param.lifetimeMax);
+    std::uniform_real_distribution<float> distColor(param.colorMin, param.colorMax);
+
+    ParticleRandomData data;
+    data.offset = { distX(randomEngine), distY(randomEngine), distZ(randomEngine) };
+    data.rotation = { distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine) };
+    data.scale = { distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine) };
+    data.velocity = { baseVelocity.x + distVelX(randomEngine), baseVelocity.y + distVelY(randomEngine), baseVelocity.z + distVelZ(randomEngine) };
+    data.lifetime = baseLifetime + distLifetime(randomEngine);
+    data.color = { distColor(randomEngine), distColor(randomEngine), distColor(randomEngine), 1.0f };
+
+    return data;
 }

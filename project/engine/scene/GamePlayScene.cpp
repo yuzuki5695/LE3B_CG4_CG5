@@ -180,20 +180,6 @@ void GamePlayScene::Initialize() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ParticleManager::GetInstance()->CreateParticleGroup("Sportclub", "Resources/uvChecker.png", "plane.obj", VertexType::Cylinder);  // 生成
 
     random_4 = {

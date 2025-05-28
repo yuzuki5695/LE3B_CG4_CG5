@@ -32,6 +32,15 @@ struct RandomParameter {
 	Vector3 velocityMax;
 };
 
+struct ParticleRandomData {
+	Vector3 offset;
+	Vector3 rotation;
+	Vector3 scale;
+	Vector3 velocity;
+	float lifetime;
+	Vector4 color;
+};
+
 // 3Dオブジェクト共通部
 class ParticleManager
 {
@@ -94,6 +103,8 @@ public: // メンバ関数
 	void SetParticleGroupModel(const std::string& name, const std::string& modelFilepath);
 
 	void DebugUpdata();
+	
+	ParticleRandomData GenerateRandomParticleData(const RandomParameter& param, const Vector3& baseVelocity, float baseLifetime, std::mt19937& randomEngine);
 
 private: // メンバ変数
 	// ポインタ
