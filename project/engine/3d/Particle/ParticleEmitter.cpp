@@ -61,14 +61,6 @@ void ParticleEmitter::DrawImGuiUI() {
 			count = static_cast<uint32_t>(countInt);
 		}
 
-		// Transformの編集
-		if (ImGui::TreeNode(("Transform##" + name_).c_str())) {
-			ImGui::DragFloat3(("Position##" + name_).c_str(), &transform_.translate.x, 0.01f);
-			ImGui::DragFloat3(("Rotation##" + name_).c_str(), &transform_.rotate.x, 0.01f);
-			ImGui::DragFloat3(("Scale##" + name_).c_str(), &transform_.scale.x, 0.01f);
-			ImGui::TreePop();
-		}
-
 		// --- テクスチャ選択 Combo ---
 		if (ImGui::BeginCombo(("Texture##" + name_).c_str(), textureList_[textureIndex_].c_str())) {
 			for (int i = 0; i < textureList_.size(); ++i) {
@@ -84,12 +76,18 @@ void ParticleEmitter::DrawImGuiUI() {
 			ImGui::EndCombo();
 		}
 
+		// Transformの編集
+		if (ImGui::TreeNode(("Transform##" + name_).c_str())) {
+			ImGui::DragFloat3(("Position##" + name_).c_str(), &transform_.translate.x, 0.01f);
+			ImGui::DragFloat3(("Rotation##" + name_).c_str(), &transform_.rotate.x, 0.01f);
+			ImGui::DragFloat3(("Scale##" + name_).c_str(), &transform_.scale.x, 0.01f);
+			ImGui::TreePop();
+		}
+
 		auto& group = ParticleManager::GetInstance()->GetGroup(name_);
 		size_t currentCount = group.particles.size();
 		uint32_t maxCount = ParticleManager::GetInstance()->GetMaxInstanceCount();
 		uint32_t availableToEmit = static_cast<uint32_t>(std::min<size_t>(count, maxCount - currentCount));
-
-		ImGui::Text("Emit Count: %u", availableToEmit);
 
 		// --- Emit ボタン ---
 		if (ImGui::Button(("Emit Particles##" + name_).c_str())) {

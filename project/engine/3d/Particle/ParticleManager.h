@@ -24,6 +24,12 @@ struct RandomParameter {
 	// ランダムな色の範囲
 	float colorMin; // 最小値
 	float colorMax; // 最大値
+	// ランダムな寿命の範囲を追加
+	float lifetimeMin;
+	float lifetimeMax;
+	// ランダムな速度の範囲を追加
+	Vector3 velocityMin;
+	Vector3 velocityMax;
 };
 
 // 3Dオブジェクト共通部

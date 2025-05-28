@@ -220,6 +220,13 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
     std::uniform_real_distribution<float> distScaleZ(randomParameter.scaleMin.z, randomParameter.scaleMax.z);
     // カラー
     std::uniform_real_distribution<float> colorDist(randomParameter.colorMin, randomParameter.colorMax);
+    // 寿命
+    std::uniform_real_distribution<float> distLifetime(randomParameter.lifetimeMin, randomParameter.lifetimeMax);
+    // 速度
+    std::uniform_real_distribution<float> distVelX(randomParameter.velocityMin.x, randomParameter.velocityMax.x);
+    std::uniform_real_distribution<float> distVelY(randomParameter.velocityMin.y, randomParameter.velocityMax.y);
+    std::uniform_real_distribution<float> distVelZ(randomParameter.velocityMin.z, randomParameter.velocityMax.z);
+
 
     for (uint32_t i = 0; i < count; ++i) {
         Vector3 offset(distX(randomEngine), distY(randomEngine), distZ(randomEngine));
@@ -227,15 +234,16 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
         Vector3 rotateoffset(distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine));
         // スケール（Y軸のみランダムで指定されているならそのままでOK）
         Vector3 scaleoffset(distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine));
+        Vector3 Velocity = { distVelX(randomEngine),distVelY(randomEngine),distVelZ(randomEngine) };
 
         Particle newParticle;
         newParticle.transform.translate = { transform.translate.x + offset.x,transform.translate.y + offset.y ,transform.translate.z + offset.z };
         newParticle.transform.rotate = { transform.rotate.x + rotateoffset.x ,transform.rotate.y + +rotateoffset.y,transform.rotate.z + +rotateoffset.z };
         newParticle.transform.scale = { transform.scale.x + scaleoffset.x,transform.scale.y + scaleoffset.y,transform.scale.z + scaleoffset.z };
         newParticle.color = { colorDist(randomEngine),colorDist(randomEngine),colorDist(randomEngine),1.0f };
-        newParticle.lifetime = lifetime;
+        newParticle.lifetime = lifetime + distLifetime(randomEngine);;
         newParticle.currentTime = 0.0f;
-        newParticle.Velocity = velocity;
+        newParticle.Velocity = { velocity.x + Velocity.x,  velocity.y + Velocity.y, velocity.z + Velocity.z };
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);

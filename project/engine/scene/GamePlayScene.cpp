@@ -20,7 +20,7 @@ void GamePlayScene::Initialize() {
 
     // カメラの初期化
     camera = std::make_unique<Camera>();
-    camera->SetTranslate(Vector3(0.0f, 3.0f, -30.0f));
+    camera->SetTranslate(Vector3(0.0f, 4.0f, -15.0f));
     camera->SetRotate(Vector3(0.1f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(camera.get());
     ParticleCommon::GetInstance()->SetDefaultCamera(camera.get());
@@ -61,8 +61,26 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);                 // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
-    
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring2", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/monsterBall.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
+
+    ParticleManager::GetInstance()->CreateParticleGroup("Sphere", "Resources/circle2.png", "monsterBallUV.obj", VertexType::Model); // 球
+
+    defaultrandom_ = {
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
+
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
+
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
+1.0f,1.0f,
+0.0f,0.0f,
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f}
+    };
+
     random_ = { 
         //座標
         {0.0f,0.0f,0.0f},  // 最小
@@ -75,7 +93,13 @@ void GamePlayScene::Initialize() {
         {0.0f,1.5f,0.0f}, // 最大
         // カラー
         0.0f,  // 最小
-        1.0f   // 最大
+        1.0f,  // 最大
+        // 寿命
+        0.0f, // 最小
+        0.0f, // 最大
+        // 速度
+        {0.0f,0.0f,0.0f},// 最小
+        {0.0f,0.0f,0.0f} // 最大
     };
 
     // 発生
@@ -83,32 +107,45 @@ void GamePlayScene::Initialize() {
         "Circle",                                                                              // パーティクルグループ名
         8,                                                                                     // 発生数
 		Transform{ { 0.05f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },        // サイズ,回転,位置
-        3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
+        1.5f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
         Vector3{ 0.0f, 0.0f, 0.0f },                                                           // ← 風
 		random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
     );
 
-    random_2 = {
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
+    randomRing_ = {
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
 
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
 
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
-    1.0f,1.0f
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f},
+0.2f,1.0f,
+0.0f,0.0f,
+{0.0f,0.0f,0.0f},
+{0.0f,0.0f,0.0f}
     };
 
     ring_ = std::make_unique <ParticleEmitter>(
         "Ring",
         1,
-        Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        Transform{ { 1.0f, 1.0f, 1.0f }, { 7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },
-        random_2
+        randomRing_
+    );
+
+    ring2_ = std::make_unique <ParticleEmitter>(
+        "Ring2",
+        1,
+        Transform{ { 1.0f, 1.0f, 1.0f }, { -7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        3.0f,
+        0.0f,
+        Vector3{ 0.0f, 0.0f, 0.0f },
+        randomRing_
     );
 
     random_3 = {
@@ -120,18 +157,42 @@ void GamePlayScene::Initialize() {
 
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
-    1.0f,1.0f
+
+    0.0f,1.0f,
+    
+    0.0f,0.0f,
+    
+    {-0.01f,-0.01f,-0.01f},
+    {0.01f,0.01f,0.01f}
     };
 
-    cylinder_ = std::make_unique <ParticleEmitter>(
-        "Cylinder",
-        1,
-        Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+    sphere_ = std::make_unique <ParticleEmitter>(
+        "Sphere",
+        64,
+        Transform{ { 0.08f, 0.08f, 0.08f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },
         random_3
     );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //Star
     //Spiral
@@ -146,7 +207,10 @@ void GamePlayScene::Initialize() {
 
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
-    1.0f,1.0f
+    1.0f,1.0f,
+    0.0f,0.0f,
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f}
     };
 
 	test_ = std::make_unique <ParticleEmitter>(
@@ -158,6 +222,8 @@ void GamePlayScene::Initialize() {
 		Vector3{ 0.0f, 0.0f, 0.0f },
 		random_4
 	);
+
+
 
 
 }
@@ -173,19 +239,38 @@ void GamePlayScene::Update() {
 
     ParticleManager::GetInstance()->DebugUpdata();
 
-    if (circle_) {
-        circle_->DrawImGuiUI();
-    }
-    if (ring_) {
-        ring_->DrawImGuiUI();
-    }
-    if (cylinder_) {
-        cylinder_->DrawImGuiUI();
-    }
+    //if (circle_) {
+    //    circle_->DrawImGuiUI();
+    //}
+    //if (sphere_) {
+    //    sphere_->DrawImGuiUI();
+    //}
+
+    //if (ring_) {
+    //    ring_->DrawImGuiUI();
+    //}   
+    //if (ring2_) {
+    //    ring2_->DrawImGuiUI();
+    //}
+
     if (test_) {
         test_->DrawImGuiUI();
     }
 
+    // --- 一括 Emit 制御 ---
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(0, 1, 1, 1), "Batch Emit Control");
+
+    // Emit 対象選択
+    static bool emit_01 = false;
+
+    ImGui::Checkbox("Emit Update 1", &emit_01);
+ 
+    if (emit_01 && ring_) {
+        ring_->Update(); 
+        ring2_->Update();
+        sphere_->Update();
+    }
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -200,10 +285,9 @@ void GamePlayScene::Update() {
     grass->Update();
 
     ParticleManager::GetInstance()->Update();
-    circle_->Update();
-    ring_->Update();
-    cylinder_->Update();
+
     test_->Update();
+
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理

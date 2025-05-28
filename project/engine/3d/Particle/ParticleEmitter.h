@@ -33,7 +33,7 @@ private:
 	// 現在の寿命
 	float frequencyTime;
 	// 自動発生するかどうかの
-	bool isAutoEmit_ = false;
+	bool isAutoEmit_ = true;
 	// テクスチャ変更フラグ
 	bool isTextureChange_ = false;
 	// テクスチャリスト
@@ -42,5 +42,25 @@ private:
 	int textureIndex_ = 0;
 	RandomParameter randomParameter_;
 
+	//random_ = {
+	//	//座標
+	//	{0.0f,0.0f,0.0f},  // 最小
+	//	{0.0f,0.0f,0.0f},  // 最大
+	//	// 回転
+	//	{0.0f,0.0f,-std::numbers::pi_v<float>},  // 最小
+	//	{0.0f,0.0f, std::numbers::pi_v<float>},  // 最大
+	//	// サイズ
+	//	{0.0f,0.4f,0.0f}, // 最小
+	//	{0.0f,1.5f,0.0f}, // 最大
+	//	// カラー
+	//	0.0f,  // 最小
+	//	1.0f,  // 最大
+	//	// 寿命
+	//	0.0f, // 最小
+	//	0.0f, // 最大
+	//	// 速度
+	//	{0.0f,0.0f,0.0f},// 最小
+	//	{0.0f,0.0f,0.0f} // 最大
+	//};
 
 };
