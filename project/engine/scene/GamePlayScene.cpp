@@ -55,7 +55,7 @@ void GamePlayScene::Initialize() {
 
     // オブジェクト作成
     object3d = Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
-    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
+    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f} }));
 
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
@@ -180,7 +180,7 @@ void GamePlayScene::Initialize() {
 
 
 
-    ParticleManager::GetInstance()->CreateParticleGroup("Sportclub", "Resources/uvChecker.png", "plane.obj", VertexType::Cylinder);  // 生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Sportclub", "Resources/uvChecker.png", "plane.obj", VertexType::Box);  // 生成
 
     random_4 = {
     {0.0f,0.0f,0.0f},
@@ -189,8 +189,8 @@ void GamePlayScene::Initialize() {
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
-    {0.001f,0.0f,0.0f},
-    {3.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
     1.0f,1.0f,
     0.0f,0.0f,
     {0.0f,0.0f,0.0f},
@@ -199,8 +199,8 @@ void GamePlayScene::Initialize() {
 
 	test_ = std::make_unique <ParticleEmitter>(
 		"Sportclub",
-		5,
-		Transform{ { 0.0f, 0.1f, 0.2f }, { 0.5f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+		1,
+		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
 		3.0f,
 		0.0f,
 		Vector3{ 0.0f, 0.0f, 0.0f },
@@ -276,8 +276,6 @@ void GamePlayScene::Update() {
 
 #pragma region 全てのSprite個々の更新処理
     
-    // 更新処理
-   // sprite->Update();
 
 #pragma endregion 全てのSprite個々の更新処理
 #ifdef USE_IMGUI
@@ -304,8 +302,6 @@ void GamePlayScene::Draw() {
 #pragma region 全てのSprite個々の描画処理
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
-    
-    //sprite->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }

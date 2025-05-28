@@ -38,6 +38,8 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
         VertexDataSpiral();
     } else if (vertexType_ == VertexType::Circle) { // サークルの頂点データを作成
         VertexDataCircle();
+    } else if (vertexType_ == VertexType::Box) { // 正方形の頂点データを作成
+        VertexDataBox();
     }
 }
 
@@ -174,6 +176,13 @@ MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& director
         }
     }
     return materialDate;
+}
+
+void ParticleModel::VertexDataBox() {
+    vertexCount = 36; // 立方体は常に36頂点
+    modelDate.vertices.resize(vertexCount);
+    CreateVertexBuffer();
+    modelDate.vertices = DrawBox(vertexData);
 }
 
 ModelDate ParticleModel::LoadObjFile(const std::string& directoryPath, const std::string& filename) {

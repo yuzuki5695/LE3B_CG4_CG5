@@ -259,5 +259,63 @@ namespace PrimitiveGenerator
         return vertices;
     }
 
+    std::vector<VertexData> DrawBox(VertexData* vertexData) {
+        std::vector<VertexData> vertices(36);
+
+        const float size = 0.5f;
+
+        Vector3 p[8] = {
+            {-size, -size, -size},
+            { size, -size, -size},
+            { size,  size, -size},
+            {-size,  size, -size},
+            {-size, -size,  size},
+            { size, -size,  size},
+            { size,  size,  size},
+            {-size,  size,  size},
+        };
+
+        uint32_t indices[] = {
+            4, 5, 6, 4, 6, 7,
+            1, 0, 3, 1, 3, 2,
+            0, 4, 7, 0, 7, 3,
+            5, 1, 2, 5, 2, 6,
+            3, 7, 6, 3, 6, 2,
+            0, 1, 5, 0, 5, 4,
+        };
+
+        Vector3 faceNormals[] = {
+            {0, 0, 1},
+            {0, 0, -1},
+            {-1, 0, 0},
+            {1, 0, 0},
+            {0, 1, 0},
+            {0, -1, 0},
+        };
+
+        for (int face = 0; face < 6; ++face) {
+            for (int i = 0; i < 6; ++i) {
+                int vertexIndex = face * 6 + i;
+                Vector3 pos = p[indices[vertexIndex]];
+
+                vertices[vertexIndex].position.x = pos.x;
+                vertices[vertexIndex].position.y = pos.y;
+                vertices[vertexIndex].position.z = pos.z;
+                vertices[vertexIndex].position.w = 1.0f;
+
+                vertices[vertexIndex].normal = faceNormals[face];
+
+                // ここでUVを割り当てたい場合は適宜調整
+                vertices[vertexIndex].texcoord = { 0.0f, 0.0f };
+            }
+        }
+
+        if (vertexData) {
+            std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());
+        }
+
+        return vertices;
+    }
+
 
 }
