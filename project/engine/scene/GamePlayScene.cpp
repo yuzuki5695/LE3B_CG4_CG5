@@ -107,6 +107,7 @@ void GamePlayScene::Initialize() {
         "Circle",                                                                              // パーティクルグループ名
         8,                                                                                     // 発生数
 		Transform{ { 0.05f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },        // サイズ,回転,位置
+        Vector4{1.0f,1.0f,1.0f,1.0f},                                                          // カラー
         1.5f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
         Vector3{ 0.0f, 0.0f, 0.0f },                                                           // ← 風
@@ -122,7 +123,7 @@ void GamePlayScene::Initialize() {
 
 {0.0f,0.0f,0.0f},
 {0.0f,0.0f,0.0f},
-0.2f,1.0f,
+0.5f,0.5f,
 0.0f,0.0f,
 {0.0f,0.0f,0.0f},
 {0.0f,0.0f,0.0f}
@@ -132,6 +133,7 @@ void GamePlayScene::Initialize() {
         "Ring",
         1,
         Transform{ { 1.0f, 1.0f, 1.0f }, { 7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        Vector4{ 0.0f,0.0f,0.0f,1.0f },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },
@@ -142,6 +144,7 @@ void GamePlayScene::Initialize() {
         "Ring2",
         1,
         Transform{ { 1.0f, 1.0f, 1.0f }, { -7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        Vector4{ 0.0f,0.0f,0.0f,1.0f },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },
@@ -158,7 +161,7 @@ void GamePlayScene::Initialize() {
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
-    0.0f,1.0f,
+    0.0f,0.0f,
     
     0.0f,0.0f,
     
@@ -170,6 +173,7 @@ void GamePlayScene::Initialize() {
         "Sphere",
         64,
         Transform{ { 0.08f, 0.08f, 0.08f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        Vector4{ 1.0f,0.0f,0.0f,1.0f },
         3.0f,
         0.0f,
         Vector3{ 0.0f, 0.0f, 0.0f },
@@ -199,7 +203,8 @@ void GamePlayScene::Initialize() {
 		"Box",
 		1,
 		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
-		3.0f,
+        Vector4{ 1.0f,1.0f,1.0f,1.0f },
+        3.0f,
 		0.0f,
 		Vector3{ 0.0f, 0.0f, 0.0f },
 		random_4
@@ -211,7 +216,8 @@ void GamePlayScene::Initialize() {
 }
 
 void GamePlayScene::Update() {
-#pragma region  ImGuiの更新処理開始    
+#pragma region  ImGuiの更新処理開始
+#ifdef USE_IMGUI
     // object3d
     //object3d->DebugUpdata("Object3d");
     //grass->DebugUpdata("Grass");
@@ -253,7 +259,7 @@ void GamePlayScene::Update() {
         ring2_->Update();
         sphere_->Update();
     }
-
+#endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
     /*--------------Cameraの更新処理---------------*/

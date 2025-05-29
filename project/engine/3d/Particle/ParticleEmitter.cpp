@@ -14,10 +14,11 @@ std::vector<std::string> ParticleEmitter::textureList_ = {
 	"Resources/gradationLine.png"
 };
 
-ParticleEmitter::ParticleEmitter(const std::string& name, const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter) {
+ParticleEmitter::ParticleEmitter(const std::string& name, const uint32_t count, const Transform& transform, const Vector4& color, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter) {
 	name_ = name;//名前
 	this->count = count;//count
 	transform_ = transform;//位置
+	this->color = color; // カラー
 	frequency = lifetime;//寿命
 	frequencyTime = currentTime;//現在の寿命
 	velocity_ = Velocity; // 風の強さ
@@ -42,7 +43,7 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Emit()
 {
 	//パーティクルを発生
-	ParticleManager::GetInstance()->Emit(name_, transform_, count, velocity_, frequency, randomParameter_);
+	ParticleManager::GetInstance()->Emit(name_, transform_, color, count, velocity_, frequency, randomParameter_);
 }
 
 void ParticleEmitter::DrawImGuiUI() {
@@ -93,7 +94,7 @@ void ParticleEmitter::DrawImGuiUI() {
 		if (ImGui::Button(("Emit Particles##" + name_).c_str())) {
 			if (availableToEmit > 0) {
 				// 発生
-				ParticleManager::GetInstance()->Emit(name_, transform_, availableToEmit, velocity_, frequency, randomParameter_);
+				ParticleManager::GetInstance()->Emit(name_, transform_, color, availableToEmit, velocity_, frequency, randomParameter_);
 			}
 		}
 	}

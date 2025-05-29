@@ -10,7 +10,7 @@ class ParticleEmitter
 {
 public:
 	//ほとんどのメンバ変数をコンストラクタの引数として受け取り、メンバ変数に代入する
-	ParticleEmitter(const std::string& name,const uint32_t count, const Transform& transform, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter);
+	ParticleEmitter(const std::string& name,const uint32_t count, const Transform& transform, const Vector4& color, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter);
 
 	// 更新処理
 	void Update();
@@ -24,6 +24,8 @@ private:
 	std::string name_;
 	// 座標
 	Transform transform_;
+	// カラー
+	Vector4 color;
 	// 数
 	uint32_t count;
 	// 風の強さ

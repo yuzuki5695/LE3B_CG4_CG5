@@ -189,7 +189,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     }
 }
 
-void ParticleManager::Emit(const std::string& name, const Transform& transform, uint32_t count, const Vector3& velocity, float lifetime,const RandomParameter& randomParameter) {
+void ParticleManager::Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Vector3& velocity, float lifetime,const RandomParameter& randomParameter) {
 
     auto it = particleGroups.find(name);
     if (it == particleGroups.end()) {
@@ -213,7 +213,7 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
         newParticle.transform.translate = { transform.translate.x + randData.offset.x, transform.translate.y + randData.offset.y, transform.translate.z + randData.offset.z };
         newParticle.transform.rotate = { transform.rotate.x + randData.rotation.x, transform.rotate.y + randData.rotation.y, transform.rotate.z + randData.rotation.z };
         newParticle.transform.scale = { transform.scale.x + randData.scale.x, transform.scale.y + randData.scale.y, transform.scale.z + randData.scale.z };
-        newParticle.color = randData.color;
+        newParticle.color = { color.x + randData.color.x,color.y + randData.color.y ,color.z + randData.color.z ,color.w + randData.color.w };
         newParticle.lifetime = randData.lifetime;
         newParticle.currentTime = 0.0f;
         newParticle.Velocity = randData.velocity;
