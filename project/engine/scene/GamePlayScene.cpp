@@ -176,29 +176,29 @@ void GamePlayScene::Initialize() {
         random_3
     );
 
-    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/uvChecker.png", "plane.obj", VertexType::Model);  // 生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/circle2.png", "plane.obj", VertexType::Model);  // 生成
 
     random_4 = {
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
+    {-6.0f,0.0f,-5.0f},
+    {6.0f,0.0f,5.0f},
 
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
-    1.0f,1.0f,
-    0.0f,0.0f,
-{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}},
-{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}}
+    0.0f,1.0f,
+    5.0f,10.0f,
+{{-0.02f,-0.05f,0.0f},{-0.02f,-0.02f,-0.02f},{0.0f,0.0f,0.0f} },
+{{0.02f,0.0f,0.0f},{0.02f,0.02f,0.02f},{0.0f,0.0f,0.0f}}
     };
 
 	test_ = std::make_unique <ParticleEmitter>(
 		"Box",
 		1,
-		Transform{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
-        Vector4{ 1.0f,1.0f,1.0f,1.0f },
-        3.0f,
+		Transform{ { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 8.0f, 0.0f } },
+        Vector4{ 1.0f,0.0f,0.0f,1.0f },
+        0.0f,
 		0.0f,
         Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
 		random_4
