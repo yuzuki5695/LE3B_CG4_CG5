@@ -12,6 +12,7 @@ enum class VertexType {
 	Spiral,
 	Circle,
 	Box,
+	Cloud,
 };
 
 // パーティクルモデル
@@ -38,6 +39,7 @@ private:
 	void VertexDataSpiral();
 	void VertexDataCircle();
 	void VertexDataBox();
+	void VertexDataCloud();
 	// マテリアル
 	void MaterialGenerate();
 private:

@@ -317,5 +317,26 @@ namespace PrimitiveGenerator
         return vertices;
     }
 
+    std::vector<VertexData> GenerateCircle(float cx, float cy, float cz, float radius, int segments) {
+        std::vector<VertexData> vertices;
+        for (int i = 0; i < segments; ++i) {
+            float theta0 = 2.0f * 3.1415926f * i / segments;
+            float theta1 = 2.0f * 3.1415926f * (i + 1) / segments;
+
+            Vector4 center = { cx, cy, cz, 1.0f };
+            Vector4 p0 = { cx + cosf(theta0) * radius, cy + sinf(theta0) * radius, cz, 1.0f };
+            Vector4 p1 = { cx + cosf(theta1) * radius, cy + sinf(theta1) * radius, cz, 1.0f };
+
+            VertexData v0{ center, {0.5f, 0.5f}, {0.0f, 0.0f, 1.0f} };
+            VertexData v1{ p0, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f} };
+            VertexData v2{ p1, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f} };
+
+            vertices.push_back(v0);
+            vertices.push_back(v1);
+            vertices.push_back(v2);
+        }
+        return vertices;
+    }
+
 
 }

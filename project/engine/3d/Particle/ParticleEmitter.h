@@ -65,4 +65,7 @@ private:
 	//	{0.0f,0.0f,0.0f} // 最大
 	//};
 
+public:
+	float GetfrequencyTime() {return frequencyTime; }
+
 };

@@ -105,9 +105,6 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
-      <Filter>ヘッダーファイル\engine\math</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp">
       <Filter>ソースファイル\application\engine\3d\Particle</Filter>
     </ClCompile>
@@ -119,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="engine\3d\Particle\ParticleModel.cpp">
       <Filter>ソースファイル\application\engine\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
+      <Filter>ソースファイル\application\engine\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

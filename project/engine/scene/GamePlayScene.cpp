@@ -129,27 +129,20 @@ void GamePlayScene::Initialize() {
 {0.0f,0.0f,0.0f}
     };
 
-    ring_ = std::make_unique <ParticleEmitter>(
-        "Ring",
-        1,
-        Transform{ { 1.0f, 1.0f, 1.0f }, { 7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
-        Vector4{ 0.0f,0.0f,0.0f,1.0f },
-        3.0f,
-        0.0f,
-        Vector3{ 0.0f, 0.0f, 0.0f },
-        randomRing_
-    );
+    for (int i = 0; i < 2; ++i) {
+        float x = (i == 0) ? 7.0f : -7.0f;
 
-    ring2_ = std::make_unique <ParticleEmitter>(
-        "Ring2",
-        1,
-        Transform{ { 1.0f, 1.0f, 1.0f }, { -7.0f, 7.5f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
-        Vector4{ 0.0f,0.0f,0.0f,1.0f },
-        3.0f,
-        0.0f,
-        Vector3{ 0.0f, 0.0f, 0.0f },
-        randomRing_
-    );
+        rings_[i] = std::make_unique<ParticleEmitter>(
+            (i == 0) ? "Ring" : "Ring2",
+            1,
+            Transform{ {1.0f, 1.0f, 1.0f}, {x, 7.5f, 0.0f}, {0.0f, 2.0f, 0.0f} },
+            Vector4{ 0.0f, 0.0f, 0.0f, 1.0f },
+            3.0f,
+            0.0f,
+            Vector3{ 0.0f, 0.0f, 0.0f },
+            randomRing_
+        );
+    }
 
     random_3 = {
     {0.0f,0.0f,0.0f},
@@ -180,7 +173,7 @@ void GamePlayScene::Initialize() {
         random_3
     );
 
-    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/uvChecker.png", "plane.obj", VertexType::Box);  // 生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/uvChecker.png", "plane.obj", VertexType::Model);  // 生成
 
     random_4 = {
     {0.0f,0.0f,0.0f},
@@ -204,7 +197,7 @@ void GamePlayScene::Initialize() {
         Vector4{ 1.0f,1.0f,1.0f,1.0f },
         3.0f,
 		0.0f,
-		Vector3{ 0.0f, 0.0f, 0.0f },
+		Vector3{ 0.01f, 0.0f, 0.0f },
 		random_4
 	);
 
@@ -250,9 +243,12 @@ void GamePlayScene::Update() {
 
     ImGui::Checkbox("Emit Update 1", &emit_01);
  
-    if (emit_01 && ring_) {
-        ring_->Update(); 
-        ring2_->Update();
+    if (emit_01) {
+        for (auto& ring : rings_) {
+            if (ring) {
+                ring->Update();
+            }
+        }
         sphere_->Update();
     }
 #endif // USE_IMGUI

@@ -40,6 +40,8 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
         VertexDataCircle();
     } else if (vertexType_ == VertexType::Box) { // 正方形の頂点データを作成
         VertexDataBox();
+    } else if (vertexType_ == VertexType::Cloud) { // 正方形の頂点データを作成
+        VertexDataCloud();
     }
 }
 
@@ -177,6 +179,31 @@ MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& director
     }
     return materialDate;
 }
+
+void ParticleModel::VertexDataCloud() {
+    const int kCloudParts = 10; // 雲の構成要素（円）の数
+    const float kRadius = 1.0f; // 各円の半径
+    const float kSpread = 1.5f; // 雲の広がり
+
+    std::vector<VertexData> cloudVertices;
+
+    for (int i = 0; i < kCloudParts; ++i) {
+        // ランダムな位置に円を配置
+        float offsetX = ((rand() % 100) / 100.0f - 0.5f) * kSpread * 2.0f;
+        float offsetY = ((rand() % 100) / 100.0f - 0.5f) * kSpread * 2.0f;
+
+        // 各円の頂点を生成
+        std::vector<VertexData> part = GenerateCircle(offsetX, offsetY, 0.0f, kRadius, 32);
+        cloudVertices.insert(cloudVertices.end(), part.begin(), part.end());
+    }
+
+    vertexCount = static_cast<int>(cloudVertices.size());
+    modelDate.vertices = cloudVertices;
+
+    CreateVertexBuffer();
+    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * vertexCount);
+}
+
 
 void ParticleModel::VertexDataBox() {
     vertexCount = 36; // 立方体は常に36頂点

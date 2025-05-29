@@ -39,8 +39,7 @@ private: // メンバ変数
 
     // エミッター生成
     std::unique_ptr <ParticleEmitter> circle_;
-    std::unique_ptr <ParticleEmitter> ring_;
-    std::unique_ptr <ParticleEmitter> ring2_;
+    std::array<std::unique_ptr<ParticleEmitter>, 2> rings_;
     std::unique_ptr <ParticleEmitter> sphere_;
     std::unique_ptr <ParticleEmitter> test_;
     

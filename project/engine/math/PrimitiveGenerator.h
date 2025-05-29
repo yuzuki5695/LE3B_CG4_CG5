@@ -28,6 +28,7 @@ namespace PrimitiveGenerator
 	// 正方形の頂点データを作成する関数
 	std::vector<VertexData> DrawBox(VertexData* vertexData);
 
+	std::vector<VertexData> GenerateCircle(float cx, float cy, float cz, float radius, int segments);
 
 
 };
