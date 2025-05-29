@@ -180,8 +180,6 @@ void GamePlayScene::Initialize() {
         random_3
     );
 
-
-
     ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/uvChecker.png", "plane.obj", VertexType::Box);  // 生成
 
     random_4 = {
@@ -209,8 +207,6 @@ void GamePlayScene::Initialize() {
 		Vector3{ 0.0f, 0.0f, 0.0f },
 		random_4
 	);
-
-
 
 
 }
