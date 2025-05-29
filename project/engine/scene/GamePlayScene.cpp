@@ -98,8 +98,8 @@ void GamePlayScene::Initialize() {
         0.0f, // 最小
         0.0f, // 最大
         // 速度
-        {0.0f,0.0f,0.0f},// 最小
-        {0.0f,0.0f,0.0f} // 最大
+        {{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}},// 最小
+        {{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}} // 最大
     };
 
     // 発生
@@ -110,7 +110,7 @@ void GamePlayScene::Initialize() {
         Vector4{1.0f,1.0f,1.0f,1.0f},                                                          // カラー
         1.5f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
         0.0f,                                                                                  // 経過時間（基本は0から開始）
-        Vector3{ 0.0f, 0.0f, 0.0f },                                                           // ← 風
+        Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },                 // ← 風
 		random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
     );
 
@@ -123,10 +123,13 @@ void GamePlayScene::Initialize() {
 
 {0.0f,0.0f,0.0f},
 {0.0f,0.0f,0.0f},
+
 0.5f,0.5f,
+
 0.0f,0.0f,
-{0.0f,0.0f,0.0f},
-{0.0f,0.0f,0.0f}
+
+{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.001f,0.001f,0.0f}},
+{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.001f,0.001f,0.0f}}
     };
 
     for (int i = 0; i < 2; ++i) {
@@ -139,7 +142,7 @@ void GamePlayScene::Initialize() {
             Vector4{ 0.0f, 0.0f, 0.0f, 1.0f },
             3.0f,
             0.0f,
-            Vector3{ 0.0f, 0.0f, 0.0f },
+            Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
             randomRing_
         );
     }
@@ -158,8 +161,8 @@ void GamePlayScene::Initialize() {
     
     0.0f,0.0f,
     
-    {-0.01f,-0.01f,-0.01f},
-    {0.01f,0.01f,0.01f}
+{{-0.01f,-0.01f,-0.01f},{-0.0f,-0.0f,-0.0f},{-0.0f,-0.0f,-0.0f}},
+{{0.01f,0.01f,0.01f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}}
     };
 
     sphere_ = std::make_unique <ParticleEmitter>(
@@ -169,7 +172,7 @@ void GamePlayScene::Initialize() {
         Vector4{ 1.0f,0.0f,0.0f,1.0f },
         3.0f,
         0.0f,
-        Vector3{ 0.0f, 0.0f, 0.0f },
+        Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
         random_3
     );
 
@@ -186,8 +189,8 @@ void GamePlayScene::Initialize() {
     {0.0f,0.0f,0.0f},
     1.0f,1.0f,
     0.0f,0.0f,
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f}
+{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}},
+{{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}}
     };
 
 	test_ = std::make_unique <ParticleEmitter>(
@@ -197,7 +200,7 @@ void GamePlayScene::Initialize() {
         Vector4{ 1.0f,1.0f,1.0f,1.0f },
         3.0f,
 		0.0f,
-		Vector3{ 0.01f, 0.0f, 0.0f },
+        Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
 		random_4
 	);
 

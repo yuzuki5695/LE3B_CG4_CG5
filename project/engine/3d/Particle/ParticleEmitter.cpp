@@ -14,7 +14,7 @@ std::vector<std::string> ParticleEmitter::textureList_ = {
 	"Resources/gradationLine.png"
 };
 
-ParticleEmitter::ParticleEmitter(const std::string& name, const uint32_t count, const Transform& transform, const Vector4& color, const float lifetime, const float currentTime, const Vector3& Velocity, const RandomParameter& randomParameter) {
+ParticleEmitter::ParticleEmitter(const std::string& name, const uint32_t count, const Transform& transform, const Vector4& color, const float lifetime, const float currentTime, const Velocity& Velocity, const RandomParameter& randomParameter) {
 	name_ = name;//名前
 	this->count = count;//count
 	transform_ = transform;//位置

@@ -11,6 +11,12 @@
 #include<Model.h>
 #include<ParticleModel.h>
 
+struct Velocity {
+	Vector3 translate;
+	Vector3 rotate;
+	Vector3 scale;
+};
+
 struct RandomParameter {
 	// ランダムな速度の範囲
 	Vector3 offsetMin;
@@ -28,17 +34,19 @@ struct RandomParameter {
 	float lifetimeMin;
 	float lifetimeMax;
 	// ランダムな速度の範囲を追加
-	Vector3 velocityMin;
-	Vector3 velocityMax;
+	Velocity velocityMin;
+	Velocity velocityMax;
 };
 
 struct ParticleRandomData {
 	Vector3 offset;
 	Vector3 rotation;
 	Vector3 scale;
-	Vector3 velocity;
+	Velocity velocity;
 	float lifetime;
 	Vector4 color;
+	Vector3 rotationSpeed;  // 回転速度
+	Vector3 scaleSpeed;     // スケール変化速度
 };
 
 // 3Dオブジェクト共通部
@@ -48,7 +56,7 @@ public:
 	// パーティクル
 	struct Particle {
 		Transform transform;
-		Vector3 Velocity;
+		Velocity Velocity;
 		float lifetime;
 		float currentTime;
 		Vector4 color;
@@ -94,14 +102,14 @@ public: // メンバ関数
 	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType);
 	
 	// 発生
-	void Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Vector3& velocity, float lifetime, const RandomParameter& randomParameter);
+	void Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Velocity& velocity, float lifetime, const RandomParameter& randomParameter);
 
 	void SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath);
 	void SetParticleGroupModel(const std::string& name, const std::string& modelFilepath);
 
 	void DebugUpdata();
 	
-	ParticleRandomData GenerateRandomParticleData(const RandomParameter& param, const Vector3& baseVelocity, float baseLifetime, std::mt19937& randomEngine);
+	ParticleRandomData GenerateRandomParticleData(const RandomParameter& param, const Velocity& baseVelocity, float baseLifetime, std::mt19937& randomEngine);
 
 private: // メンバ変数
 	// ポインタ

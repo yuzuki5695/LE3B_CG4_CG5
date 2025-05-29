@@ -80,10 +80,20 @@ void ParticleManager::Update() {
             float alpha = 1.0f - (*particleIterator).currentTime / (*particleIterator).lifetime;
             (*particleIterator).color.w = alpha;
 
-            particleIterator->transform.translate.x += particleIterator->Velocity.x;
-            particleIterator->transform.translate.y += particleIterator->Velocity.y;
-            particleIterator->transform.translate.z += particleIterator->Velocity.z;
-
+            // 速度を足す
+            // 座標
+            particleIterator->transform.translate.x += particleIterator->Velocity.translate.x;
+            particleIterator->transform.translate.y += particleIterator->Velocity.translate.y;
+            particleIterator->transform.translate.z += particleIterator->Velocity.translate.z;
+            // 回転
+            particleIterator->transform.rotate.x += particleIterator->Velocity.rotate.x;
+            particleIterator->transform.rotate.y += particleIterator->Velocity.rotate.y;
+            particleIterator->transform.rotate.z += particleIterator->Velocity.rotate.z;
+            // サイズ
+            particleIterator->transform.scale.x += particleIterator->Velocity.scale.x;
+            particleIterator->transform.scale.y += particleIterator->Velocity.scale.y;
+            particleIterator->transform.scale.z += particleIterator->Velocity.scale.z;
+            
             // world行列の計算
             Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
             // 回転行列を各軸ごとに作成して合成
@@ -189,7 +199,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     }
 }
 
-void ParticleManager::Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Vector3& velocity, float lifetime,const RandomParameter& randomParameter) {
+void ParticleManager::Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Velocity& velocity, float lifetime,const RandomParameter& randomParameter) {
 
     auto it = particleGroups.find(name);
     if (it == particleGroups.end()) {
@@ -216,7 +226,9 @@ void ParticleManager::Emit(const std::string& name, const Transform& transform, 
         newParticle.color = { color.x + randData.color.x,color.y + randData.color.y ,color.z + randData.color.z ,color.w + randData.color.w };
         newParticle.lifetime = randData.lifetime;
         newParticle.currentTime = 0.0f;
-        newParticle.Velocity = randData.velocity;
+        newParticle.Velocity.translate = randData.velocity.translate;
+        newParticle.Velocity.rotate = randData.velocity.rotate;
+        newParticle.Velocity.scale = randData.velocity.scale;
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);
@@ -287,7 +299,7 @@ void ParticleManager::SetParticleGroupModel(const std::string& name, const std::
     }
 }
 
-ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParameter& param, const Vector3& baseVelocity, float baseLifetime, std::mt19937& randomEngine) {
+ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParameter& param, const Velocity& baseVelocity, float baseLifetime, std::mt19937& randomEngine) {
     // ランダム分布の定義
     std::uniform_real_distribution<float> distX(param.offsetMin.x, param.offsetMax.x);
     std::uniform_real_distribution<float> distY(param.offsetMin.y, param.offsetMax.y);
@@ -301,9 +313,17 @@ ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParam
     std::uniform_real_distribution<float> distScaleY(param.scaleMin.y, param.scaleMax.y);
     std::uniform_real_distribution<float> distScaleZ(param.scaleMin.z, param.scaleMax.z);
 
-    std::uniform_real_distribution<float> distVelX(param.velocityMin.x, param.velocityMax.x);
-    std::uniform_real_distribution<float> distVelY(param.velocityMin.y, param.velocityMax.y);
-    std::uniform_real_distribution<float> distVelZ(param.velocityMin.z, param.velocityMax.z);
+    std::uniform_real_distribution<float> distVeltranslateX(param.velocityMin.translate.x, param.velocityMax.translate.x);
+    std::uniform_real_distribution<float> distVeltranslateY(param.velocityMin.translate.y, param.velocityMax.translate.y);
+    std::uniform_real_distribution<float> distVeltranslateZ(param.velocityMin.translate.z, param.velocityMax.translate.z);
+
+    std::uniform_real_distribution<float> distVelrotateX(param.velocityMin.rotate.x, param.velocityMax.rotate.x);
+    std::uniform_real_distribution<float> distVelrotateY(param.velocityMin.rotate.y, param.velocityMax.rotate.y);
+    std::uniform_real_distribution<float> distVelrotateZ(param.velocityMin.rotate.z, param.velocityMax.rotate.z);
+
+    std::uniform_real_distribution<float> distVelscaleX(param.velocityMin.scale.x, param.velocityMax.scale.x);
+    std::uniform_real_distribution<float> distVelscaleY(param.velocityMin.scale.y, param.velocityMax.scale.y);
+    std::uniform_real_distribution<float> distVelscaleZ(param.velocityMin.scale.z, param.velocityMax.scale.z);
 
     std::uniform_real_distribution<float> distLifetime(param.lifetimeMin, param.lifetimeMax);
     std::uniform_real_distribution<float> distColor(param.colorMin, param.colorMax);
@@ -312,7 +332,9 @@ ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParam
     data.offset = { distX(randomEngine), distY(randomEngine), distZ(randomEngine) };
     data.rotation = { distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine) };
     data.scale = { distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine) };
-    data.velocity = { baseVelocity.x + distVelX(randomEngine), baseVelocity.y + distVelY(randomEngine), baseVelocity.z + distVelZ(randomEngine) };
+    data.velocity.translate = { baseVelocity.translate.x + distVeltranslateX(randomEngine), baseVelocity.translate.y + distVeltranslateY(randomEngine), baseVelocity.translate.z + distVeltranslateZ(randomEngine) };
+    data.velocity.rotate = { baseVelocity.rotate.x + distVelrotateX(randomEngine), baseVelocity.rotate.y + distVelrotateY(randomEngine), baseVelocity.rotate.z + distVelrotateZ(randomEngine) };
+    data.velocity.scale = { baseVelocity.scale.x + distVelscaleX(randomEngine), baseVelocity.scale.y + distVelscaleY(randomEngine), baseVelocity.scale.z + distVelscaleZ(randomEngine) };
     data.lifetime = baseLifetime + distLifetime(randomEngine);
     data.color = { distColor(randomEngine), distColor(randomEngine), distColor(randomEngine), 1.0f };
 
