@@ -40,7 +40,7 @@ void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& 
         VertexDataCircle();
     } else if (vertexType_ == VertexType::Box) { // 正方形の頂点データを作成
         VertexDataBox();
-    } else if (vertexType_ == VertexType::Cloud) { // 正方形の頂点データを作成
+    } else if (vertexType_ == VertexType::Cloud) { // 雲型の頂点データを作成
         VertexDataCloud();
     }
 }
@@ -135,6 +135,17 @@ void ParticleModel::VertexDataSpiral() {
     DrawSpiral(kSpiralDiv, 5.0f, 10.0f, 3, vertexData);
 }
 
+void ParticleModel::VertexDataCircle() {
+    const uint32_t kSegmentCount = 64;
+    const float kRadius = 1.0f;
+    // 頂点数は線で円を構成するので segmentCount+1（ループ閉じ）
+    vertexCount = (kSegmentCount + 1);
+    modelDate.vertices.resize(vertexCount);
+    // 頂点バッファ作成
+    CreateVertexBuffer();
+    // 頂点データ生成
+    modelDate.vertices = DrawCircle(vertexData, kSegmentCount, kRadius);
+}
 void ParticleModel::MaterialGenerate() {
     // マテリアル用のリソース
     materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
@@ -146,16 +157,6 @@ void ParticleModel::MaterialGenerate() {
     materialData->uvTransform = MakeIdentity4x4();
 }
 
-void ParticleModel::VertexDataCircle() {
-    const uint32_t kSegmentCount = 64;
-    const float kRadius = 1.0f;
-    // 頂点数は線で円を構成するので segmentCount+1（ループ閉じ）
-    vertexCount = (kSegmentCount + 1);
-    modelDate.vertices.resize(vertexCount);
-    // 頂点バッファ作成
-    CreateVertexBuffer();
-    modelDate.vertices = DrawCircle(vertexData, kSegmentCount, kRadius);
-}
 
 MaterialDate ParticleModel::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
     // 1. 中で必要となる変数の宣言

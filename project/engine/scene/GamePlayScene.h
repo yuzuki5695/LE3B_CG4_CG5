@@ -43,9 +43,6 @@ private: // メンバ変数
     std::unique_ptr <ParticleEmitter> sphere_;
     std::unique_ptr <ParticleEmitter> test_;
     
-    RandomParameter defaultrandom_;
+    // ランダムパラメータ
     RandomParameter random_;
-    RandomParameter randomRing_;
-    RandomParameter random_3;
-    RandomParameter random_4;
 };
