@@ -41,11 +41,13 @@ private: // メンバ変数
     std::unique_ptr <ParticleEmitter> circle_;
     std::array<std::unique_ptr<ParticleEmitter>, 2> rings_;
     std::unique_ptr <ParticleEmitter> sphere_;
-    std::unique_ptr <ParticleEmitter> test_;
+    std::unique_ptr <ParticleEmitter> rain_;
+    std::unique_ptr <ParticleEmitter> sportclub_;
     
     RandomParameter defaultrandom_;
     RandomParameter random_;
     RandomParameter randomRing_;
-    RandomParameter random_3;
-    RandomParameter random_4;
+    RandomParameter randomsphere_;
+    RandomParameter randomrain_;
+    RandomParameter randomsportclub_;
 };

@@ -147,38 +147,38 @@ void GamePlayScene::Initialize() {
         );
     }
 
-    random_3 = {
+    randomsphere_ = {
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
     {0.0f,0.0f,0.0f},
     {0.0f,0.0f,0.0f},
 
-    {0.0f,0.0f,0.0f},
-    {0.0f,0.0f,0.0f},
+    {0.0f,-0.1f,-0.1f},
+    {0.0f,0.1f,0.1f},
 
     0.0f,0.0f,
     
     0.0f,0.0f,
     
-{{-0.02f,-0.02f,-0.02f},{-0.0f,-0.0f,-0.0f},{-0.0f,-0.0f,-0.0f}},
-{{0.02f,0.02f,0.02f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}}
+{{-0.02f,-0.02f,-0.02f},{-0.1f,-0.1f,-0.1f},{-0.0f,-0.0f,-0.0f}},
+{{0.02f,0.02f,0.02f},{0.1f,0.1f,0.1f},{0.0f,0.0f,0.0f}}
     };
 
     sphere_ = std::make_unique <ParticleEmitter>(
         "Sphere",
         50,
-        Transform{ { 0.08f, 0.08f, 0.08f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
+        Transform{ { 0.08f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 2.0f, 0.0f } },
         Vector4{ 1.0f,0.0f,0.0f,1.0f },
         3.0f,
         0.0f,
         Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
-        random_3
+        randomsphere_
     );
 
-    ParticleManager::GetInstance()->CreateParticleGroup("Box", "Resources/circle2.png", "plane.obj", VertexType::Model);  // 生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Rain", "Resources/circle2.png", "plane.obj", VertexType::Model);  // 生成
 
-    random_4 = {
+    randomrain_ = {
     {-6.0f,0.0f,-3.0f},
     {6.0f,0.0f,1.0f},
 
@@ -193,17 +193,49 @@ void GamePlayScene::Initialize() {
 {{0.02f,0.0f,0.0f},{0.02f,0.02f,0.02f},{0.0f,0.0f,0.0f}}
     };
 
-	test_ = std::make_unique <ParticleEmitter>(
-		"Box",
+	rain_ = std::make_unique <ParticleEmitter>(
+		"Rain",
 		1,
 		Transform{ { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 8.0f, 0.0f } },
         Vector4{ 1.0f,0.0f,0.0f,1.0f },
         0.0f,
 		0.0f,
         Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
-		random_4
+		randomrain_
 	);
 
+
+    ParticleManager::GetInstance()->CreateParticleGroup("Sport", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
+
+
+    randomsportclub_ = {
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,0.0f,0.0f},
+    {0.0f,0.0f,0.0f},
+
+    {0.0f,-0.0f,-0.0f},
+    {0.0f,0.0f,0.0f},
+
+    0.0f,0.0f,
+
+    0.0f,0.0f,
+
+{{-0.00f,-0.00f,-0.00f},{-0.0f,-0.0f,0.0f},{0.01f,0.001f,0.0f}},
+{{0.00f,0.00f,0.00f},{0.0f,0.0f,0.0f},{0.05f,0.008f,0.0f}}
+    };
+
+    sportclub_ = std::make_unique <ParticleEmitter>(
+        "Sport",
+        7,
+        Transform{ { -0.3f, 0.1f, 1.0f }, { 0.1f, 0.0f, 0.0f }, { 0.0f, 1.1f, 0.0f } },
+        Vector4{ 0.0f,0.0f,1.0f,1.0f },
+        3.0f,
+        0.0f,
+        Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },
+        randomsportclub_
+    );
 
 }
 
@@ -211,30 +243,18 @@ void GamePlayScene::Update() {
 #pragma region  ImGuiの更新処理開始
 #ifdef USE_IMGUI
     // object3d
-    //object3d->DebugUpdata("Object3d");
-    //grass->DebugUpdata("Grass");
 
     // Camera
     camera->DebugUpdate();
 
     ParticleManager::GetInstance()->DebugUpdata();
 
-    //if (circle_) {
-    //    circle_->DrawImGuiUI();
-    //}
-    //if (sphere_) {
-    //    sphere_->DrawImGuiUI();
-    //}
+    if (rain_) {
+        rain_->DrawImGuiUI();
+    }
 
-    //if (ring_) {
-    //    ring_->DrawImGuiUI();
-    //}   
-    //if (ring2_) {
-    //    ring2_->DrawImGuiUI();
-    //}
-
-    if (test_) {
-        test_->DrawImGuiUI();
+    if (sportclub_) {
+        sportclub_->DrawImGuiUI();
     }
 
     // --- 一括 Emit 制御 ---
@@ -253,6 +273,7 @@ void GamePlayScene::Update() {
             }
         }
         sphere_->Update();
+        sportclub_->Update();
     }
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
@@ -268,9 +289,13 @@ void GamePlayScene::Update() {
     grass->Update();
 
     ParticleManager::GetInstance()->Update();
-
-    test_->Update();
-
+    
+    for (auto& ring : rings_) {
+        ring->Update();
+    }
+    sphere_->Update();
+    rain_->Update();        
+    sportclub_->Update();
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理

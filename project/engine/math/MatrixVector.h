@@ -9,9 +9,6 @@ namespace MatrixVector
 	// 単位行列の作成
 	Matrix4x4 MakeIdentity4x4();
 
-	// 単位行列の作成
-	Matrix4x4 MakeIdentity4x4();
-
 	//長さ（ノルム）
 	float Length(const Vector3& v);
 
