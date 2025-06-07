@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LE3B", "LE3B.vcxproj", "{4A4DC1F5-7C46-444E-98E4-C58C3FB34D6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CG4_CG5", "CG4_CG5.vcxproj", "{4A4DC1F5-7C46-444E-98E4-C58C3FB34D6B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{2D81CB0D-CFB9-4F7C-B8D2-23D695132381}"
 	ProjectSection(SolutionItems) = preProject
