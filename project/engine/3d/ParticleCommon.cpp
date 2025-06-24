@@ -1,4 +1,6 @@
 #include "ParticleCommon.h"
+#include "Logger.h"
+#include "StringUtility.h"
 
 using namespace Microsoft::WRL;
 

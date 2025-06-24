@@ -6,8 +6,6 @@
 #include<dxcapi.h>
 #include<chrono>
 #include"WinApp.h"
-#include "Logger.h"
-#include "StringUtility.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
 

@@ -1,5 +1,6 @@
 #include "TextureManager.h"
-
+#include "Logger.h"
+#include "StringUtility.h"
 
 // ImGuiで0番目に使用するため、1番から使用
 uint32_t TextureManager::KSRVIndexTop = 1;

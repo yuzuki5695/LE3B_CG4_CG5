@@ -11,9 +11,7 @@
 #include <ParticleCommon.h>
 #include <ParticleManager.h>
 
-void GamePlayScene::Finalize() {
-
-}
+void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Initialize() {
 
