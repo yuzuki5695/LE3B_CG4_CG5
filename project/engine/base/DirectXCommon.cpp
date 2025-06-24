@@ -242,7 +242,7 @@ void DirectXCommon::DescriptorHeapGenerate() {
     /*----------------------------------------------------------------------------*/
 
     // RTV用のヒープでディスクリプタの数は2。RTVはshader内で触るものではないので、ShaderVisibleはfalse
-    rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+    rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
     // DSV用のヒープでディスクリプタの数は1。DSVはshader内で触るものではないので、ShaderVisibleはfalse
     dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
@@ -261,7 +261,18 @@ void DirectXCommon::RenderviewInitialize() {
     assert(SUCCEEDED(hr));
     hr = swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainResources[1]));
     assert(SUCCEEDED(hr));
-    
+ 
+    // カスタムRenderTarget用のリソース作成（赤でクリアされる）
+    const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f }; // 赤
+    // [2]にrenderTexture を作る
+    renderTextureResource = CreateRenderTextureResource(
+        device,
+        WinApp::kClientWidth,
+        WinApp::kClientHeight,
+        DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+        kRenderTargetClearValue
+    );
+
     /*-----------------------------------------------------------*/
     /*--------------------------RTVの設定--------------------------*/
     /*------------------------------------------------------------*/
@@ -271,17 +282,20 @@ void DirectXCommon::RenderviewInitialize() {
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;//2Dテクスチャとして読み込む
     //ディスクリプタの先頭を取得する
     D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
-    
-    // ハンドルの数だけ作成する
+
     for (uint32_t i = 0; i < rtvHandlenum; ++i) {
-        // ハンドルを設定
-        rtvHandles[i] = rtvStartHandle;
-        // RTVを作成
-        device->CreateRenderTargetView(swapChainResources[i].Get(), &rtvDesc, rtvHandles[i]);
-        assert(SUCCEEDED(hr));
-        // 次のハンドルに進む
-        rtvStartHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    rtvHandles[i] = rtvStartHandle;
+
+    ID3D12Resource* target = nullptr;
+    if (i < 2) {
+        target = swapChainResources[i].Get(); // 0, 1 は swapChain
+    } else {
+        target = renderTextureResource.Get(); // 2 は renderTexture
     }
+
+    device->CreateRenderTargetView(target, &rtvDesc, rtvHandles[i]);
+    rtvStartHandle.ptr += descriptorsizeRTV;
+}
 }
 
 

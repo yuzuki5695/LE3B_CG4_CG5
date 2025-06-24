@@ -117,8 +117,10 @@ private: // メンバ変数
 	//ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle;
 	//RTVを2つ作るのでディスクリプタハンドルを2つ用意
-	const uint32_t rtvHandlenum = 2;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
+	const uint32_t rtvHandlenum = 3;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
+	// オフスクリーン用のレンダーテクスチャ
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// フェンスの生成
