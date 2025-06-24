@@ -48,9 +48,6 @@
     <ClCompile Include="engine\base\Logger.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\io\Input.cpp">
-      <Filter>ソースファイル\application\engine\base</Filter>
-    </ClCompile>
     <ClCompile Include="engine\scene\BaseScene.cpp">
       <Filter>ソースファイル\application\engine\scene</Filter>
     </ClCompile>
@@ -87,12 +84,6 @@
     <ClCompile Include="engine\scene\SceneManager.cpp">
       <Filter>ソースファイル\application\engine\scene</Filter>
     </ClCompile>
-    <ClCompile Include="engine\audio\SoundLoader.cpp">
-      <Filter>ソースファイル\application\engine\io</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\audio\SoundPlayer.cpp">
-      <Filter>ソースファイル\application\engine\io</Filter>
-    </ClCompile>
     <ClCompile Include="engine\2d\Sprite.cpp">
       <Filter>ソースファイル\application\engine\2d</Filter>
     </ClCompile>
@@ -113,6 +104,15 @@
     </ClCompile>
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\audio\SoundLoader.cpp">
+      <Filter>ソースファイル\application\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\audio\SoundPlayer.cpp">
+      <Filter>ソースファイル\application\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\io\Input.cpp">
+      <Filter>ソースファイル\application\engine\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,9 +138,6 @@
       <Filter>ヘッダーファイル\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\ImGuiManager.h">
-      <Filter>ヘッダーファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\io\Input.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\Logger.h">
@@ -191,12 +188,6 @@
     <ClInclude Include="engine\scene\SceneManager.h">
       <Filter>ヘッダーファイル\engine\scene</Filter>
     </ClInclude>
-    <ClInclude Include="engine\audio\SoundLoader.h">
-      <Filter>ヘッダーファイル\engine\io</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\audio\SoundPlayer.h">
-      <Filter>ヘッダーファイル\engine\io</Filter>
-    </ClInclude>
     <ClInclude Include="engine\2d\Sprite.h">
       <Filter>ヘッダーファイル\engine\2d</Filter>
     </ClInclude>
@@ -229,6 +220,15 @@
     </ClInclude>
     <ClInclude Include="engine\base\WinApp.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\audio\SoundLoader.h">
+      <Filter>ヘッダーファイル\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\audio\SoundPlayer.h">
+      <Filter>ヘッダーファイル\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\io\Input.h">
+      <Filter>ヘッダーファイル\engine\io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
