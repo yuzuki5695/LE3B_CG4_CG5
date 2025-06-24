@@ -1,4 +1,8 @@
 #include "Framework.h"
+#include<DirectXCommon.h>
+#include<ModelCommon.h>
+#include<SrvManager.h>
+#include<SceneFactory.h>
 
 void Framework::Run() {
     // ゲームの初期化
