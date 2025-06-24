@@ -118,11 +118,6 @@ void GamePlayScene::Update() {
     grass->Update();
 
 
-   // ParticleManager::GetInstance()->Update();
-    
-    //emitter->Update();
-
-
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
@@ -163,9 +158,6 @@ void GamePlayScene::Draw() {
     SpriteCommon::GetInstance()->Commondrawing();
     
     sprite->Draw();
-
-
-
 
 #pragma endregion 全てのSprite個々の描画処理
 }
