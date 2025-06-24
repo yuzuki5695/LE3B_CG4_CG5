@@ -114,6 +114,9 @@
     <ClCompile Include="engine\io\Input.cpp">
       <Filter>ソースファイル\application\engine\io</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\ShaderCompiler.cpp">
+      <Filter>ソースファイル\application\engine\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="engine\io\Input.h">
       <Filter>ヘッダーファイル\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\ShaderCompiler.h">
+      <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

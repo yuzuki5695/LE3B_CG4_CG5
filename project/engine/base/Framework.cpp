@@ -60,7 +60,9 @@ void Framework::Initialize() {
     winApp->Initialize();
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
-    dxCommon->Initialize(winApp.get());
+    dxCommon->Initialize(winApp.get());     
+    // シェーダーコンパイルの初期化
+    ShaderCompiler::GetInstance()->Initialize();
     // 音声読み込み
     SoundLoader::GetInstance()->Initialize();
     // 音声再生

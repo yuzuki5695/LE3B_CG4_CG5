@@ -43,8 +43,6 @@ void DirectXCommon::Initialize(WinApp* winApp){
 	viewportInitialize();
 	// シザリング矩形
 	scissorRectInitialize();
-	// DXCコンパイラの生成
-	DxCompilerGenerate();
 }
 
 void DirectXCommon::DebugInitialize() {
@@ -343,20 +341,6 @@ void DirectXCommon::scissorRectInitialize() {
     scissorRect.bottom = WinApp::kClientHeight;
 }
 
-void DirectXCommon::DxCompilerGenerate() {
-
-    HRESULT hr;
-
-    // dxCompilerを初期化
-    hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
-    assert(SUCCEEDED(hr));
-    hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
-    assert(SUCCEEDED(hr));
-    //現時点でincludeはしないが、includeに対応するための設定を行っていく
-    hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
-    assert(SUCCEEDED(hr));
-}
-
 void DirectXCommon::PreDraw() {
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -492,61 +476,6 @@ ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureResource(ComPtr <
 }
 
 
-// コンパイルシェーダー
-ComPtr <IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath,const wchar_t* profile) {
-    //1.hlslファイルを読む
-    //これからシェーダーをコンパイルする旨をログに出す
-    Logger::Log(StringUtility::ConvertString(std::format(L"Begin CompileShader,path:{},profile:{}\n", filePath, profile)));
-    Microsoft::WRL::ComPtr <IDxcBlobEncoding> shaderSource = nullptr;
-    HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
-    //読めなかったら止める
-    assert(SUCCEEDED(hr));
-
-    //読み込んだファイルの内容を設定する
-    DxcBuffer shaderSourceBuffer;
-    shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
-    shaderSourceBuffer.Size = shaderSource->GetBufferSize();
-    shaderSourceBuffer.Encoding = DXC_CP_UTF8;//UTF8のコードであることを通知
-
-    //2.Compileする
-    LPCWSTR arguments[] =
-    {
-
-         filePath.c_str(),
-         L"-E",L"main",
-         L"-T",profile,
-         L"-Zi",L"-Qembed_debug",
-         L"-Od",
-         L"-Zpr",
-    };
-    //実際にshaderをコンパイルする
-    ComPtr <IDxcResult> shaderResult = nullptr;
-    hr = dxcCompiler->Compile(
-        &shaderSourceBuffer,
-        arguments,
-        _countof(arguments),
-        includeHandler.Get(),
-        IID_PPV_ARGS(&shaderResult)
-    );
-    assert(SUCCEEDED(hr));
-
-    //警告・エラーが出てたらログを出して止める
-    ComPtr <IDxcBlobUtf8> shaderError = nullptr;
-    shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
-    if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-        Logger::Log(shaderError->GetStringPointer());
-        assert(false);
-    }
-    //コンパイル結果から実行用のバイナリ部分を取得
-    Microsoft::WRL::ComPtr <IDxcBlob> shaderBlob = nullptr;
-    hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-    assert(SUCCEEDED(hr));
-    //成功したログを出す
-    Logger::Log(StringUtility::ConvertString(std::format(L"Compile Succeeded,path:{},profile:{}\n", filePath, profile)));
-    //実行用のバイナリを返却
-    return shaderBlob;
-}
-
 // Resourceの関数化
 ComPtr <ID3D12Resource> DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
     //IDXGIのファクトリーの生成
@@ -607,28 +536,6 @@ ComPtr <ID3D12Resource> DirectXCommon::CreateTextureResource(const ComPtr <ID3D1
     return resource;
 }
 
-//TextureResourceにデータを移送する
-void DirectXCommon::UploadTextureData(ComPtr <ID3D12Resource> &texture, const DirectX::ScratchImage& mipImages)
-{
-    //Meta情報を取得
-    const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-    //全MipMapについて
-    for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; ++mipLevel)
-    {
-        //MipMapLevelを指定して各Imageを取得
-        const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
-        //Textureに転送
-        HRESULT hr = texture->WriteToSubresource(
-            UINT(mipLevel),
-            nullptr,				//全領域へコピー
-            img->pixels,			//元データアドレス
-            UINT(img->rowPitch),	//1ラインサイズ
-            UINT(img->slicePitch)	//1枚サイズ
-        );
-        assert(SUCCEEDED(hr));
-    }
-}
-
 void DirectXCommon::InitializeFizFPS() {
     // 現在時間を記録する
     reference_ = std::chrono::steady_clock::now();
@@ -658,4 +565,43 @@ void DirectXCommon::UpdateFixFPS() {
     }
     // 現在時間を記録する
     reference_ = std::chrono::steady_clock::now();
+}
+
+ComPtr <ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
+    //1. metadataを基にResourceの設定
+    D3D12_RESOURCE_DESC resourceDesc{};
+    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    resourceDesc.Alignment = 0;
+    resourceDesc.Width = width;
+    resourceDesc.Height = height;
+    resourceDesc.DepthOrArraySize = 1;
+    resourceDesc.MipLevels = 1;
+    resourceDesc.Format = format;
+    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Quality = 0;
+    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+    //2. 利用するHeapの設定。非常に特殊な運用。02_04exで一般的なケース版がある
+    D3D12_HEAP_PROPERTIES heapProperties{};
+    heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;								// 当然VRAM上に作る
+
+    D3D12_CLEAR_VALUE clearValue;
+    clearValue.Format = format;
+    clearValue.Color[0] = clearColor.x;
+    clearValue.Color[1] = clearColor.y;
+    clearValue.Color[2] = clearColor.z;
+    clearValue.Color[3] = clearColor.w;
+
+    //3. Resourceを生成する
+    ComPtr <ID3D12Resource> resource = nullptr;
+    HRESULT hr = device->CreateCommittedResource(
+        &heapProperties,														//Heapの設定
+        D3D12_HEAP_FLAG_NONE,													//Heapの特殊な設定。特になし。
+        &resourceDesc,															///Resourceの設定
+        D3D12_RESOURCE_STATE_RENDER_TARGET,										//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
+        &clearValue,															//Clear最適地,ClearRenderTargetをこの色でClearするようにする。最適化されれいるので高速である
+        IID_PPV_ARGS(&resource));												//作成するResourceポインタへのポインタ
+    assert(SUCCEEDED(hr));
+    return resource;
 }

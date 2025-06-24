@@ -7,6 +7,7 @@
 #include<chrono>
 #include"WinApp.h"
 #include "externals/DirectXTex/DirectXTex.h"
+#include <Vector4.h>
 #pragma comment(lib,"dxcompiler.lib")
 
 // Directx基盤
@@ -31,8 +32,10 @@ public: // メンバ関数
 	// リソース
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth);
 
-	// コンパイルシェーダー
-	Microsoft::WRL::ComPtr <IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
+	/// <summary>
+	/// レンダーテクスチャの生成
+	/// </summar
+	Microsoft::WRL::ComPtr <ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
 
 	/// <summary>
 	/// バッファリソースの生成
@@ -43,13 +46,6 @@ public: // メンバ関数
 	/// テクスチャリソースの生成
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateTextureResource(const Microsoft::WRL::ComPtr <ID3D12Device>& device, const DirectX::TexMetadata& metadata);
-
-	/// <summary>
-	/// テクスチャデータの輸送
-	/// </summary>
-	/// <param name="texture"></param>
-	/// <param name="mipImages"></param>
-	void UploadTextureData(Microsoft::WRL::ComPtr <ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
 
 private: // プライベートメンバ関数
 	// デバイスの初期化
@@ -72,8 +68,6 @@ private: // プライベートメンバ関数
 	void viewportInitialize();
 	// シザリング矩形
 	void scissorRectInitialize();
-	// DXCコンパイラの生成
-	void DxCompilerGenerate();
 	
 	/// <summary>
 	/// 指定番号のCPUディスクリプタハンドルを取得する

@@ -12,6 +12,7 @@
 #include<SoundPlayer.h>
 #include<SceneManager.h>
 #include<ParticleManager.h>
+#include<ShaderCompiler.h>
 
 class WinApp;
 class DirectXCommon;
