@@ -133,21 +133,18 @@ void GamePlayScene::Update() {
 #endif // USE_IMGUI
 }
 
-void GamePlayScene::Draw() {
-
+void GamePlayScene::Draw() {    
 #pragma region 全てのObject3d個々の描画処理
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
     object3d->Draw();
-
     grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
 
     ParticleManager::GetInstance()->Draw();
-
 
 #pragma endregion 全てのObject3d個々の描画処理
 
@@ -158,4 +155,5 @@ void GamePlayScene::Draw() {
     sprite->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
+
 }

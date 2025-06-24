@@ -284,20 +284,19 @@ void DirectXCommon::RenderviewInitialize() {
     D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
 
     for (uint32_t i = 0; i < rtvHandlenum; ++i) {
-    rtvHandles[i] = rtvStartHandle;
+        rtvHandles[i] = rtvStartHandle;
 
-    ID3D12Resource* target = nullptr;
-    if (i < 2) {
-        target = swapChainResources[i].Get(); // 0, 1 は swapChain
-    } else {
-        target = renderTextureResource.Get(); // 2 は renderTexture
+        ID3D12Resource* target = nullptr;
+        if (i < 2) {
+            target = swapChainResources[i].Get(); // 0, 1 は swapChain
+        } else {
+            target = renderTextureResource.Get(); // 2 は renderTexture
+        }
+
+        device->CreateRenderTargetView(target, &rtvDesc, rtvHandles[i]);
+        rtvStartHandle.ptr += descriptorsizeRTV;
     }
-
-    device->CreateRenderTargetView(target, &rtvDesc, rtvHandles[i]);
-    rtvStartHandle.ptr += descriptorsizeRTV;
 }
-}
-
 
 void DirectXCommon::DepthstealthviewInitialization() {
 
@@ -354,6 +353,41 @@ void DirectXCommon::scissorRectInitialize() {
     scissorRect.top = 0;
     scissorRect.bottom = WinApp::kClientHeight;
 }
+
+void DirectXCommon::PreDrawRenderTexture() {
+    // バリア: SRV → RenderTarget
+    if (renderTextureState != RenderTextureState::RenderTarget) {
+        TransitionResource(
+            renderTextureResource.Get(),
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            D3D12_RESOURCE_STATE_RENDER_TARGET);
+        renderTextureState = RenderTextureState::RenderTarget;
+    }
+
+    // 描画先 = rtvHandles[2]（中間テクスチャ）
+    D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = rtvHandles[2];
+
+    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
+
+    // クリア色を赤などにして違いをわかりやすく
+    float clearColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    commandList->ClearRenderTargetView(rtHandle, clearColor, 0, nullptr);
+    commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+    commandList->RSSetViewports(1, &viewport);
+    commandList->RSSetScissorRects(1, &scissorRect);
+}
+
+void DirectXCommon::PostDrawRenderTexture() {
+    if (renderTextureState != RenderTextureState::PixelShaderResource) {
+        TransitionResource(
+            renderTextureResource.Get(),
+            D3D12_RESOURCE_STATE_RENDER_TARGET,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        renderTextureState = RenderTextureState::PixelShaderResource;
+    }
+}
+
 
 void DirectXCommon::PreDraw() {
     // ここから書き込むバックバッファのインデックスを取得
@@ -425,8 +459,6 @@ void DirectXCommon::PostDrow() {
     hr = commandList->Reset(commandAllocator.Get(), nullptr);
     assert(SUCCEEDED(hr));
 }
-
-
 
 ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible){
     //ディスクリプタヒープの生成
@@ -618,4 +650,20 @@ ComPtr <ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WR
         IID_PPV_ARGS(&resource));												//作成するResourceポインタへのポインタ
     assert(SUCCEEDED(hr));
     return resource;
+}
+
+void DirectXCommon::TransitionResource(
+    ID3D12Resource* resource,
+    D3D12_RESOURCE_STATES beforeState,
+    D3D12_RESOURCE_STATES afterState)
+{
+    D3D12_RESOURCE_BARRIER barrier{};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    barrier.Transition.pResource = resource;
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    barrier.Transition.StateBefore = beforeState;
+    barrier.Transition.StateAfter = afterState;
+
+    commandList->ResourceBarrier(1, &barrier);
 }
