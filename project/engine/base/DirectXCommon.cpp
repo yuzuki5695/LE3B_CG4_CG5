@@ -371,7 +371,7 @@ void DirectXCommon::PreDrawRenderTexture() {
     dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
 
-    // クリア色を赤などにして違いをわかりやすく
+    // クリア色を赤に設定
     float clearColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };
     commandList->ClearRenderTargetView(rtHandle, clearColor, 0, nullptr);
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -380,15 +380,12 @@ void DirectXCommon::PreDrawRenderTexture() {
 }
 
 void DirectXCommon::PostDrawRenderTexture() {
+    // もし現在のテクスチャの状態が PixelShaderResource（シェーダーリソースビュー）でない場合、
     if (renderTextureState != RenderTextureState::PixelShaderResource) {
-        TransitionResource(
-            renderTextureResource.Get(),
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        renderTextureState = RenderTextureState::PixelShaderResource;
+        TransitionResource(renderTextureResource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        renderTextureState = RenderTextureState::PixelShaderResource;  // 現在の状態を記録しておく。
     }
 }
-
 
 void DirectXCommon::PreDraw() {
     // ここから書き込むバックバッファのインデックスを取得
@@ -659,17 +656,14 @@ ComPtr <ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WR
     return resource;
 }
 
-void DirectXCommon::TransitionResource(
-    ID3D12Resource* resource,
-    D3D12_RESOURCE_STATES beforeState,
-    D3D12_RESOURCE_STATES afterState)
-{
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    barrier.Transition.pResource = resource;
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    barrier.Transition.StateBefore = beforeState;
-    barrier.Transition.StateAfter = afterState;
-
+void DirectXCommon::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) {
+	// バリアの設定
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;                      // 今回のバリアはTransition
+    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;                           // Noneにしておく 
+    barrier.Transition.pResource = resource;                                    // バリアを張る対象のリソース。
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;   // 全サブリソースに対してバリアを張る
+    barrier.Transition.StateBefore = beforeState;                               // 遷移前のResourceState
+    barrier.Transition.StateAfter = afterState;                                 // TransitionBarrierを張る
+	// コマンドリストにバリアを追加
     commandList->ResourceBarrier(1, &barrier);
 }

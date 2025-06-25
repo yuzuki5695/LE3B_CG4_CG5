@@ -47,15 +47,15 @@ public: // メンバ関数
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateTextureResource(const Microsoft::WRL::ComPtr <ID3D12Device>& device, const DirectX::TexMetadata& metadata);
 
-	enum class RenderTextureState {
-		RenderTarget,             // 現在、描画先（RTV）として使用中
-		PixelShaderResource       // 現在、SRVとしてシェーダから読み込み可能
-	};
-
+	/// <summary>
+	/// レンダーテクスチャのテクスチャリソースの生成
+	/// </summary>
 	void PreDrawRenderTexture();
+
+	/// <summary>
+	/// レンダーテクスチャの描画後処理
+	/// </summary>
 	void PostDrawRenderTexture();
-	void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
-	void Commondrawing();
 
 private: // プライベートメンバ関数
 	// デバイスの初期化
@@ -93,7 +93,13 @@ private: // プライベートメンバ関数
 	void InitializeFizFPS();
 	//  FPS固定更新
 	void UpdateFixFPS();
-
+	// レンダーテクスチャの状態変異
+	enum class RenderTextureState {
+		RenderTarget,             // 現在、描画先（RTV）として使用中
+		PixelShaderResource       // 現在、SRVとしてシェーダから読み込み可能
+	};
+	// リソースの状態を遷移
+	void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
 private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
@@ -132,8 +138,7 @@ private: // メンバ変数
 	// オフスクリーン用のレンダーテクスチャ
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
-	uint32_t srvIndexRenderTexture;
-
+	uint32_t srvIndexRenderTexture;                                           // レンダーテクスチャのSRVインデックス
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// フェンスの生成
