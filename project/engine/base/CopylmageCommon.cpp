@@ -143,14 +143,18 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
 	// // フルスクリーンシェーダーのコンパイル
-    // ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.PS.hlsl", L"ps_6_0");
-    //  assert(pixelShaderBlob != nullptr);
+    //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.PS.hlsl", L"ps_6_0");
+    //assert(pixelShaderBlob != nullptr);
 	// Vignetteシェーダーのコンパイル
     //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Vignette.PS.hlsl", L"ps_6_0");
     //assert(pixelShaderBlob != nullptr);
 	// BoxFilterシェーダーのコンパイル
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/BoxFilter.PS.hlsl", L"ps_6_0");
+    //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/BoxFilter.PS.hlsl", L"ps_6_0");
+    //assert(pixelShaderBlob != nullptr);
+	// GaussianFilterシェーダーのコンパイル
+    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
+
     /*-----------------------------------------------------------------------------------*/
     /*-------------------------------------PSO生成----------------------------------------*/
     /*-----------------------------------------------------------------------------------*/
