@@ -142,8 +142,13 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen.PS.hlsl", L"ps_6_0");
+	// // フルスクリーンシェーダーのコンパイル
+    // ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen.PS.hlsl", L"ps_6_0");
+    //  assert(pixelShaderBlob != nullptr);
+	// Vignetteシェーダーのコンパイル
+    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Vignette.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
+
 
     /*-----------------------------------------------------------------------------------*/
     /*-------------------------------------PSO生成----------------------------------------*/

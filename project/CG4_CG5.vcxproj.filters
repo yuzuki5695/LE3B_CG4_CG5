@@ -25,6 +25,9 @@
     <FxCompile Include="Resources\shaders\Fullscreen.VS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Vignette.PS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
