@@ -30,8 +30,7 @@ PixeShaderOutput main(VertexShaderOutput input){
     float kenrnel3x3[3][3];
     for (int32_t x = 0; x < 3; ++x) {
         for (int32_t y = 0; y < 3; ++y) {
-            float2 offset = kIndex3x3[x][y];
-            kenrnel3x3[x][y] = gauss(offset.x, offset.y, 2.0f);
+            kenrnel3x3[x][y] = gauss(kenrnel3x3[x][y].x, kenrnel3x3[x][y].y, 2.0f);
             weight += kenrnel3x3[x][y];
         }
     } 
@@ -39,15 +38,14 @@ PixeShaderOutput main(VertexShaderOutput input){
     float3 result = float3(0.0f, 0.0f, 0.0f);
     for (int x = 0; x < 3; ++x) {
         for (int y = 0; y < 3; ++y) {
-            float2 offset = kIndex3x3[x][y] * uvStepsSize;
-            float3 color = gTexture.Sample(gSampler, input.texcoord + offset).rgb;
+            float3 color = gTexture.Sample(gSampler, input.texcoord + kenrnel3x3[x][y] * uvStepsSize).rgb;
             result += color * kenrnel3x3[x][y];
 
         }
-    } 
+    }   
     // 畳み込み後の値を正規化する。本来gauss関数は全体を合計すると (積分) 1になるように設計されている。しかし、無限の範囲は足せないので、
-    // kenrnel値の合計であるweightは1に満たない。なので、合計が1になるように逆数を掛けて全体を底上げして調整する    
-    output.color.rgb = result / weight; 
-    output.color.a = 1.0f;
+    // kenrnel値の合計であるweightは1に満たない。なので、合計が1になるように逆数を掛けて全体を底上げして調整する
+    result *= rcp(weight);
+    output.color = float4(result, 1.0f);
     return output;
 }
