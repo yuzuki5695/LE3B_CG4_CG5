@@ -19,14 +19,14 @@
     <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\Vignette.PS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,7 +263,7 @@
       <Filter>リソース ファイル\shaders</Filter>
     </None>
     <None Include="Resources\shaders\Fullscreen.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +332,9 @@
     </Filter>
     <Filter Include="ソースファイル\engine\math">
       <UniqueIdentifier>{fece5090-3523-48fa-8913-5fd562439285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Fullscreen">
+      <UniqueIdentifier>{c33dc148-b073-4ebe-bec8-b4689bac55b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
