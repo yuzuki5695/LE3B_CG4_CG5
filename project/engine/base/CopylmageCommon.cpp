@@ -140,9 +140,9 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     /*--------------------------------ShaderをCompile-----------------------------------*/
     /*----------------------------------------------------------------------------------*/
-    ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Copylmage.VS.hlsl", L"vs_6_0");
+    ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Copylmage.PS.hlsl", L"ps_6_0");
+    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
     /*-----------------------------------------------------------------------------------*/

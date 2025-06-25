@@ -19,10 +19,10 @@
     <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Copylmage.PS.hlsl">
+    <FxCompile Include="Resources\shaders\Fullscreen.PS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Copylmage.VS.hlsl">
+    <FxCompile Include="Resources\shaders\Fullscreen.VS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -259,7 +259,7 @@
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
-    <None Include="Resources\shaders\Copylmage.hlsli">
+    <None Include="Resources\shaders\Fullscreen.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
   </ItemGroup>
