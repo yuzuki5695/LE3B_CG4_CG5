@@ -108,20 +108,20 @@ void Framework::Update() {
     ImGuiManager::GetInstance()->Begin();
     // シーンマネージャの更新処理
     SceneManager::GetInstance()->Update();
+
+    srvIndex = srvManager->CreateSRVForRenderTexture(dxCommon->GetrenderTextureResource());
 }
 
 void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
-
-    // ① レンダーテクスチャをレンダーターゲットにして描画開始準備
+    // レンダーテクスチャをレンダーターゲットにして描画開始準備
     dxCommon->PreDrawRenderTexture();
-
-	// オブジェクト3dの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
-
-    // ③ レンダーテクスチャをSRVとして使うための状態に遷移
+    // レンダーテクスチャをSRVとして使うための状態に遷移
     dxCommon->PostDrawRenderTexture();
-
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-    dxCommon->PreDraw();
+    dxCommon->PreDraw(); 
+    dxCommon->Commondrawing();
+    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
+    dxCommon->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }

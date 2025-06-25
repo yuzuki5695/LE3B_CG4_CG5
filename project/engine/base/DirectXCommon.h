@@ -55,6 +55,7 @@ public: // メンバ関数
 	void PreDrawRenderTexture();
 	void PostDrawRenderTexture();
 	void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
+	void Commondrawing();
 
 private: // プライベートメンバ関数
 	// デバイスの初期化
@@ -92,6 +93,12 @@ private: // プライベートメンバ関数
 	void InitializeFizFPS();
 	//  FPS固定更新
 	void UpdateFixFPS();
+
+
+		// ルートシグネチャの生成
+	void RootSignatureGenerate();
+	// グラフィックスパイプラインの生成
+	void GraphicsPipelineGenerate();
 
 private: // メンバ変数
 	// ポインタ
@@ -131,6 +138,10 @@ private: // メンバ変数
 	// オフスクリーン用のレンダーテクスチャ
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
+	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
+	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+	uint32_t srvIndexRenderTexture;
+
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// フェンスの生成
@@ -162,5 +173,6 @@ public:
 	D3D12_DEPTH_STENCIL_DESC GetdepthStencilDesc() { return depthStencilDesc; }
 	HANDLE GetfenceEvent() const { return fenceEvent; }
 	// スワップチェーンリソースの数を取得
-	size_t  GetSwapChainResourcesNum() const { return  swapChainResources.size(); }
+	size_t  GetSwapChainResourcesNum() const { return  swapChainResources.size(); }		
+	ID3D12Resource* GetrenderTextureResource() { return renderTextureResource.Get(); }
 };

@@ -19,6 +19,12 @@
     <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Copylmage.PS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Copylmage.VS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -245,6 +251,9 @@
       <Filter>リソース ファイル\shaders</Filter>
     </None>
     <None Include="Resources\shaders\Sprite.hlsli">
+      <Filter>リソース ファイル\shaders</Filter>
+    </None>
+    <None Include="Resources\shaders\Copylmage.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
   </ItemGroup>
