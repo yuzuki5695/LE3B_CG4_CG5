@@ -3,6 +3,7 @@
 #include<ModelCommon.h>
 #include<SrvManager.h>
 #include<SceneFactory.h>
+#include<CopylmageCommon.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -34,6 +35,8 @@ void Framework::Finalize() {
     Object3dCommon::GetInstance()->Finalize();
     // 入力解放
     Input::GetInstance()->Finalize();
+
+	CopylmageCommon::GetInstance()->Finalize();
     // パーティクルマネージャの終了
     ParticleManager::GetInstance()->Finalize();
     // テクスチャマネージャの終了
@@ -93,6 +96,8 @@ void Framework::Initialize() {
     // パーティクル共通部の初期化
     ParticleCommon::GetInstance()->Initialize(dxCommon.get());
 
+	CopylmageCommon::GetInstance()->Initialize(dxCommon.get());
+
 #pragma endregion 基盤システムの初期化
 }
 
@@ -121,7 +126,7 @@ void Framework::Draw() {
     dxCommon->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
     dxCommon->PreDraw(); 
-    dxCommon->Commondrawing();
+    CopylmageCommon::GetInstance()->Commondrawing();
     srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
     dxCommon->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }

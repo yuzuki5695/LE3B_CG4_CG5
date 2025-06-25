@@ -94,12 +94,6 @@ private: // プライベートメンバ関数
 	//  FPS固定更新
 	void UpdateFixFPS();
 
-
-		// ルートシグネチャの生成
-	void RootSignatureGenerate();
-	// グラフィックスパイプラインの生成
-	void GraphicsPipelineGenerate();
-
 private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
@@ -138,8 +132,6 @@ private: // メンバ変数
 	// オフスクリーン用のレンダーテクスチャ
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
-	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
-	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	uint32_t srvIndexRenderTexture;
 
 	// DepthStencilTextureをウインドウのサイズ

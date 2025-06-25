@@ -123,6 +123,7 @@
     <ClCompile Include="engine\base\ShaderCompiler.cpp">
       <Filter>ソースファイル\application\engine\base</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\CopylmageCommon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -242,6 +243,7 @@
     <ClInclude Include="engine\base\ShaderCompiler.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
+    <ClInclude Include="engine\base\CopylmageCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
