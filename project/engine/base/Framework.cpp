@@ -119,7 +119,9 @@ void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
     // レンダーテクスチャをレンダーターゲットにして描画開始準備
-    dxCommon->PreDrawRenderTexture();
+    dxCommon->PreDrawRenderTexture(); 
+    // シーンマネージャの描画処理
+    SceneManager::GetInstance()->Draw();
     // レンダーテクスチャをSRVとして使うための状態に遷移
     dxCommon->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
