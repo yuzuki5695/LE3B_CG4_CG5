@@ -136,6 +136,7 @@ private: // メンバ変数
 	const uint32_t rtvHandlenum = 3;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
 	// オフスクリーン用のレンダーテクスチャ
+	Vector4 kRenderTargetClearValue{};          // カスタムRenderTarget用のリソース作成（赤でクリアされる）
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
 	uint32_t srvIndexRenderTexture;                                           // レンダーテクスチャのSRVインデックス

@@ -264,7 +264,7 @@ void DirectXCommon::RenderviewInitialize() {
     assert(SUCCEEDED(hr));
  
     // カスタムRenderTarget用のリソース作成（赤でクリアされる）
-    const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f }; // 赤
+    kRenderTargetClearValue = { 1.0f, 0.0f, 0.0f, 1.0f }; // 赤
     // [2]にrenderTexture を作る
     renderTextureResource = CreateRenderTextureResource(
         device,
@@ -371,8 +371,8 @@ void DirectXCommon::PreDrawRenderTexture() {
     dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
 
-    // クリア色を赤に設定
-    float clearColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	// カスタムRenderTarget用で設定した値を使って画面全体をクリアする
+    float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
     commandList->ClearRenderTargetView(rtHandle, clearColor, 0, nullptr);
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
     commandList->RSSetViewports(1, &viewport);
