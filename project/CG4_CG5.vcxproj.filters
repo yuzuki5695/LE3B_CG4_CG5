@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Resources\shaders\Sprite.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Vignette.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\Fullscreen.PS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\Fullscreen.VS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Object3d.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Object3d.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Sprite.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Vignette.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Particle.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Particle.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,17 +253,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Object3d.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
-    </None>
-    <None Include="Resources\shaders\Particle.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
-    </None>
-    <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
-    </None>
     <None Include="Resources\shaders\Fullscreen.hlsli">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </None>
+    <None Include="Resources\shaders\Object3d.hlsli">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
+    </None>
+    <None Include="Resources\shaders\Particle.hlsli">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
+    </None>
+    <None Include="Resources\shaders\Sprite.hlsli">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +332,15 @@
     </Filter>
     <Filter Include="ソースファイル\engine\math">
       <UniqueIdentifier>{fece5090-3523-48fa-8913-5fd562439285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Object3d">
+      <UniqueIdentifier>{e97333a5-b5b7-4c49-8c8f-2c4ac0474431}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Particle">
+      <UniqueIdentifier>{61a71104-9810-414f-a495-259d55afc591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Sprite">
+      <UniqueIdentifier>{b5fb5bf6-4224-4083-9edf-70403b739c4b}</UniqueIdentifier>
     </Filter>
     <Filter Include="リソース ファイル\shaders\Fullscreen">
       <UniqueIdentifier>{c33dc148-b073-4ebe-bec8-b4689bac55b8}</UniqueIdentifier>
