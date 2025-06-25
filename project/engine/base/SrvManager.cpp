@@ -69,7 +69,7 @@ uint32_t  SrvManager::CreateSRVForRenderTexture(ComPtr<ID3D12Resource> resource)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
 	// SRVの生成
-	directXCommon->GetDevice()->CreateShaderResourceView(resource.Get(), &srvDesc, GetCPUDescriptorHandle(useIndex));	
+	directXCommon->GetDevice()->CreateShaderResourceView(resource.Get(), &srvDesc, GetCPUDescriptorHandle(index));	
     return index; // 作ったSRVのインデックスを返す！
 }
 

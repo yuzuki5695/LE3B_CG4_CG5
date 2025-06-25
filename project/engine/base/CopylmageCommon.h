@@ -1,6 +1,8 @@
 #pragma once
 #include"DirectXCommon.h"
 
+class SrvManager;
+
 class CopylmageCommon
 {
 private:
@@ -17,15 +19,17 @@ public: // メンバ関数
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 	// 共通描画設定
-	void Commondrawing();
+	void Commondrawing(SrvManager* srvManager);
 
 private:
 	// ルートシグネチャの生成
 	void RootSignatureGenerate();
 	// グラフィックスパイプラインの生成
 	void GraphicsPipelineGenerate();
+	// SRVマネージャーのインデックス
+	uint32_t srvIndex;
 private:
 	DirectXCommon* dxCommon_;
 	// RootSignature
@@ -35,4 +39,3 @@ public:
 	// gettre
 	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
 };
-

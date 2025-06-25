@@ -2,6 +2,7 @@
 #include <ShaderCompiler.h>
 #include "Logger.h"
 #include "StringUtility.h"
+#include<SrvManager.h>
 
 using namespace Microsoft::WRL;
 
@@ -21,20 +22,26 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager) {
     assert(dxCommon);
     // 引数を受け取ってメンバ変数に記録する
     dxCommon_ = dxCommon;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
+	// SRVマネージャーの取得
+    srvIndex = srvManager->CreateSRVForRenderTexture(dxCommon->GetrenderTextureResource());
 }
 
-void CopylmageCommon::Commondrawing() {
+void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
     // RootSignatureを設定。PSOに設定しているけど別途設定が必要
     dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
     dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
     // 形状を設定。PSOに設定しているものとはまた別。同じものを設定する
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// SRVのディスクリプタテーブルをピクセルシェーダーへバインド
+    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
+    // 描画命令を出す
+    dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
 void CopylmageCommon::RootSignatureGenerate() {

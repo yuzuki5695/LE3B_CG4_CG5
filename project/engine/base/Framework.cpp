@@ -63,7 +63,7 @@ void Framework::Initialize() {
     winApp->Initialize();
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
-    dxCommon->Initialize(winApp.get());     
+    dxCommon->Initialize(winApp.get());
     // シェーダーコンパイルの初期化
     ShaderCompiler::GetInstance()->Initialize();
     // 音声読み込み
@@ -96,7 +96,7 @@ void Framework::Initialize() {
     // パーティクル共通部の初期化
     ParticleCommon::GetInstance()->Initialize(dxCommon.get());
 
-	CopylmageCommon::GetInstance()->Initialize(dxCommon.get());
+    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get());
 
 #pragma endregion 基盤システムの初期化
 }
@@ -113,8 +113,6 @@ void Framework::Update() {
     ImGuiManager::GetInstance()->Begin();
     // シーンマネージャの更新処理
     SceneManager::GetInstance()->Update();
-
-    srvIndex = srvManager->CreateSRVForRenderTexture(dxCommon->GetrenderTextureResource());
 }
 
 void Framework::Draw() {
@@ -126,7 +124,6 @@ void Framework::Draw() {
     dxCommon->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
     dxCommon->PreDraw(); 
-    CopylmageCommon::GetInstance()->Commondrawing();
-    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
-    dxCommon->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+	// ポストエフェクト描画（レンダーテクスチャ → 画面）
+    CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
 }

@@ -425,6 +425,8 @@ void DirectXCommon::PostDrow() {
     UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
     // 画面に描く処理はすべて終わり、画面に移すので、状態を遷移
     // 今回はRenderTargetからPresentにする
+    // PostDrow 内で再設定が必要（PreDrawとは別フレームなので）：
+    barrier.Transition.pResource = swapChainResources[bbIndex].Get();
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     // TransitionBarrierを張る
@@ -432,6 +434,10 @@ void DirectXCommon::PostDrow() {
     // コマンドリストの内容を確定させる。全てのコマンドを積んでからCloseすること
     hr = commandList->Close();
     assert(SUCCEEDED(hr));
+    if (FAILED(hr)) {
+        OutputDebugStringA("commandList->Close() failed!\n");
+        // hr を調べる
+    }
     // GPUにコマンドリストのリストの実行を行わせる
     ID3D12CommandList* commandLists[] = { commandList.Get() };
     commandQueue->ExecuteCommandLists(1, commandLists);
@@ -658,7 +664,6 @@ void DirectXCommon::TransitionResource(
     D3D12_RESOURCE_STATES beforeState,
     D3D12_RESOURCE_STATES afterState)
 {
-    D3D12_RESOURCE_BARRIER barrier{};
     barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
     barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
     barrier.Transition.pResource = resource;
