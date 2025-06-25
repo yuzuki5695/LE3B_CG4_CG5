@@ -28,6 +28,9 @@
     <FxCompile Include="Resources\shaders\Particle.PS.hlsl">
       <Filter>リソース ファイル\shaders\Particle</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\BoxFilter.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
