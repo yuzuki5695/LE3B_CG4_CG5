@@ -8,8 +8,7 @@ struct PixeShaderOutput{
     float4 color : SV_TARGET0;
 };
 
-static const float2 kIndex3x3[3][3] =
-{
+static const float2 kIndex3x3[3][3] = {
     { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
     { { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f } },
     { { -1.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f } },
@@ -48,7 +47,7 @@ PixeShaderOutput main(VertexShaderOutput input){
     } 
     // 畳み込み後の値を正規化する。本来gauss関数は全体を合計すると (積分) 1になるように設計されている。しかし、無限の範囲は足せないので、
     // kenrnel値の合計であるweightは1に満たない。なので、合計が1になるように逆数を掛けて全体を底上げして調整する    
-    output.color.rgb = result / weight;
+    output.color.rgb = result / weight; 
     output.color.a = 1.0f;
     return output;
 }
