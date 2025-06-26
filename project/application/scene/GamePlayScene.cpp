@@ -13,7 +13,6 @@
 #include <numbers>
 #include <CameraManager.h>
 
-
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Initialize() {

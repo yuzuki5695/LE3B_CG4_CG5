@@ -103,6 +103,9 @@
     <Filter Include="リソース ファイル\shaders\Object3d">
       <UniqueIdentifier>{8cdeb5e9-399a-471a-afd1-ac4da75d6583}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shaders\Fullscreen">
+      <UniqueIdentifier>{38869900-ff44-4eec-8c9a-1d81a4c7f295}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -208,6 +211,9 @@
       <Filter>ソース ファイル\application\scene</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\ShaderCompiler.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\CopylmageCommon.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -350,6 +356,9 @@
     <ClInclude Include="engine\base\ShaderCompiler.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
+    <ClInclude Include="engine\base\CopylmageCommon.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d\Object3d.hlsli">
@@ -360,6 +369,9 @@
     </None>
     <None Include="Resources\shaders\Sprite\Sprite.hlsli">
       <Filter>リソース ファイル\shaders\Sprite</Filter>
+    </None>
+    <None Include="Resources\shaders\Fullscreen\Fullscreen.hlsli">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +392,12 @@
     </FxCompile>
     <FxCompile Include="Resources\shaders\Sprite\Sprite.VS.hlsl">
       <Filter>リソース ファイル\shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\Fullscreen.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\Fullscreen.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

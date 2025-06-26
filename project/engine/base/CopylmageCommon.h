@@ -1,0 +1,41 @@
+#pragma once
+#include"DirectXCommon.h"
+
+class SrvManager;
+
+class CopylmageCommon
+{
+private:
+	static std::unique_ptr<CopylmageCommon> instance;
+
+	CopylmageCommon(CopylmageCommon&) = delete;
+	CopylmageCommon& operator=(CopylmageCommon&) = delete;
+public: // メンバ関数
+	CopylmageCommon() = default;
+	~CopylmageCommon() = default;
+
+	// シングルトンインスタンスの取得
+	static CopylmageCommon* GetInstance();
+	// 終了
+	void Finalize();
+	// 初期化
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+	// 共通描画設定
+	void Commondrawing(SrvManager* srvManager);
+
+private:
+	// ルートシグネチャの生成
+	void RootSignatureGenerate();
+	// グラフィックスパイプラインの生成
+	void GraphicsPipelineGenerate();
+	// SRVマネージャーのインデックス
+	uint32_t srvIndex;
+private:
+	DirectXCommon* dxCommon_;
+	// RootSignature
+	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
+	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+public:
+	// gettre
+	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
+};

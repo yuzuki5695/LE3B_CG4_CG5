@@ -25,6 +25,16 @@ public: // メンバ関数
 	void PostDrow();
 
 	/// <summary>
+	/// レンダーテクスチャのテクスチャリソースの生成
+	/// </summary>
+	void PreDrawRenderTexture();
+
+	/// <summary>
+	/// レンダーテクスチャの描画後処理
+	/// </summary>
+	void PostDrawRenderTexture();
+
+	/// <summary>
 	/// デスクリプタヒープを生成する
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
@@ -84,6 +94,13 @@ private: // プライベートメンバ関数
 	//  FPS固定更新
 	void UpdateFixFPS();
 
+	// レンダーテクスチャの状態変異
+	enum class RenderTextureState {
+		RenderTarget,             // 現在、描画先（RTV）として使用中
+		PixelShaderResource       // 現在、SRVとしてシェーダから読み込み可能
+	};
+	// リソースの状態を遷移
+	void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
 private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
@@ -111,7 +128,7 @@ private: // メンバ変数
 	uint32_t descriptorsizeRTV;
 	uint32_t descriptorsizeDSV;
 	// スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 3> swapChainResources;
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
 	//RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	//ディスクリプタの先頭を取得する
@@ -119,6 +136,11 @@ private: // メンバ変数
 	//RTVを2つ作るのでディスクリプタハンドルを2つ用意
 	const uint32_t rtvHandlenum = 3;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
+	// オフスクリーン用のレンダーテクスチャ
+	Vector4 kRenderTargetClearValue{};          // カスタムRenderTarget用のリソース作成（赤でクリアされる）
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
+	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
+	uint32_t srvIndexRenderTexture;                                           // レンダーテクスチャのSRVインデックス
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// フェンスの生成
@@ -151,4 +173,5 @@ public:
 	HANDLE GetfenceEvent() const { return fenceEvent; }
 	// スワップチェーンリソースの数を取得
 	size_t  GetSwapChainResourcesNum() const { return  swapChainResources.size(); }
+	ID3D12Resource* GetrenderTextureResource() { return renderTextureResource.Get(); }
 };
