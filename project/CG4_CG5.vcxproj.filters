@@ -94,6 +94,15 @@
     <Filter Include="ソース ファイル\application\scene">
       <UniqueIdentifier>{55cd0bc1-6937-4b79-8831-54ec6be53b6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shaders\Sprite">
+      <UniqueIdentifier>{e0d12705-594c-4991-9afb-ded3631db165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Particle">
+      <UniqueIdentifier>{f0bcec37-1a37-451a-a268-6ef4146bd3fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\shaders\Object3d">
+      <UniqueIdentifier>{8cdeb5e9-399a-471a-afd1-ac4da75d6583}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -337,34 +346,34 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
+    <None Include="Resources\shaders\Object3d\Object3d.hlsli">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
     </None>
-    <None Include="Resources\shaders\Particle.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
+    <None Include="Resources\shaders\Particle\Particle.hlsli">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
     </None>
-    <None Include="Resources\shaders\Object3d.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
+    <None Include="Resources\shaders\Sprite\Sprite.hlsli">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\shaders\Sprite.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Object3d\Object3d.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Object3d\Object3d.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Object3d</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Particle\Particle.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Particle\Particle.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Particle</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d.VS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Sprite\Sprite.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d.PS.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
+    <FxCompile Include="Resources\shaders\Sprite\Sprite.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Sprite</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
