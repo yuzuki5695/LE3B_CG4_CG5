@@ -5,8 +5,8 @@
 #include<ParticleEmitter.h>
 #include<SoundPlayer.h>
 
-// ゲームプレイシーン
-class TitleScene : public BaseScene
+// ゲームクリアシーン
+class GameClearScene : public BaseScene
 {
 public: // メンバ関数
     // 初期化

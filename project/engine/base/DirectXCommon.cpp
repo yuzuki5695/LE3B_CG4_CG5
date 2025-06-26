@@ -1,9 +1,10 @@
 #include "DirectXCommon.h"
-#include<cassert>
-#include<format>
+#include <cassert>
+#include <format>
 #include <thread>
-#include "Logger.h"
-#include "StringUtility.h"
+#include <Logger.h>
+#include <StringUtility.h>
+#include <DescriptorUtils.h>
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 
@@ -281,7 +282,7 @@ void DirectXCommon::RenderviewInitialize() {
     rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//出力結果をSRGB2変換して書き込む
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;//2Dテクスチャとして読み込む
     //ディスクリプタの先頭を取得する
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = DescriptorUtils::GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
 
     for (uint32_t i = 0; i < rtvHandlenum; ++i) {
         rtvHandles[i] = rtvStartHandle;
@@ -474,19 +475,6 @@ ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPT
     //ディスクリプタヒープが作れなかったので起動できない
     assert(SUCCEEDED(hr));
     return descriptorHeap;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetCPUDescriptorHandle(Microsoft::WRL::ComPtr <ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorsize, uint32_t index) {
-
-    D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    handleCPU.ptr += (descriptorsize * index);
-    return handleCPU;
-}
-
-D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetGPUDescriptorHandle(Microsoft::WRL::ComPtr <ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorsize, uint32_t index) {
-    D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
-    handleGPU.ptr += (descriptorsize * index);
-    return handleGPU;
 }
 
 ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureResource(ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth) {

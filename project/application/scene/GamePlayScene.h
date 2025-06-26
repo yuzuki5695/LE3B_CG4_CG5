@@ -1,11 +1,9 @@
 #pragma once
-#include<Model.h>
-#include<SoundPlayer.h>
 #include<BaseScene.h>
+#include<Sprite.h>
+#include<Object3d.h>
 #include<ParticleEmitter.h>
-
-class Object3d;
-class Sprite;
+#include<SoundPlayer.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene

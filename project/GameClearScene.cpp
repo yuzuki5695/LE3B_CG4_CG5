@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "GameClearScene.h"
 #include<SceneManager.h>
 #include<TextureManager.h>
 #include<ModelManager.h>
@@ -11,9 +11,9 @@
 #endif // USE_IMGUI
 #include <ParticleCommon.h>
 
-void TitleScene::Finalize() {}
+void GameClearScene::Finalize() {}
 
-void TitleScene::Initialize() {
+void GameClearScene::Initialize() {
 #pragma region 最初のシーンの初期化
 
 
@@ -21,11 +21,11 @@ void TitleScene::Initialize() {
 
 }
 
-void TitleScene::Update() {
+void GameClearScene::Update() {
     // ENTERキーを押したら
     if (Input::GetInstance()->Triggrkey(DIK_RETURN)) {
         // シーン切り替え
-        SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+        SceneManager::GetInstance()->ChangeScene("TITLE");
     }
 #pragma region 全てのObject3d個々の更新処理
 
@@ -47,7 +47,7 @@ void TitleScene::Update() {
 
 }
 
-void TitleScene::Draw() {
+void GameClearScene::Draw() {
 #pragma region 全てのObject3d個々の描画処理
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
