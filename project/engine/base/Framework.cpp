@@ -37,7 +37,7 @@ void Framework::Finalize() {
     Object3dCommon::GetInstance()->Finalize();
     // 入力解放
     Input::GetInstance()->Finalize();
-    // 
+    // レンダーテクスチャ共通部の解放
     CopylmageCommon::GetInstance()->Finalize();
     // パーティクルマネージャの終了
     ParticleManager::GetInstance()->Finalize();
@@ -100,6 +100,7 @@ void Framework::Initialize() {
     // パーティクル共通部の初期化
     ParticleCommon::GetInstance()->Initialize(dxCommon.get());
  
+	// レンダーテクスチャ共通部の初期化
     CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get());
 
 #pragma endregion 基盤システムの初期化

@@ -42,6 +42,6 @@ Model* ModelManager::FindModel(const std::string& filePath) {
 		// 読み込みモデルを戻り値としてreturn
 		return  models.at(filePath).get();
 	}
-	// ファイル名一致なし
-	return nullptr;
+	// ファイル名一致なし -> 例外を投げてエラーにする
+    throw std::runtime_error("Model not found: " + filePath);
 };

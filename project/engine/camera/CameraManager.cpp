@@ -34,7 +34,7 @@ void CameraManager::Initialize() {
     
     // すべてのカメラを作っておく
     defaultCamera_ = new Camera();
-    defaultCamera_->SetTranslate({0, 3.0f, -30.0f});
+    defaultCamera_->SetTranslate({0, 3.0f, -20.0f});
     defaultCamera_->SetRotate({0, 0, 0});
 
     followCamera_ = new Camera();

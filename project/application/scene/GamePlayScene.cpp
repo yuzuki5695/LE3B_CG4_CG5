@@ -1,23 +1,23 @@
 #include "GamePlayScene.h"
+#include<Sprite.h>
+#include<Object3d.h>
+#ifdef USE_IMGUI
+#include<ImGuiManager.h>
+#endif // USE_IMGUI
 #include<TextureManager.h>
 #include<ModelManager.h>
 #include<SpriteCommon.h>
 #include<Object3dCommon.h>
 #include<Input.h>
-#ifdef USE_IMGUI
-#include<ImGuiManager.h>
-#endif // USE_IMGUI
 #include<SceneManager.h>
-#include <ParticleCommon.h>
-#include <ParticleManager.h>
 #include <numbers>
 #include <CameraManager.h>
+#include <ParticleCommon.h>
 
 void GamePlayScene::Finalize() {}
 
 void GamePlayScene::Initialize() {
-
-    // カメラの初期化
+    // カメラマネージャの初期化
     CameraManager::GetInstance()->Initialize();
 
     // テクスチャを読み込む
@@ -26,14 +26,10 @@ void GamePlayScene::Initialize() {
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
-    ModelManager::GetInstance()->LoadModel("terrain.obj");
-
-    // 音声ファイルを追加
-    soundData = SoundLoader::GetInstance()->SoundLoadWave("Resources/Alarm01.wav");
-
-    // 音声プレイフラグ
-    soundfige = 0;
-
+    ModelManager::GetInstance()->LoadModel("terrain.obj"); 
+    ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
+    
+    Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
 }
@@ -42,7 +38,7 @@ void GamePlayScene::Update() {
 #pragma region  ImGuiの更新処理開始
 #ifdef USE_IMGUI
     // object3d
-
+    Object_->DebugUpdata("Object");
     // Camera
     CameraManager::GetInstance()->DrawImGui();
 
@@ -55,7 +51,8 @@ void GamePlayScene::Update() {
 
 #pragma region 全てのObject3d個々の更新処理
 
-    // 更新処理
+    // 更新処理 
+    Object_->Update();
     grass->Update();
 
     ParticleManager::GetInstance()->Update();
@@ -72,11 +69,12 @@ void GamePlayScene::Update() {
 }
 
 void GamePlayScene::Draw() {
-
 #pragma region 全てのObject3d個々の描画処理
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
-
+    
+    // 描画処理
+    Object_->Draw();
     grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 

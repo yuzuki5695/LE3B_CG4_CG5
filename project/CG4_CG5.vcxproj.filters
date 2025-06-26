@@ -73,12 +73,6 @@
     <Filter Include="ヘッダー ファイル\engine\3d\Particle">
       <UniqueIdentifier>{6a681e0b-b31b-47fd-bd3d-6861765745c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\engine\io\Loaders">
-      <UniqueIdentifier>{89b79f40-34a1-4862-884a-ff7424601702}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\engine\io\Loaders">
-      <UniqueIdentifier>{1c291c8e-d0fb-4ffe-a654-d2baa1abd5cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="リソース ファイル\shaders">
       <UniqueIdentifier>{0de7fefb-2e6d-4ca7-b098-464774bb7c1b}</UniqueIdentifier>
     </Filter>
