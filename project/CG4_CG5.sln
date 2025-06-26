@@ -16,6 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "externals\imgui\imgui.vcxproj", "{12CE02D8-A771-4844-AACC-F20BF9AF9AEA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nlohmann", "nlohmann", "{8C65D930-4562-4893-8A17-EF5B1E8733EC}"
+	ProjectSection(SolutionItems) = preProject
+		externals\nlohmann\json.hpp = externals\nlohmann\json.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,6 +55,7 @@ Global
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77} = {4A63E22E-7540-41F2-9CCE-A12C1045B36F}
 		{4A63E22E-7540-41F2-9CCE-A12C1045B36F} = {2D81CB0D-CFB9-4F7C-B8D2-23D695132381}
 		{12CE02D8-A771-4844-AACC-F20BF9AF9AEA} = {4A63E22E-7540-41F2-9CCE-A12C1045B36F}
+		{8C65D930-4562-4893-8A17-EF5B1E8733EC} = {4A63E22E-7540-41F2-9CCE-A12C1045B36F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C5D745E-2C27-4496-86DB-7F78854F6A8A}

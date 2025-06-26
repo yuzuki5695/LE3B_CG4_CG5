@@ -1,9 +1,4 @@
 #include "Framework.h"
-#include<DirectXCommon.h>
-#include<ModelCommon.h>
-#include<SrvManager.h>
-#include<SceneFactory.h>
-#include<CopylmageCommon.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -35,8 +30,6 @@ void Framework::Finalize() {
     Object3dCommon::GetInstance()->Finalize();
     // 入力解放
     Input::GetInstance()->Finalize();
-
-	CopylmageCommon::GetInstance()->Finalize();
     // パーティクルマネージャの終了
     ParticleManager::GetInstance()->Finalize();
     // テクスチャマネージャの終了
@@ -59,13 +52,13 @@ void Framework::Initialize() {
     OutputDebugStringA("Hello,Directx!\n");
     // ウィンドウ作成
     // WindowsAPIの初期化
-    winApp = std::make_unique <WinApp>();
+    winApp = std::make_unique <WinApp>();    
+    // ウィンドウのタイトルを変更
+	winApp->SetWindowTitle(L"LE3B_MyGame");
     winApp->Initialize();
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
     dxCommon->Initialize(winApp.get());
-    // シェーダーコンパイルの初期化
-    ShaderCompiler::GetInstance()->Initialize();
     // 音声読み込み
     SoundLoader::GetInstance()->Initialize();
     // 音声再生
@@ -96,8 +89,6 @@ void Framework::Initialize() {
     // パーティクル共通部の初期化
     ParticleCommon::GetInstance()->Initialize(dxCommon.get());
 
-    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get());
-
 #pragma endregion 基盤システムの初期化
 }
 
@@ -118,14 +109,6 @@ void Framework::Update() {
 void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
-    // レンダーテクスチャをレンダーターゲットにして描画開始準備
-    dxCommon->PreDrawRenderTexture(); 
-    // シーンマネージャの描画処理
-    SceneManager::GetInstance()->Draw();
-    // レンダーテクスチャをSRVとして使うための状態に遷移
-    dxCommon->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-    dxCommon->PreDraw(); 
-	// ポストエフェクト描画（レンダーテクスチャ → 画面）
-    CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
+    dxCommon->PreDraw();
 }

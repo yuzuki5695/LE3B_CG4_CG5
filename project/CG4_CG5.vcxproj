@@ -63,7 +63,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\Player;$(ProjectDir)application\Enemy;$(ProjectDir)application\scene;$(ProjectDir)application\Bullet;$(ProjectDir)externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\Player;$(ProjectDir)application\Enemy;$(ProjectDir)application\scene;$(ProjectDir)application\Bullet;$(ProjectDir)externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -100,24 +100,25 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\3d\ParticleCommon.cpp" />
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp" />
-    <ClCompile Include="engine\3d\ParticleManager.cpp" />
+    <ClCompile Include="application\scene\GamePlayScene.cpp" />
+    <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="engine\camera\CameraManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp" />
     <ClCompile Include="engine\audio\SoundLoader.cpp" />
     <ClCompile Include="engine\audio\SoundPlayer.cpp" />
-    <ClCompile Include="engine\base\Camera.cpp" />
-    <ClCompile Include="engine\base\CopylmageCommon.cpp" />
+    <ClCompile Include="engine\camera\Camera.cpp" />
     <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp" />
     <ClCompile Include="engine\base\DirectXCommon.cpp" />
     <ClCompile Include="engine\base\Framework.cpp" />
     <ClCompile Include="engine\base\ImGuiManager.cpp" />
-    <ClCompile Include="engine\base\ShaderCompiler.cpp" />
     <ClCompile Include="engine\io\Input.cpp" />
     <ClCompile Include="engine\base\Logger.cpp" />
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
-    <ClCompile Include="engine\scene\GamePlayScene.cpp" />
     <ClCompile Include="engine\scene\SceneFactory.cpp" />
-    <ClCompile Include="engine\scene\TitleScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MatrixVector.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -135,20 +136,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\3d\ParticleCommon.h" />
-    <ClInclude Include="engine\3d\ParticleEmitter.h" />
-    <ClInclude Include="engine\3d\ParticleManager.h" />
+    <ClInclude Include="engine\camera\CameraManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h" />
     <ClInclude Include="engine\audio\SoundLoader.h" />
     <ClInclude Include="engine\audio\SoundPlayer.h" />
-    <ClInclude Include="engine\base\Camera.h" />
-    <ClInclude Include="engine\base\CopylmageCommon.h" />
+    <ClInclude Include="engine\camera\Camera.h" />
     <ClInclude Include="engine\base\D3DResourceLeakChecker.h" />
     <ClInclude Include="engine\base\DirectXCommon.h" />
     <ClInclude Include="engine\base\Framework.h" />
     <ClInclude Include="engine\base\ImGuiManager.h" />
-    <ClInclude Include="engine\base\ShaderCompiler.h" />
     <ClInclude Include="engine\io\Input.h" />
     <ClInclude Include="engine\base\Logger.h" />
+    <ClInclude Include="engine\math\Material.h" />
+    <ClInclude Include="engine\math\MaterialDate.h" />
     <ClInclude Include="engine\math\Matrix3x3.h" />
     <ClInclude Include="engine\math\Matrix4x4.h" />
     <ClInclude Include="engine\math\MatrixVector.h" />
@@ -162,18 +165,21 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\2d\SpriteCommon.h" />
     <ClInclude Include="engine\base\StringUtility.h" />
     <ClInclude Include="engine\2d\TextureManager.h" />
+    <ClInclude Include="engine\math\ModelDate.h" />
+    <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\math\Transform.h" />
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\base\WinApp.h" />
     <ClInclude Include="engine\base\SrvManager.h" />
+    <ClInclude Include="engine\math\Vertex.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
-    <ClInclude Include="engine\scene\GamePlayScene.h" />
+    <ClInclude Include="application\scene\GamePlayScene.h" />
     <ClInclude Include="engine\scene\MyGame.h" />
     <ClInclude Include="engine\scene\SceneFactory.h" />
-    <ClInclude Include="engine\scene\TitleScene.h" />
+    <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,55 +191,34 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Fullscreen\Fullscreen.hlsli" />
-    <None Include="Resources\shaders\Object3d\Object3d.hlsli" />
-    <None Include="Resources\shaders\Particle\Particle.hlsli" />
-    <None Include="Resources\shaders\Sprite\Sprite.hlsli" />
+    <None Include="Resources\shaders\Object3d.hlsli" />
+    <None Include="Resources\shaders\Particle.hlsli" />
+    <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\shaders\Fullscreen\BoxFilter.PS.hlsl">
+    <FxCompile Include="Resources\shaders\Object3d.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen\Fullscreen.PS.hlsl">
+    <FxCompile Include="Resources\shaders\Object3d.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen\Fullscreen.VS.hlsl">
+    <FxCompile Include="Resources\shaders\Particle.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen\GaussianFilter.PS.hlsl">
+    <FxCompile Include="Resources\shaders\Particle.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Fullscreen\Vignette.PS.hlsl">
+    <FxCompile Include="Resources\shaders\Sprite.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d\Object3d.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <FxCompile Include="Resources\shaders\Sprite.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Object3d\Object3d.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle\Particle.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Particle\Particle.VS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Sprite\Sprite.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\Sprite\Sprite.VS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

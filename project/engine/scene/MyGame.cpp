@@ -26,7 +26,9 @@ void MyGame::Update() {
 
 void MyGame::Draw() {
     // 描画処理
-    Framework::Draw(); 
+    Framework::Draw();
+    // シーンマネージャの描画処理
+    SceneManager::GetInstance()->Draw();
     // デバックテキスト描画
     ImGuiManager::GetInstance()->Draw();
     // 描画後処理

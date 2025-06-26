@@ -1,7 +1,6 @@
 #include "ParticleCommon.h"
 #include "Logger.h"
 #include "StringUtility.h"
-#include <ShaderCompiler.h>
 
 using namespace Microsoft::WRL;
 
@@ -93,7 +92,7 @@ void ParticleCommon::RootSignatureGenerate() {
     D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
     staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ	
     staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//0～1の範囲外をリピート		
-    staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
     staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない		
     staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのMipmapを使う	
@@ -192,9 +191,9 @@ void ParticleCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     /*--------------------------------ShaderをCompile-----------------------------------*/
     /*----------------------------------------------------------------------------------*/
-    ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Particle/Particle.VS.hlsl", L"vs_6_0");
+    ComPtr <IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Particle/Particle.PS.hlsl", L"ps_6_0");
+    ComPtr <IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
     /*-----------------------------------------------------------------------------------*/

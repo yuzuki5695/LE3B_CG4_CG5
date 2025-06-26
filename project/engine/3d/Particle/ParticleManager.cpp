@@ -39,8 +39,6 @@ void ParticleManager::Initialize(DirectXCommon* birectxcommon, SrvManager* srvma
     // 乱数エンジンを初期化
     std::random_device rd;// 乱数生成器
     randomEngine = std::mt19937(rd());
-    // マテリアルの生成と初期化
-    MaterialGenerate();
     //ビルボード行列作成
     backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
 }
@@ -82,13 +80,31 @@ void ParticleManager::Update() {
             float alpha = 1.0f - (*particleIterator).currentTime / (*particleIterator).lifetime;
             (*particleIterator).color.w = alpha;
 
-
-            particleIterator->transform.translate.x += particleIterator->Velocity.x;
-
+            // 速度を足す
+            // 座標
+            particleIterator->transform.translate.x += particleIterator->Velocity.translate.x;
+            particleIterator->transform.translate.y += particleIterator->Velocity.translate.y;
+            particleIterator->transform.translate.z += particleIterator->Velocity.translate.z;
+            // 回転
+            particleIterator->transform.rotate.x += particleIterator->Velocity.rotate.x;
+            particleIterator->transform.rotate.y += particleIterator->Velocity.rotate.y;
+            particleIterator->transform.rotate.z += particleIterator->Velocity.rotate.z;
+            // サイズ
+            particleIterator->transform.scale.x += particleIterator->Velocity.scale.x;
+            particleIterator->transform.scale.y += particleIterator->Velocity.scale.y;
+            particleIterator->transform.scale.z += particleIterator->Velocity.scale.z;
+            
             // world行列の計算
             Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).transform.scale);
+            // 回転行列を各軸ごとに作成して合成
+            Matrix4x4 rotateXMatrix = MakeRotateXMatrix((*particleIterator).transform.rotate.x);
+            Matrix4x4 rotateYMatrix = MakeRotateYMatrix((*particleIterator).transform.rotate.y);
+            Matrix4x4 rotateZMatrix = MakeRotateZMatrix((*particleIterator).transform.rotate.z);
+            // 回転順序: Z → X → Y（用途により調整）
+            Matrix4x4 rotateMatrix = Multiply(Multiply(rotateZMatrix, rotateXMatrix), rotateYMatrix);
             Matrix4x4 translateMatrix = MakeTranslateMatrix((*particleIterator).transform.translate);
-            Matrix4x4 worldMatrix = Multiply(Multiply(scaleMatrix, billboardMatrix), translateMatrix);
+            // SRT順にビルボードを含めて合成
+            Matrix4x4 worldMatrix = Multiply(Multiply(Multiply(scaleMatrix, rotateMatrix), billboardMatrix), translateMatrix);
 
             // worldViewProjection行列の計算
             Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
@@ -112,161 +128,24 @@ void ParticleManager::Update() {
 }
 
 void ParticleManager::Draw() {
-    // VertexBufferView を設定
-    dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
-    // マテリアル用の定数バッファを設定
-    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
-
     // パーティクルグループごとに描画処理を行う
     for (const auto& [name, particleGroup] : particleGroups) {
         // インスタンス数が0の場合は描画しない
         if (particleGroup.kNumInstance == 0) {
             continue;
         }
+        // モデルに必要なバッファをバインド（頂点バッファや定数バッファなど）
+        particleGroup.model->Draw();
         // インスタンシングデータの SRV を設定（テクスチャファイルのパスを指定）
         srvmanager_->SetGraphicsRootDescriptorTable(1, particleGroup.srvindex);
         // SRVで画像を表示
         srvmanager_->SetGraphicsRootDescriptorTable(2, particleGroup.materialData.textureindex);
         // 描画（インスタンシング）を実行
-        dxCommon_->GetCommandList()->DrawInstanced(static_cast<UINT>(modelDate.vertices.size()), static_cast<UINT>(particleGroup.kNumInstance), 0, 0);
+        dxCommon_->GetCommandList()->DrawInstanced(static_cast<UINT>(particleGroup.model->GetVertexCount()), static_cast<UINT>(particleGroup.kNumInstance), 0, 0);
     }
 }
 
-void ParticleManager::SetParticleModel(const std::string& directorypath, const std::string& filename) {
-    // モデルデータを取得
-    modelDate = LoadObjFile(directorypath, filename);
-    // 頂点データを作成
-    VertexDatacreation();
-    // .objの参照しているテクスチャ読み込み
-    TextureManager::GetInstance()->LoadTexture(modelDate.material.textureFilePath);
-    // 読み込んだテクスチャの番号を取得
-    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
-}
-
-void ParticleManager::VertexDatacreation() {
-    // 関数化したResouceで作成
-    vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
-    //頂点バッファビューを作成する
-    // リソースの先頭のアドレスから使う
-    vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
-    // 使用するリソースのサイズはの頂点のサイズ
-    vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelDate.vertices.size());
-    // 1頂点当たりのサイズ
-    vertexBufferView.StrideInBytes = sizeof(VertexData);
-    // 頂点リソースにデータを書き込むためのアドレスを取得
-    vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-    // 頂点データをリソースにコピー
-    std::memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexData) * modelDate.vertices.size());
-}
-
-void ParticleManager::MaterialGenerate() {
-    // マテリアル用のリソース
-    materialResource = dxCommon_->CreateBufferResource(sizeof(Model::Material));
-    // マテリアル用にデータを書き込むためのアドレスを取得
-    materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-    // マテリアルデータの初期値を書き込む
-    materialData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    materialData->endbleLighting = true;
-    materialData->uvTransform = MakeIdentity4x4();
-}
-
-
-ParticleManager::MaterialDate ParticleManager::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
-    // 1. 中で必要となる変数の宣言
-    MaterialDate materialDate; // 構築するMaterialDate
-    std::string line; // ファイルから読んだ1行を格納するもの
-    std::ifstream file(directoryPath + "/" + filename); // 2.ファイルを開く
-    assert(file.is_open()); // とりあえず開けなかったら止める
-    // 3. 実際にファイルを読み、MaterialDateを構築していく
-    while (std::getline(file, line)) {
-        std::string identifier;
-        std::istringstream s(line);
-        s >> identifier;
-
-        // identifierの応じた処理
-        if (identifier == "map_Kd") {
-            std::string textureFilename;
-            s >> textureFilename;
-            // 連結してファイルパスにする
-            materialDate.textureFilePath = directoryPath + "/" + textureFilename;
-        }
-    }
-    return materialDate;
-}
-
-ParticleManager::ModelDate ParticleManager::LoadObjFile(const std::string& directoryPath, const std::string& filename) {
-    // 1. 中で必要となる変数の宣言
-    ModelDate modelDate; // 構築するModelDate
-    std::vector<Vector4> positions; // 位置
-    std::vector<Vector3> normals; // 法線
-    std::vector<Vector2> texcoords; // テクスチャ座標
-    std::string line; // ファイルから読んだ1桁を格納するもの
-    // 2.  ファイルを開く
-    std::ifstream file(directoryPath + "/" + filename); // ファイルを開く
-    assert(file.is_open()); // とりあえず開けなかったら止める
-
-    // 3. 実際にファイルを読み、ModelDateを構築していく
-    while (std::getline(file, line)) {
-        std::string identifier;
-        std::istringstream s(line);
-        s >> identifier;// 先頭の識別子を読む
-
-        // identifierの応じた処理
-        if (identifier == "v") {
-            Vector4 position;
-            s >> position.x >> position.y >> position.z;
-            position.x *= -1.0f;// 位置のx成分を反転
-            position.w = 1.0f;
-            positions.push_back(position);
-        } else if (identifier == "vt") {
-            Vector2 texcoord;
-            s >> texcoord.x >> texcoord.y;
-            texcoord.y = 1.0f - texcoord.y;
-            texcoords.push_back(texcoord);
-        } else if (identifier == "vn") {
-            Vector3 normal;
-            s >> normal.x >> normal.y >> normal.z;
-            normal.x *= -1.0f;// 法線のx成分を反転
-            normals.push_back(normal);
-        } else if (identifier == "f") {
-            VertexData triangle[3];
-            // 面は三角形限定。その他は未対応
-            for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-                std::string vertexDefinition;
-                s >> vertexDefinition;
-                // 頂点の要素へのIndexは、[位置/UV/法線]で格納されているので、分解してIndexを取得する
-                std::istringstream v(vertexDefinition);
-                uint32_t elementIndices[3];
-                for (uint32_t element = 0; element < 3; ++element) {
-                    std::string index;
-                    std::getline(v, index, '/');// /区切りでインデックスを読んでいく
-                    elementIndices[element] = std::stoi(index);
-                }
-                // 要素のIndexから、実際の要素の値を取得して、頂点を構築する
-                Vector4 position = positions[elementIndices[0] - 1];
-                Vector2 texcoord = texcoords[elementIndices[1] - 1];
-                Vector3 normal = normals[elementIndices[2] - 1];
-                //VertexData vertex = { position,texcoord,normal };
-                //modelDate.vertices.push_back(vertex);
-                triangle[faceVertex] = { position,texcoord,normal };
-            }
-            // 頂点を逆順で登録することで、回り順を逆にする
-            modelDate.vertices.push_back(triangle[2]);
-            modelDate.vertices.push_back(triangle[1]);
-            modelDate.vertices.push_back(triangle[0]);
-        } else if (identifier == "mtllib") {
-            // materialTemplateLibrarvファイルの名前を取得する
-            std::string materialFilename;
-            s >> materialFilename;
-            // 基本的にobjファイルと同一階層にmtlは存在させるので、ディレクトリ名とファイル名を渡す
-            modelDate.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
-        }
-    }
-    // 4. ModelDateを返す
-    return modelDate;
-}
-
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath) {
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType) {
     // すでにテクスチャがロードされているか確認
     if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
         // マテリアルのテクスチャファイルをロード
@@ -289,6 +168,11 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     } else {
         // 新しいパーティクルグループを作成
         ParticleGroup& newGroup = particleGroups[name];
+        newGroup.model = std::make_unique<ParticleModel>();
+        // 頂点タイプをセット
+        newGroup.model->SetVertexType(vertexType);
+        // モデルの初期化
+        newGroup.model->Initialize(dxCommon_, filename);
 
         // 新しいパーティクルグループにテクスチャパスとインデックスを設定
         newGroup.materialData.textureFilePath = textureFilepath;
@@ -315,7 +199,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
     }
 }
 
-void ParticleManager::Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime) {
+void ParticleManager::Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Velocity& velocity, float lifetime,const RandomParameter& randomParameter) {
 
     auto it = particleGroups.find(name);
     if (it == particleGroups.end()) {
@@ -332,22 +216,19 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
 
     if (count == 0) return;
 
-    // ランダムオフセット
-    std::uniform_real_distribution<float> dist(-1.5f, 1.5f);
-    std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
-
     for (uint32_t i = 0; i < count; ++i) {
-        Vector3 offset(dist(randomEngine), dist(randomEngine), dist(randomEngine));
+        ParticleRandomData randData = GenerateRandomParticleData(randomParameter, velocity, lifetime, randomEngine);
 
         Particle newParticle;
-        newParticle.transform.translate = { position.x + offset.x,position.y + offset.y ,position.z + offset.z };
-        newParticle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-        newParticle.transform.scale = { 1.0f, 1.0f, 1.0f };
-        newParticle.color = { colorDist(randomEngine),  colorDist(randomEngine),  colorDist(randomEngine),1.0f };
-        newParticle.lifetime = lifetime;
+        newParticle.transform.translate = { transform.translate.x + randData.offset.x, transform.translate.y + randData.offset.y, transform.translate.z + randData.offset.z };
+        newParticle.transform.rotate = { transform.rotate.x + randData.rotation.x, transform.rotate.y + randData.rotation.y, transform.rotate.z + randData.rotation.z };
+        newParticle.transform.scale = { transform.scale.x + randData.scale.x, transform.scale.y + randData.scale.y, transform.scale.z + randData.scale.z };
+        newParticle.color = { color.x + randData.color.x,color.y + randData.color.y ,color.z + randData.color.z ,color.w + randData.color.w };
+        newParticle.lifetime = randData.lifetime;
         newParticle.currentTime = 0.0f;
-        newParticle.Velocity = velocity;  // 渡されたベロシティを使う
-
+        newParticle.Velocity.translate = randData.velocity.translate;
+        newParticle.Velocity.rotate = randData.velocity.rotate;
+        newParticle.Velocity.scale = randData.velocity.scale;
 
         // 作成したパーティクルをパーティクルリストに追加
         group.particles.push_back(newParticle);
@@ -378,4 +259,84 @@ void ParticleManager::DebugUpdata() {
     }
     ImGui::End();
 #endif // USE_IMGUI
+}
+
+void ParticleManager::SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath) {
+    auto it = particleGroups.find(name);
+    if (it == particleGroups.end()) {
+        throw std::runtime_error("Particle group not found: " + name);
+    }
+
+    // テクスチャがすでに読み込まれていなければ読み込む
+    if (!TextureManager::GetInstance()->IsTextureLoaded(textureFilepath)) {
+        TextureManager::GetInstance()->LoadTexture(textureFilepath);
+    }
+
+    it->second.materialData.textureFilePath = textureFilepath;
+    it->second.materialData.textureindex = TextureManager::GetInstance()->GetSrvIndex(textureFilepath);
+}
+
+void ParticleManager::SetParticleGroupModel(const std::string& name, const std::string& modelFilepath) {
+    auto it = particleGroups.find(name);
+    if (it == particleGroups.end()) {
+        throw std::runtime_error("Particle group not found: " + name);
+    }
+
+    // モデルがまだ読み込まれていない場合は読み込む
+    if (!ModelManager::GetInstance()->FindModel(modelFilepath)) {
+        ModelManager::GetInstance()->LoadModel(modelFilepath);
+    }
+
+    // モデル差し替え
+    if (it->second.model) {
+        // モデルが既に存在する場合は再初期化する
+        it->second.model->Initialize(dxCommon_, modelFilepath);
+    } else {
+        // モデルがなければ新たに作成して初期化
+        it->second.model = std::make_unique<ParticleModel>();
+        it->second.model->SetVertexType(VertexType::Model); // 必要なら別途引数で指定
+        it->second.model->Initialize(dxCommon_, modelFilepath);
+    }
+}
+
+ParticleRandomData ParticleManager::GenerateRandomParticleData(const RandomParameter& param, const Velocity& baseVelocity, float baseLifetime, std::mt19937& randomEngine) {
+    // ランダム分布の定義
+    std::uniform_real_distribution<float> distX(param.offsetMin.x, param.offsetMax.x);
+    std::uniform_real_distribution<float> distY(param.offsetMin.y, param.offsetMax.y);
+    std::uniform_real_distribution<float> distZ(param.offsetMin.z, param.offsetMax.z);
+
+    std::uniform_real_distribution<float> distRotateX(param.rotateMin.x, param.rotateMax.x);
+    std::uniform_real_distribution<float> distRotateY(param.rotateMin.y, param.rotateMax.y);
+    std::uniform_real_distribution<float> distRotateZ(param.rotateMin.z, param.rotateMax.z);
+
+    std::uniform_real_distribution<float> distScaleX(param.scaleMin.x, param.scaleMax.x);
+    std::uniform_real_distribution<float> distScaleY(param.scaleMin.y, param.scaleMax.y);
+    std::uniform_real_distribution<float> distScaleZ(param.scaleMin.z, param.scaleMax.z);
+
+    std::uniform_real_distribution<float> distVeltranslateX(param.velocityMin.translate.x, param.velocityMax.translate.x);
+    std::uniform_real_distribution<float> distVeltranslateY(param.velocityMin.translate.y, param.velocityMax.translate.y);
+    std::uniform_real_distribution<float> distVeltranslateZ(param.velocityMin.translate.z, param.velocityMax.translate.z);
+
+    std::uniform_real_distribution<float> distVelrotateX(param.velocityMin.rotate.x, param.velocityMax.rotate.x);
+    std::uniform_real_distribution<float> distVelrotateY(param.velocityMin.rotate.y, param.velocityMax.rotate.y);
+    std::uniform_real_distribution<float> distVelrotateZ(param.velocityMin.rotate.z, param.velocityMax.rotate.z);
+
+    std::uniform_real_distribution<float> distVelscaleX(param.velocityMin.scale.x, param.velocityMax.scale.x);
+    std::uniform_real_distribution<float> distVelscaleY(param.velocityMin.scale.y, param.velocityMax.scale.y);
+    std::uniform_real_distribution<float> distVelscaleZ(param.velocityMin.scale.z, param.velocityMax.scale.z);
+
+    std::uniform_real_distribution<float> distLifetime(param.lifetimeMin, param.lifetimeMax);
+    std::uniform_real_distribution<float> distColor(param.colorMin, param.colorMax);
+
+    ParticleRandomData data;
+    data.offset = { distX(randomEngine), distY(randomEngine), distZ(randomEngine) };
+    data.rotation = { distRotateX(randomEngine), distRotateY(randomEngine), distRotateZ(randomEngine) };
+    data.scale = { distScaleX(randomEngine), distScaleY(randomEngine), distScaleZ(randomEngine) };
+    data.velocity.translate = { baseVelocity.translate.x + distVeltranslateX(randomEngine), baseVelocity.translate.y + distVeltranslateY(randomEngine), baseVelocity.translate.z + distVeltranslateZ(randomEngine) };
+    data.velocity.rotate = { baseVelocity.rotate.x + distVelrotateX(randomEngine), baseVelocity.rotate.y + distVelrotateY(randomEngine), baseVelocity.rotate.z + distVelrotateZ(randomEngine) };
+    data.velocity.scale = { baseVelocity.scale.x + distVelscaleX(randomEngine), baseVelocity.scale.y + distVelscaleY(randomEngine), baseVelocity.scale.z + distVelscaleZ(randomEngine) };
+    data.lifetime = baseLifetime + distLifetime(randomEngine);
+    data.color = { distColor(randomEngine), distColor(randomEngine), distColor(randomEngine), 1.0f };
+
+    return data;
 }

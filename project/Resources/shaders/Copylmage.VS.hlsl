@@ -1,4 +1,4 @@
-#include "Fullscreen.hlsli"
+#include "Copylmage.hlsli"
 
 static const uint32_t kNumVertex = 3;
 

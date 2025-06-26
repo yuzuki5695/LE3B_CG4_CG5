@@ -29,8 +29,10 @@ public:
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix; }
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix; }
 	const Matrix4x4& GetViewProjectionMatrix() const { return ViewProjectionMatrix; }
-	const Vector3& GetRotate() const { return transform.rotate; }
-	const Vector3& GetTranslate() const { return transform.translate; }
+	const Vector3& GetRotate() const { return transform.rotate; }	
+	Vector3& GetRotate() { return transform.rotate; }            // 書き換え用
+	const Vector3& GetTranslate() const { return transform.translate; }		
+	Vector3& GetTranslate() { return transform.translate; }            // 書き換え用
 
 	// setter
 	void SetRotate(const Vector3& rotate) { this->transform.rotate = rotate; }

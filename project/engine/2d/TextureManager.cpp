@@ -2,8 +2,6 @@
 #include "Logger.h"
 #include "StringUtility.h"
 
-using namespace Microsoft::WRL;
-
 // ImGuiで0番目に使用するため、1番から使用
 uint32_t TextureManager::KSRVIndexTop = 1;
 
@@ -54,7 +52,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	textureData.resource = dxCommon_->CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
 
 	// テクスチャデータの転送
-	UploadTextureData(textureData.resource, mipImages);
+	dxCommon_->UploadTextureData(textureData.resource, mipImages);
 
 	// テクスチャデータの要素数番号をSRVのインデックスとする
 	textureData.srvIndex = srvmanager_->Allocate();
@@ -88,26 +86,4 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 	// 範囲外指定違反チェック
 	assert(textureDatas.size() + KSRVIndexTop < SrvManager::kMaxSRVCount);
 	return textureDatas.at(filepath).srvHandleGPU;
-}
-
-//TextureResourceにデータを移送する
-void TextureManager::UploadTextureData(ComPtr <ID3D12Resource> &texture, const DirectX::ScratchImage& mipImages)
-{
-    //Meta情報を取得
-    const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-    //全MipMapについて
-    for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; ++mipLevel)
-    {
-        //MipMapLevelを指定して各Imageを取得
-        const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
-        //Textureに転送
-        HRESULT hr = texture->WriteToSubresource(
-            UINT(mipLevel),
-            nullptr,				//全領域へコピー
-            img->pixels,			//元データアドレス
-            UINT(img->rowPitch),	//1ラインサイズ
-            UINT(img->slicePitch)	//1枚サイズ
-        );
-        assert(SUCCEEDED(hr));
-    }
 }

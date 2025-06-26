@@ -1,34 +1,21 @@
 #pragma once
 #include"Transform.h"
 #include"Vector2.h"
+#include"Vector3.h"
 #include"Vector4.h"
 #include "Matrix4x4.h"
 #include<wrl.h>
 #include<d3d12.h>
 #include<cstdint>
 #include<fstream>
+#include<Vertex.h>
+#include<Material.h>
 
 class SpriteCommon;
 
 class Sprite
 {
 public: // メンバ関数	
-	// 頂点データ
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	// マテリアルデータ
-	struct Material {
-		Vector4 color;
-		int32_t endbleLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
-
 	// 座標変換行列データ
 	struct TransformationMatrix {
 		Matrix4x4 WVP;

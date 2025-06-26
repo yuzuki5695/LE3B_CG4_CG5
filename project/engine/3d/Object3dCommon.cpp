@@ -1,7 +1,6 @@
 #include "Object3dCommon.h"
 #include "Logger.h"
 #include "StringUtility.h"
-#include <ShaderCompiler.h>
 
 using namespace Microsoft::WRL;
 
@@ -192,9 +191,9 @@ void Object3dCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     /*--------------------------------ShaderをCompile-----------------------------------*/
     /*----------------------------------------------------------------------------------*/
-    ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Object3d/Object3D.VS.hlsl", L"vs_6_0");
+    ComPtr <IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Object3D.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Object3d/Object3D.PS.hlsl", L"ps_6_0");
+    ComPtr <IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Object3D.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
     /*-----------------------------------------------------------------------------------*/

@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include "externals/DirectXTex/DirectXTex.h"
+#include<wrl.h>
+#include<d3d12.h>
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include <unordered_map>
@@ -39,13 +42,6 @@ public: // メンバ関数
 		// textures マップにファイルパスが存在するか確認
 		return textureDatas.find(filepath) != textureDatas.end();
 	}
-	
-	/// <summary>
-	/// テクスチャデータの輸送
-	/// </summary>
-	/// <param name="texture"></param>
-	/// <param name="mipImages"></param>
-	void UploadTextureData(Microsoft::WRL::ComPtr <ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
 
 private: // メンバ変数
 	// テクスチャ1枚分のデータ

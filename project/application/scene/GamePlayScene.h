@@ -4,7 +4,7 @@
 #include<Model.h>
 #include<SoundPlayer.h>
 #include<BaseScene.h>
-#include <ParticleEmitter.h>
+#include<ParticleEmitter.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -18,17 +18,9 @@ public: // メンバ関数
     void Update() override;
     // 描画
     void Draw() override;
+
 private: // メンバ変数
     // オブジェクトデータ
-    // camera 
-    std::unique_ptr <Camera> camera = nullptr;
-    //// カメラの現在の位置と回転を取得
-    Vector3 Cameraposition;
-    Vector3 Camerarotation;
-    // Sprite
-    std::unique_ptr<Sprite> sprite = nullptr;
-    // Object3d
-    std::unique_ptr <Object3d> object3d = nullptr;
     // 地面
     std::unique_ptr <Object3d> grass = nullptr;
 
@@ -37,7 +29,4 @@ private: // メンバ変数
     // 音声プレイフラグ
     uint32_t soundfige;
 
-    // エミッター生成
-    std::unique_ptr <ParticleEmitter> emitter;
-    Vector3 windPower;
 };

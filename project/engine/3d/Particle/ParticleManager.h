@@ -9,39 +9,54 @@
 #include <Transform.h>
 #include<Camera.h>
 #include<Model.h>
+#include<ParticleModel.h>
+
+struct Velocity {
+	Vector3 translate;
+	Vector3 rotate;
+	Vector3 scale;
+};
+
+struct RandomParameter {
+	// ランダムな速度の範囲
+	Vector3 offsetMin;
+	Vector3 offsetMax;
+	// ランダムな回転の範囲
+	Vector3 rotateMin;
+	Vector3 rotateMax;
+	// ランダムなスケールの範囲
+	Vector3 scaleMin;
+	Vector3 scaleMax;
+	// ランダムな色の範囲
+	float colorMin; // 最小値
+	float colorMax; // 最大値
+	// ランダムな寿命の範囲を追加
+	float lifetimeMin;
+	float lifetimeMax;
+	// ランダムな速度の範囲を追加
+	Velocity velocityMin;
+	Velocity velocityMax;
+};
+
+struct ParticleRandomData {
+	Vector3 offset;
+	Vector3 rotation;
+	Vector3 scale;
+	Velocity velocity;
+	float lifetime;
+	Vector4 color;
+	Vector3 rotationSpeed;  // 回転速度
+	Vector3 scaleSpeed;     // スケール変化速度
+};
 
 // 3Dオブジェクト共通部
 class ParticleManager
 {
-public:
-	// 頂点データ
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-	// マテリアル
-	struct Material {
-		Vector4 color;
-		int32_t endbleLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
-	// マテリアルデータ
-	struct MaterialDate {
-		std::string textureFilePath;
-		uint32_t textureindex = 0;
-	};
-	// モデルデータ
-	struct ModelDate {
-		std::vector<VertexData> vertices;
-		MaterialDate material;
-	};
+public:	
 	// パーティクル
 	struct Particle {
 		Transform transform;
-		Vector3 Velocity;
+		Velocity Velocity;
 		float lifetime;
 		float currentTime;
 		Vector4 color;
@@ -55,15 +70,13 @@ public:
 	};
 	// パーティクルグループ
 	struct ParticleGroup {
+		std::unique_ptr<ParticleModel> model;                  // パーティクルモデル
 		MaterialDate materialData;                             // マテリアルデータ(テクスチャファイルパスとテクスチャ用SRVインデックス)
 		std::list<Particle> particles;                         // パーティクルのリスト
 		uint32_t srvindex;                                     // インスタンシング用SRVインデックス
 		Microsoft::WRL::ComPtr <ID3D12Resource> Resource;      // インスタンシングリソース
 		uint32_t kNumInstance;                                 // インスタンス数
 		InstanceData* instanceData = nullptr;                  // インスタンシングデータを書き込むためのポインタ
-		// 発生間隔管理用のメンバー
-		float spawnTime = 0.0f;  // 現在の発生までの経過時間
-		float spawnFrequency = 2.0f;  // 2.0秒ごとに発生
 	};
 private:
 	static std::unique_ptr<ParticleManager> instance;
@@ -85,26 +98,19 @@ public: // メンバ関数
 	// 描画処理
 	void Draw();
 
-	//　パーティクルモデル生成
-	void SetParticleModel(const std::string& directorypath, const std::string& filename);
-
 	// パーティクルグループの作成
-	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilepath, const std::string& filename, VertexType vertexType);
 	
 	// 発生
-	void Emit(const std::string& name, const Vector3& position, uint32_t count, const Vector3& velocity, float lifetime);
+	void Emit(const std::string& name, const Transform& transform, const Vector4& color, uint32_t count, const Velocity& velocity, float lifetime, const RandomParameter& randomParameter);
+
+	void SetParticleGroupTexture(const std::string& name, const std::string& textureFilepath);
+	void SetParticleGroupModel(const std::string& name, const std::string& modelFilepath);
 
 	void DebugUpdata();
+	
+	ParticleRandomData GenerateRandomParticleData(const RandomParameter& param, const Velocity& baseVelocity, float baseLifetime, std::mt19937& randomEngine);
 
-private:
-	// .mtlファイルの読み取り
-	static ParticleManager::MaterialDate LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	// .objファイルの読み取り
-	static ParticleManager::ModelDate LoadObjFile(const std::string& directoryPath, const std::string& filename);
-	// 頂点データ作成
-	void VertexDatacreation();
-	// マテリアル
-	void MaterialGenerate();
 private: // メンバ変数
 	// ポインタ
 	DirectXCommon* dxCommon_;
@@ -112,16 +118,6 @@ private: // メンバ変数
 	Camera* camera_;
 	// ランダムエンジン
 	std::mt19937 randomEngine;
-	// Objファイルのデータ
-	ModelDate modelDate;
-	// バッファリソース
-	Microsoft::WRL::ComPtr <ID3D12Resource> vertexResoruce;
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;;
-	// バッファリソース内のデータを指すポインタ
-	VertexData* vertexData = nullptr;
-	Material* materialData = nullptr;
-	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	//最大インスタンス
 	uint32_t MaxInstanceCount = 200;
 	//ビルボード行列
