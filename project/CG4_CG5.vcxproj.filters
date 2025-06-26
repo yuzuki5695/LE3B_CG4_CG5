@@ -399,5 +399,14 @@
     <FxCompile Include="Resources\shaders\Fullscreen\Fullscreen.VS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\BoxFilter.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\GaussianFilter.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\Vignette.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
