@@ -47,13 +47,6 @@ public: // メンバ関数
 	/// </summar
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
 
-	/// <summary>
-	/// テクスチャデータの輸送
-	/// </summary>
-	/// <param name="texture"></param>
-	/// <param name="mipImages"></param>
-	void UploadTextureData(Microsoft::WRL::ComPtr <ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
-
 private: // プライベートメンバ関数
 	// デバイスの初期化
 	void DebugInitialize();
