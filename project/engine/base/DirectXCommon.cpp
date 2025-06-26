@@ -263,8 +263,8 @@ void DirectXCommon::RenderviewInitialize() {
     hr = swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainResources[1]));
     assert(SUCCEEDED(hr));
  
-    // カスタムRenderTarget用のリソース作成（赤でクリアされる）
-    kRenderTargetClearValue = { 1.0f, 0.0f, 0.0f, 1.0f }; // 赤
+    // カスタムRenderTarget用のリソース作成
+    kRenderTargetClearValue = { 0.1f,0.25f,0.5f,1.0f };
     // [2]にrenderTexture を作る
     renderTextureResource = CreateRenderTextureResource(
         device,
