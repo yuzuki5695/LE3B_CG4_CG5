@@ -522,7 +522,7 @@ void DirectXCommon::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_
     commandList->ResourceBarrier(1, &barrier);
 }
 
-    // Resourceの関数化
+// Resourceの関数化
 ComPtr <ID3D12Resource> DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
     //IDXGIのファクトリーの生成
     ComPtr <IDXGIFactory7> dxgiFactory = nullptr;
