@@ -1,4 +1,11 @@
 #include "Framework.h"
+#include<D3DResourceLeakChecker.h>
+#include<DirectXCommon.h>
+#include<ModelCommon.h>
+#include<SrvManager.h>
+#include<SceneFactory.h>
+#include <ShaderCompiler.h>
+//#include<CopylmageCommon.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -58,7 +65,9 @@ void Framework::Initialize() {
     winApp->Initialize();
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
-    dxCommon->Initialize(winApp.get());
+    dxCommon->Initialize(winApp.get()); 
+    // シェーダーコンパイルの初期化
+    ShaderCompiler::GetInstance()->Initialize();
     // 音声読み込み
     SoundLoader::GetInstance()->Initialize();
     // 音声再生

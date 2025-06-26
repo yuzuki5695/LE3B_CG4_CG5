@@ -1,8 +1,6 @@
 #pragma once
 #include<Input.h>
-#include<DirectXCommon.h>
 #include<ResourceObject.h>
-#include<D3DResourceLeakChecker.h>
 #include<TextureManager.h>
 #include<SpriteCommon.h>
 #include<Object3dCommon.h>
@@ -10,12 +8,16 @@
 #include<ModelCommon.h>
 #include<ModelManager.h>
 #include<Camera.h>
-#include<SrvManager.h>
 #include<ImGuiManager.h>
 #include<SoundPlayer.h>
 #include<SceneManager.h>
-#include<SceneFactory.h>
 #include<ParticleManager.h>
+
+class WinApp;
+class DirectXCommon;
+class ModelCommon;
+class SrvManager;
+class AbstractSceneFactory;
 
 // ゲーム全体
 class Framework
@@ -53,7 +55,6 @@ public:
 	WinApp* GetWinApp() const { return winApp.get(); }
 	DirectXCommon* GetDirectXCommon() const { return dxCommon.get(); }
 	SrvManager* GetSrvManager() const { return srvManager.get(); }
-	//SceneManeger* GetSceneManeger() const { return sceneManeger_; }
 	// 終了フラグのチェック
 	virtual bool IsEndRequst() { return  endRequst_; }
 };

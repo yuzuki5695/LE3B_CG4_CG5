@@ -32,9 +32,6 @@ public: // メンバ関数
 	// リソース
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth);
 
-	// コンパイルシェーダー
-	Microsoft::WRL::ComPtr <IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
-
 	/// <summary>
 	/// バッファリソースの生成
 	/// </summary>
@@ -78,8 +75,6 @@ private: // プライベートメンバ関数
 	void viewportInitialize();
 	// シザリング矩形
 	void scissorRectInitialize();
-	// DXCコンパイラの生成
-	void DxCompilerGenerate();
 	
 	/// <summary>
 	/// 指定番号のCPUディスクリプタハンドルを取得する
