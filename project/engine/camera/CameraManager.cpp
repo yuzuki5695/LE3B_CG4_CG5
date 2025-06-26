@@ -101,6 +101,7 @@ void CameraManager::DrawImGui() {
     Camera* activeCamera = nullptr;
     const char* modeName = "";
     const char* label = "Translate";
+    const char* label2 = "Rotate";
 
     switch (currentMode_) {
     case CameraMode::Default:
@@ -114,11 +115,14 @@ void CameraManager::DrawImGui() {
     }
     ImGui::Text("Current Mode: %s", modeName);
 
-
     if (activeCamera) {
         Vector3 pos = activeCamera->GetTranslate();
+        Vector3 rotate = activeCamera->GetRotate();
         if (ImGui::DragFloat3(label, &pos.x, 0.01f)) {
             activeCamera->SetTranslate(pos);
+        } 
+        if (ImGui::DragFloat3(label2, &rotate.x, 0.01f)) {
+            activeCamera->SetRotate(rotate);
         }
     }
 

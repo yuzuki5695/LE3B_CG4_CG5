@@ -26,9 +26,11 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("terrain.obj"); 
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
     
-    Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
+    Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
+        
+    CameraManager::GetInstance()->SetTarget(Object_.get());
 }
 
 void GamePlayScene::Update() {

@@ -1,8 +1,10 @@
 #include "TextureManager.h"
 #include <Logger.h>
 #include <StringUtility.h>
+#include <ResourceFactory.h>
 
 using namespace Microsoft::WRL;
+using namespace ResourceFactory;
 
 // ImGuiで0番目に使用するため、1番から使用
 uint32_t TextureManager::KSRVIndexTop = 1;
@@ -51,7 +53,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas[filePath];
 	textureData.metadata = mipImages.GetMetadata();
-	textureData.resource = dxCommon_->CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
+	textureData.resource = CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
 
 	// テクスチャデータの転送
 	UploadTextureData(textureData.resource, mipImages);

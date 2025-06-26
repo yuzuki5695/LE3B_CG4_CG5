@@ -216,10 +216,13 @@
     <ClCompile Include="engine\resource\TextureManager.cpp">
       <Filter>ソース ファイル\engine\resource</Filter>
     </ClCompile>
-    <ClCompile Include="GameClearScene.cpp">
+    <ClCompile Include="application\scene\GameClearScene.cpp">
       <Filter>ソース ファイル\application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="DescriptorUtils.cpp">
+    <ClCompile Include="engine\base\DescriptorUtils.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\ResourceFactory.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -365,10 +368,13 @@
     <ClInclude Include="engine\resource\ModelManager.h">
       <Filter>ヘッダー ファイル\engine\resource</Filter>
     </ClInclude>
-    <ClInclude Include="GameClearScene.h">
+    <ClInclude Include="application\scene\GameClearScene.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="DescriptorUtils.h">
+    <ClInclude Include="engine\base\DescriptorUtils.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\ResourceFactory.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
   </ItemGroup>

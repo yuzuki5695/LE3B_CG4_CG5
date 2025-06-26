@@ -102,7 +102,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
-    <ClCompile Include="DescriptorUtils.cpp" />
+    <ClCompile Include="engine\base\DescriptorUtils.cpp" />
     <ClCompile Include="engine\base\CopylmageCommon.cpp" />
     <ClCompile Include="engine\base\ShaderCompiler.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
@@ -122,7 +122,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="engine\scene\SceneFactory.cpp" />
-    <ClCompile Include="GameClearScene.cpp" />
+    <ClCompile Include="application\scene\GameClearScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MatrixVector.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -138,9 +138,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\SrvManager.cpp" />
     <ClCompile Include="engine\scene\MyGame.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
+    <ClCompile Include="engine\base\ResourceFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DescriptorUtils.h" />
+    <ClInclude Include="engine\base\DescriptorUtils.h" />
     <ClInclude Include="engine\base\CopylmageCommon.h" />
     <ClInclude Include="engine\base\ShaderCompiler.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
@@ -188,7 +189,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\scene\SceneFactory.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
-    <ClInclude Include="GameClearScene.h" />
+    <ClInclude Include="application\scene\GameClearScene.h" />
+    <ClInclude Include="engine\base\ResourceFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
