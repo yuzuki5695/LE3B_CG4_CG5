@@ -63,7 +63,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +125,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="application\scene\GameClearScene.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\FenceManager.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\FPSController.cpp" />
+    <ClCompile Include="engine\loader\JsonLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MatrixVector.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -199,6 +200,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\DirectXCommon\ViewportManager.h" />
     <ClInclude Include="engine\base\DirectXCommon\FPSController.h" />
     <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h" />
+    <ClInclude Include="engine\loader\JsonLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

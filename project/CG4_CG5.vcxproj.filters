@@ -118,6 +118,12 @@
     <Filter Include="ヘッダー ファイル\engine\base\Utility">
       <UniqueIdentifier>{92f82516-ef47-4df4-87a1-582a9e59e75e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\loader">
+      <UniqueIdentifier>{05870e08-2863-46a6-9dcf-8a5090c30587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\loader">
+      <UniqueIdentifier>{5ef44325-1c04-412a-a24f-473ec8470eed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -248,6 +254,9 @@
     </ClCompile>
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp">
       <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\loader\JsonLoader.cpp">
+      <Filter>ソース ファイル\engine\loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h">
       <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\loader\JsonLoader.h">
+      <Filter>ヘッダー ファイル\engine\loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
