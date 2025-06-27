@@ -6,10 +6,12 @@
 #include <numbers>
 #include <externals/DirectXTex/d3dx12.h>
 #include <Object3dCommon.h>
+#include <ResourceFactory.h>
 
 using namespace MatrixVector;
 using namespace Microsoft::WRL;
 using namespace PrimitiveGenerator;
+using namespace ResourceFactory;
 
 void ParticleModel::Initialize(DirectXCommon* birectxcommon, const std::string& filename) {
     // NULL検出
@@ -54,7 +56,7 @@ void ParticleModel::Draw() {
 
 void ParticleModel::CreateVertexBuffer() {
     // 関数化したResouceで作成
-    vertexResoruce = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
+    vertexResoruce = CreateBufferResource(dxCommon_->GetDevice(), sizeof(VertexData) * modelDate.vertices.size());
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
     vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
@@ -137,7 +139,7 @@ void ParticleModel::VertexDataSpiral() {
 
 void ParticleModel::MaterialGenerate() {
     // マテリアル用のリソース
-    materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
+    materialResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(Material));
     // マテリアル用にデータを書き込むためのアドレスを取得
     materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     // マテリアルデータの初期値を書き込む

@@ -113,7 +113,7 @@ namespace ResourceFactory {
     }
 
     // Resourceの関数化
-    ComPtr <ID3D12Resource> CreateBufferResource(ComPtr <ID3D12Device> device,size_t sizeInBytes) {
+    ComPtr <ID3D12Resource> CreateBufferResource(const ComPtr <ID3D12Device>& device,size_t sizeInBytes) {
         //IDXGIのファクトリーの生成
         ComPtr <IDXGIFactory7> dxgiFactory = nullptr;
         HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));

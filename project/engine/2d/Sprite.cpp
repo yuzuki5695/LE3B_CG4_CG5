@@ -7,8 +7,10 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include <ResourceFactory.h>
 
 using namespace MatrixVector;
+using namespace ResourceFactory;
 
 void Sprite::Initialize(SpriteCommon* spriteCommon) {
 	// NULL検出
@@ -27,7 +29,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon) {
 
 void Sprite::VertexDatacreation() {
 	// 頂点リソースを作る
-	vertexResoruce = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);
+	vertexResoruce = CreateBufferResource(spriteCommon_->GetDxCommon()->GetDevice(), sizeof(VertexData) * 4);
 	// 頂点バッファビューを作成する
 	// リソースの先頭のアドレスから使う
 	vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
@@ -40,7 +42,7 @@ void Sprite::VertexDatacreation() {
 	vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
 	// 頂点リソースを作る
-	indexResource = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * 6);
+	indexResource = CreateBufferResource(spriteCommon_->GetDxCommon()->GetDevice(), sizeof(uint32_t) * 6);
 	// 頂点バッファビューを作成する
 	// リソースの先頭のアドレスから使う
 	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
@@ -53,7 +55,7 @@ void Sprite::VertexDatacreation() {
 
 void Sprite::MaterialGenerate() {
 	// マテリアルリソースを作る
-	materialResource = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
+	materialResource = CreateBufferResource(spriteCommon_->GetDxCommon()->GetDevice(), sizeof(Material));
 	// Sprite用にデータを書き込むためのアドレスを取得
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	// 今回は白
@@ -66,7 +68,7 @@ void Sprite::MaterialGenerate() {
 
 void Sprite::TransformationMatrixGenerate() {
 	// Sprite用のTransformationMatrix用のリソースを作る。
-	transformationMatrixResource = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
+	transformationMatrixResource = CreateBufferResource(spriteCommon_->GetDxCommon()->GetDevice(), sizeof(TransformationMatrix));
 	// データを書き込むためのアドレスを取得
 	transformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
 	// 単位行列を書き込んでおく

@@ -8,6 +8,11 @@
 
 namespace  ResourceFactory {
 	/// <summary>
+	/// バッファリソースの生成
+	/// </summary>
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(const Microsoft::WRL::ComPtr <ID3D12Device>& device, size_t sizeInBytes);
+
+	/// <summary>
 	/// 深度ステンシルテクスチャリソースの生成
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth);

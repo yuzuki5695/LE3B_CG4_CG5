@@ -9,9 +9,11 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include <ResourceFactory.h>
 
 using namespace MatrixVector;
 using namespace Microsoft::WRL;
+using namespace ResourceFactory;
 
 // 静的メンバ変数の定義
 std::unique_ptr<ParticleManager> ParticleManager::instance = nullptr;
@@ -180,7 +182,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
         newGroup.kNumInstance = 0;
 
         // インスタンス用のリソースバッファを作成
-        newGroup.Resource = dxCommon_->CreateBufferResource(sizeof(InstanceData) * MaxInstanceCount);
+        newGroup.Resource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(InstanceData) * MaxInstanceCount);
         newGroup.instanceData = nullptr;
         newGroup.Resource->Map(0, nullptr, reinterpret_cast<void**>(&newGroup.instanceData));
 

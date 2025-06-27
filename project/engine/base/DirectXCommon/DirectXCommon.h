@@ -12,7 +12,6 @@
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
 
-
 // Directx基盤
 class DirectXCommon
 {
@@ -42,11 +41,6 @@ public: // メンバ関数
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 	
-	/// <summary>
-	/// バッファリソースの生成
-	/// </summary>
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
-
 private: // プライベートメンバ関数
 	// デバイスの初期化
 	void DebugInitialize();
@@ -132,7 +126,7 @@ private: // メンバ変数
 	std::chrono::steady_clock::time_point reference_;
 public:
 	// getter
-	Microsoft::WRL::ComPtr <ID3D12Device> GetDevice() const { return device.Get(); }
+	Microsoft::WRL::ComPtr <ID3D12Device> GetDevice() { return device; }
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return commandList.Get(); }
 	D3D12_DEPTH_STENCIL_DESC GetdepthStencilDesc() { return depthStencilDesc; }
 	// スワップチェーンリソースの数を取得

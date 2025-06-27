@@ -10,8 +10,10 @@
 #endif // USE_IMGUI
 #include <numbers>
 #include <CameraManager.h>
+#include <ResourceFactory.h>
 
 using namespace MatrixVector;
+using namespace ResourceFactory;
 
 void Object3d::Initialize(Object3dCommon* object3dCommon) {
     // NULL検出
@@ -76,7 +78,7 @@ void Object3d::Draw() {
 
 void Object3d::TransformationMatrixGenerate() {
     // WVP,World用のリソースを作る。TransformationMatrixを用意する
-    transformationMatrixResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::TransformationMatrix));
+    transformationMatrixResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::TransformationMatrix));
     // データを書き込むためのアドレスを取得
     transformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
     // 単位行列を書き込んでおく
@@ -88,7 +90,7 @@ void Object3d::TransformationMatrixGenerate() {
 
 void Object3d::DirectionalLightGenerate() {
     // 平行光源用のリソースを作る
-    directionalLightResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::DirectionalLight));
+    directionalLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::DirectionalLight));
     // 平行光源用にデータを書き込むためのアドレスを取得
     directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightDate));
     // デフォルト値はとりあえず以下のようにして置く
@@ -99,7 +101,7 @@ void Object3d::DirectionalLightGenerate() {
 
 void Object3d::CameraForGPUGenerate() {
     // カメラ用リソースを作る
-    cameraResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::CameraForGPU));
+    cameraResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::CameraForGPU));
     // 書き込むためのアドレスを取得
     cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraForGPUData));
     // 単位行列を書き込んでおく
@@ -113,7 +115,7 @@ void Object3d::CameraForGPUGenerate() {
 
 void Object3d::PointlightSourceGenerate() {
     // 点光源用リソースを作る
-    pointLightResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::PointLight));
+    pointLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::PointLight));
     // 書き込むためのアドレスを取得
     pointLightResource->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData));
     // デフォルト値
@@ -126,7 +128,7 @@ void Object3d::PointlightSourceGenerate() {
 
 void Object3d::SpotlightGenerate() {
     // スポットライトリソースを作る
-    spotLightResource = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Object3d::SpotLight));
+    spotLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::SpotLight));
     // 書き込むためのアドレスを取得
     spotLightResource->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData));
     // デフォルト値

@@ -2,8 +2,10 @@
 #include "Object3d.h"
 #include "MatrixVector.h"
 #include "TextureManager.h"
+#include <ResourceFactory.h>
 
 using namespace MatrixVector;
+using namespace ResourceFactory;
 
 void Model::Initialize(ModelCommon* modelCommon, const std::string& directorypath, const std::string& filename) {
     // NULL検出
@@ -41,7 +43,7 @@ void Model::Draw() {
 void Model::VertexDatacreation() {
 
     // 関数化したResouceで作成
-    vertexResoruce = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelDate.vertices.size());
+    vertexResoruce = CreateBufferResource(modelCommon->GetDxCommon()->GetDevice(), sizeof(VertexData) * modelDate.vertices.size());
 
     //頂点バッファビューを作成する
     // リソースの先頭のアドレスから使う
@@ -59,7 +61,7 @@ void Model::VertexDatacreation() {
 
 void Model::MaterialGenerate() {
     // マテリアル用のリソース
-    materialResource = modelCommon->GetDxCommon()->CreateBufferResource(sizeof(Material));
+    materialResource = CreateBufferResource(modelCommon->GetDxCommon()->GetDevice(), sizeof(Material));
     // マテリアル用にデータを書き込むためのアドレスを取得
     materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     // マテリアルデータの初期値を書き込む
