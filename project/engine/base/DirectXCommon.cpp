@@ -13,10 +13,7 @@ using namespace Microsoft::WRL;
 using namespace DescriptorUtils;
 using namespace ResourceFactory;
 
-DirectXCommon::~DirectXCommon() {
-    // Win32APIの開放
-    CloseHandle(fenceEvent);
-}
+DirectXCommon::~DirectXCommon() {}
 
 void DirectXCommon::Initialize(WinApp* winApp){
     // FPS固定初期化
@@ -26,16 +23,19 @@ void DirectXCommon::Initialize(WinApp* winApp){
     assert(winApp);
     // メンバ変数に記録
     this->winApp_ = winApp;
-    viewport_ = new ViewportManager();   // ビューポート・ シザリング矩形の生成、初期化
-    viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);
+    // 初期化関数
 	DebugInitialize();	                           // デバイスの初期化
 	CommandInitialize();	                       // コマンド関連の初期化
 	SwapChainGenerate();	                       // スワップチェーンの生成
 	CreateDepthStencilGenerate();	               // 深度バッファの生成
 	DescriptorHeapGenerate();	                   // 各種でスクリプタヒープの生成
 	RenderviewInitialize();		                   // レンダーターゲットビューの初期化
-	DepthstealthviewInitialization();	           // 深度ステルスビューの初期化
-	FenceInitialize();	                           // フェンスの初期化
+	DepthstealthviewInitialization();	           // 深度ステルスビューの初期化 
+    // ポインタの初期化
+    viewport_ = std::make_unique<ViewportManager>(); // ビューポート・ シザリング矩形の生成、初期化
+    viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);    
+    fence_ = std::make_unique<FenceManager>();   // フェンスの生成、初期化
+    fence_->Initialize(device);
 }
 
 void DirectXCommon::DebugInitialize() {
@@ -318,17 +318,6 @@ void DirectXCommon::DepthstealthviewInitialization() {
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
 
-void DirectXCommon::FenceInitialize() {
-
-    HRESULT hr;
-
-    //初期値0でFenceを作る
-    hr = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-    assert(SUCCEEDED(hr));
-    //FenceのSignalを待つためのイベントを作成する
-    assert(fenceEvent != nullptr);
-}
-
 void DirectXCommon::PreDrawRenderTexture() {
     // バリア: SRV → RenderTarget
     if (renderTextureState != RenderTextureState::RenderTarget) {
@@ -414,20 +403,10 @@ void DirectXCommon::PostDrow() {
     commandQueue->ExecuteCommandLists(1, commandLists);
     // GPUとOSに画面の交換を行うように通知する
     swapChain->Present(1, 0);
-    // Fenceの値の更新
-    fenceVal++;
-    // GPUがここまでたどり着いたときに、Fenceの値に代入するようにSignalを送る
-    commandQueue->Signal(fence.Get(), fenceVal);
-    // Fenceの値が指定したSignal値にたどり着いているか確認する
-    // GetCompletedValueの初期値はFence作成時に渡した初期値
-    if (fence->GetCompletedValue() < fenceVal)
-    {
-        // 指定したSignalにたどりついていないので、たどり着くまで待つようにイベントを設定する
-        fence->SetEventOnCompletion(fenceVal, fenceEvent);
-        //イベントを待つ
-        WaitForSingleObject(fenceEvent, INFINITE);
-    }
-    
+ 
+    // 描画後のFence
+    fence_->SignalAndWait(commandQueue);
+ 
     //  FPS固定
     UpdateFixFPS();
 

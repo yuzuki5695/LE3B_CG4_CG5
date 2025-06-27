@@ -6,10 +6,12 @@
 #include<dxcapi.h>
 #include<chrono>
 #include<WinApp.h>
+#include <Vector4.h>
 #include<ViewportManager.h>
+#include<FenceManager.h>
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
-#include <Vector4.h>
+
 
 // Directx基盤
 class DirectXCommon
@@ -60,8 +62,6 @@ private: // プライベートメンバ関数
 	void RenderviewInitialize();
 	// 深度ステルスビューの初期化
 	void DepthstealthviewInitialization();
-	// フェンスの初期化
-	void FenceInitialize();
 	// FPS固定初期化
 	void InitializeFizFPS();
 	//  FPS固定更新
@@ -77,7 +77,8 @@ private: // プライベートメンバ関数
 private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
-	ViewportManager* viewport_ = nullptr;
+    std::unique_ptr<ViewportManager> viewport_;
+    std::unique_ptr<FenceManager> fence_;
 	// Devicex12デバイス
 	Microsoft::WRL::ComPtr <ID3D12Device> device;
 	// DXGIファクトリ
@@ -117,12 +118,6 @@ private: // メンバ変数
 	uint32_t srvIndexRenderTexture;                                           // レンダーテクスチャのSRVインデックス
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
-	// フェンスの生成
-	Microsoft::WRL::ComPtr <ID3D12Fence> fence = nullptr;
-	// 初期値0でFenceを作る
-	UINT64 fenceVal = 0;
-	//FenceのSignalを待つためのイベントを作成する
-	HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	// DXCコンパイラの初期化
 	Microsoft::WRL::ComPtr <IDxcUtils> dxcUtils = nullptr;
 	Microsoft::WRL::ComPtr <IDxcCompiler3> dxcCompiler = nullptr;
@@ -140,7 +135,6 @@ public:
 	Microsoft::WRL::ComPtr <ID3D12Device> GetDevice() const { return device.Get(); }
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return commandList.Get(); }
 	D3D12_DEPTH_STENCIL_DESC GetdepthStencilDesc() { return depthStencilDesc; }
-	HANDLE GetfenceEvent() const { return fenceEvent; }
 	// スワップチェーンリソースの数を取得
 	size_t  GetSwapChainResourcesNum() const { return  swapChainResources.size(); }
 	ID3D12Resource* GetrenderTextureResource() { return renderTextureResource.Get(); }

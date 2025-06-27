@@ -4,9 +4,12 @@
 
 // ビューポート・シザー管理
 class ViewportManager{
-public:
+public: // メンバ関数
+	/// <summary>
+    /// 初期化
+    /// </summary>
     void Initialize(uint32_t width, uint32_t height);
-private: //メンバ変数
+private: // メンバ変数
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 	// シザー短形
