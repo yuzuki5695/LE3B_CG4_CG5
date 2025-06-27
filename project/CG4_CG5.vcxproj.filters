@@ -112,6 +112,12 @@
     <Filter Include="ヘッダー ファイル\engine\base\DirectXCommon">
       <UniqueIdentifier>{30b3c505-579d-4389-8d36-3ffc8ae5e0b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\base\Utility">
+      <UniqueIdentifier>{38c4c6cc-b92d-44dc-ba17-4d3077a3e364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\Utility">
+      <UniqueIdentifier>{92f82516-ef47-4df4-87a1-582a9e59e75e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,17 +129,8 @@
     <ClCompile Include="engine\2d\SpriteCommon.cpp">
       <Filter>ソース ファイル\engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
-    </ClCompile>
     <ClCompile Include="engine\io\Input.cpp">
       <Filter>ソース ファイル\engine\io</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\base\Logger.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\base\StringUtility.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
@@ -231,11 +228,20 @@
     <ClCompile Include="engine\base\DirectXCommon\ShaderCompiler.cpp">
       <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\DirectXCommon\ResourceFactory.cpp">
-      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
-    </ClCompile>
     <ClCompile Include="engine\base\DirectXCommon\ViewportManager.cpp">
       <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\Utility\StringUtility.cpp">
+      <Filter>ソース ファイル\engine\base\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\Utility\Logger.cpp">
+      <Filter>ソース ファイル\engine\base\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\resource\D3DResourceLeakChecker.cpp">
+      <Filter>ソース ファイル\engine\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\resource\ResourceFactory.cpp">
+      <Filter>ソース ファイル\engine\resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,18 +253,6 @@
     </ClInclude>
     <ClInclude Include="engine\io\Input.h">
       <Filter>ヘッダー ファイル\engine\io</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\D3DResourceLeakChecker.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\Logger.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\StringUtility.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\ResourceObject.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector2.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
@@ -386,14 +380,26 @@
     <ClInclude Include="engine\base\DirectXCommon\FenceManager.h">
       <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\DirectXCommon\ResourceFactory.h">
-      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\DirectXCommon\ShaderCompiler.h">
       <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\DirectXCommon\ViewportManager.h">
       <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\Utility\StringUtility.h">
+      <Filter>ヘッダー ファイル\engine\base\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\Utility\Logger.h">
+      <Filter>ヘッダー ファイル\engine\base\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\resource\ResourceObject.h">
+      <Filter>ヘッダー ファイル\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\resource\D3DResourceLeakChecker.h">
+      <Filter>ヘッダー ファイル\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\resource\ResourceFactory.h">
+      <Filter>ヘッダー ファイル\engine\resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
