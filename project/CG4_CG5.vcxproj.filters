@@ -106,6 +106,12 @@
     <Filter Include="ヘッダー ファイル\engine\resource">
       <UniqueIdentifier>{99a1fb51-4107-41e4-a280-90cbddc95190}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\base\DirectXCommon">
+      <UniqueIdentifier>{2175fa60-6ab5-425b-9ef4-2152069b9aff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\DirectXCommon">
+      <UniqueIdentifier>{30b3c505-579d-4389-8d36-3ffc8ae5e0b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -116,9 +122,6 @@
     </ClCompile>
     <ClCompile Include="engine\2d\SpriteCommon.cpp">
       <Filter>ソース ファイル\engine\2d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\base\DirectXCommon.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
@@ -204,9 +207,6 @@
     <ClCompile Include="application\scene\GamePlayScene.cpp">
       <Filter>ソース ファイル\application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\ShaderCompiler.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
-    </ClCompile>
     <ClCompile Include="engine\base\CopylmageCommon.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
@@ -219,17 +219,23 @@
     <ClCompile Include="application\scene\GameClearScene.cpp">
       <Filter>ソース ファイル\application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\DescriptorUtils.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
+    <ClCompile Include="engine\base\DirectXCommon\DirectXCommon.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\ResourceFactory.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
+    <ClCompile Include="engine\base\DirectXCommon\DescriptorUtils.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="ViewportManager.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
+    <ClCompile Include="engine\base\DirectXCommon\FenceManager.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="FenceManager.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
+    <ClCompile Include="engine\base\DirectXCommon\ShaderCompiler.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\DirectXCommon\ResourceFactory.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\DirectXCommon\ViewportManager.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -243,9 +249,6 @@
       <Filter>ヘッダー ファイル\engine\io</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\D3DResourceLeakChecker.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\DirectXCommon.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\Logger.h">
@@ -362,9 +365,6 @@
     <ClInclude Include="engine\camera\CameraManager.h">
       <Filter>ヘッダー ファイル\engine\camera</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\ShaderCompiler.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\CopylmageCommon.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
@@ -377,17 +377,23 @@
     <ClInclude Include="application\scene\GameClearScene.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\DescriptorUtils.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
+    <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\ResourceFactory.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
+    <ClInclude Include="engine\base\DirectXCommon\DirectXCommon.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="ViewportManager.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
+    <ClInclude Include="engine\base\DirectXCommon\FenceManager.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="FenceManager.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
+    <ClInclude Include="engine\base\DirectXCommon\ResourceFactory.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DirectXCommon\ShaderCompiler.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DirectXCommon\ViewportManager.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
