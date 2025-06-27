@@ -124,6 +124,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\GameClearScene.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\FenceManager.cpp" />
+    <ClCompile Include="engine\base\DirectXCommon\FPSController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\MatrixVector.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
@@ -195,6 +196,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\resource\ResourceFactory.h" />
     <ClInclude Include="engine\base\DirectXCommon\FenceManager.h" />
     <ClInclude Include="engine\base\DirectXCommon\ViewportManager.h" />
+    <ClInclude Include="engine\base\DirectXCommon\FPSController.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

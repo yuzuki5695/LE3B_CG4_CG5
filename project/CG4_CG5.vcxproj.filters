@@ -243,6 +243,9 @@
     <ClCompile Include="engine\resource\ResourceFactory.cpp">
       <Filter>ソース ファイル\engine\resource</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\DirectXCommon\FPSController.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -400,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="engine\resource\ResourceFactory.h">
       <Filter>ヘッダー ファイル\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DirectXCommon\FPSController.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

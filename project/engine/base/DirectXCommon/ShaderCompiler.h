@@ -1,6 +1,7 @@
 #pragma once
 #include<DirectXCommon.h>
 
+// シェーダーコンパイル
 class ShaderCompiler
 {
 	private:

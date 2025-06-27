@@ -3,6 +3,7 @@
 #include<dxgi1_6.h>
 #include<wrl.h>
 
+// フェンスマネージャ
 class FenceManager
 {
 public: // メンバ関数

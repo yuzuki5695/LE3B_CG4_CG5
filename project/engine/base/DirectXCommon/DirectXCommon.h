@@ -7,8 +7,9 @@
 #include<chrono>
 #include<WinApp.h>
 #include <Vector4.h>
-#include<ViewportManager.h>
-#include<FenceManager.h>
+#include <ViewportManager.h>
+#include <FenceManager.h>
+#include <FPSController.h>
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
 
@@ -56,10 +57,6 @@ private: // プライベートメンバ関数
 	void RenderviewInitialize();
 	// 深度ステルスビューの初期化
 	void DepthstealthviewInitialization();
-	// FPS固定初期化
-	void InitializeFizFPS();
-	//  FPS固定更新
-	void UpdateFixFPS();
 
 	// レンダーテクスチャの状態変異
 	enum class RenderTextureState {
@@ -72,7 +69,8 @@ private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
     std::unique_ptr<ViewportManager> viewport_;
-    std::unique_ptr<FenceManager> fence_;
+    std::unique_ptr<FenceManager> fence_;	
+	std::unique_ptr<FPSController> fpscontroller_;	
 	// Devicex12デバイス
 	Microsoft::WRL::ComPtr <ID3D12Device> device;
 	// DXGIファクトリ
@@ -122,8 +120,6 @@ private: // メンバ変数
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	// 記録時間(FPS固定)
-	std::chrono::steady_clock::time_point reference_;
 public:
 	// getter
 	Microsoft::WRL::ComPtr <ID3D12Device> GetDevice() { return device; }
