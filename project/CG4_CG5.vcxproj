@@ -139,6 +139,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\MyGame.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="engine\base\ResourceFactory.cpp" />
+    <ClCompile Include="ViewportManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\base\DescriptorUtils.h" />
@@ -191,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\scene\SceneManager.h" />
     <ClInclude Include="application\scene\GameClearScene.h" />
     <ClInclude Include="engine\base\ResourceFactory.h" />
+    <ClInclude Include="ViewportManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -5,7 +5,8 @@
 #include<array>
 #include<dxcapi.h>
 #include<chrono>
-#include"WinApp.h"
+#include<WinApp.h>
+#include<ViewportManager.h>
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
 #include <Vector4.h>
@@ -61,11 +62,6 @@ private: // プライベートメンバ関数
 	void DepthstealthviewInitialization();
 	// フェンスの初期化
 	void FenceInitialize();
-	// ビューポートの初期化
-	void viewportInitialize();
-	// シザリング矩形
-	void scissorRectInitialize();
-	
 	// FPS固定初期化
 	void InitializeFizFPS();
 	//  FPS固定更新
@@ -81,6 +77,7 @@ private: // プライベートメンバ関数
 private: // メンバ変数
 	// ポインタ
 	WinApp* winApp_ = nullptr;
+	ViewportManager* viewport_ = nullptr;
 	// Devicex12デバイス
 	Microsoft::WRL::ComPtr <ID3D12Device> device;
 	// DXGIファクトリ
@@ -126,10 +123,6 @@ private: // メンバ変数
 	UINT64 fenceVal = 0;
 	//FenceのSignalを待つためのイベントを作成する
 	HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	// ビューポート
-	D3D12_VIEWPORT viewport{};
-	// シザー短形
-	D3D12_RECT scissorRect{};
 	// DXCコンパイラの初期化
 	Microsoft::WRL::ComPtr <IDxcUtils> dxcUtils = nullptr;
 	Microsoft::WRL::ComPtr <IDxcCompiler3> dxcCompiler = nullptr;

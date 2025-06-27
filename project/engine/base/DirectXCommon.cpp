@@ -26,27 +26,16 @@ void DirectXCommon::Initialize(WinApp* winApp){
     assert(winApp);
     // メンバ変数に記録
     this->winApp_ = winApp;
-
-	// デバイスの初期化
-	DebugInitialize();
-	// コマンド関連の初期化
-	CommandInitialize();
-	// スワップチェーンの生成
-	SwapChainGenerate();
-	// 深度バッファの生成
-	CreateDepthStencilGenerate();
-	// 各種でスクリプタヒープの生成
-	DescriptorHeapGenerate();
-	// レンダーターゲットビューの初期化
-	RenderviewInitialize();
-	// 深度ステルスビューの初期化
-	DepthstealthviewInitialization();
-	// フェンスの初期化
-	FenceInitialize();
-	// ビューポートの初期化
-	viewportInitialize();
-	// シザリング矩形
-	scissorRectInitialize();
+    viewport_ = new ViewportManager();   // ビューポート・ シザリング矩形の生成、初期化
+    viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);
+	DebugInitialize();	                           // デバイスの初期化
+	CommandInitialize();	                       // コマンド関連の初期化
+	SwapChainGenerate();	                       // スワップチェーンの生成
+	CreateDepthStencilGenerate();	               // 深度バッファの生成
+	DescriptorHeapGenerate();	                   // 各種でスクリプタヒープの生成
+	RenderviewInitialize();		                   // レンダーターゲットビューの初期化
+	DepthstealthviewInitialization();	           // 深度ステルスビューの初期化
+	FenceInitialize();	                           // フェンスの初期化
 }
 
 void DirectXCommon::DebugInitialize() {
@@ -340,24 +329,6 @@ void DirectXCommon::FenceInitialize() {
     assert(fenceEvent != nullptr);
 }
 
-void DirectXCommon::viewportInitialize() {
-    //クライアント領域のサイズと一緒にして画面全体に表示
-    viewport.Width = WinApp::kClientWidth;
-    viewport.Height = WinApp::kClientHeight;
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-}
-
-void DirectXCommon::scissorRectInitialize() {
-    // 基本的にビューポートと同じ矩形が構成されるようにする
-    scissorRect.left = 0;
-    scissorRect.right = WinApp::kClientWidth;
-    scissorRect.top = 0;
-    scissorRect.bottom = WinApp::kClientHeight;
-}
-
 void DirectXCommon::PreDrawRenderTexture() {
     // バリア: SRV → RenderTarget
     if (renderTextureState != RenderTextureState::RenderTarget) {
@@ -378,8 +349,8 @@ void DirectXCommon::PreDrawRenderTexture() {
     float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
     commandList->ClearRenderTargetView(rtHandle, clearColor, 0, nullptr);
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-    commandList->RSSetViewports(1, &viewport);
-    commandList->RSSetScissorRects(1, &scissorRect);
+    commandList->RSSetViewports(1, &viewport_->GetViewport());
+    commandList->RSSetScissorRects(1, &viewport_->GetScissorRect());
 }
 
 void DirectXCommon::PostDrawRenderTexture() {
@@ -412,8 +383,8 @@ void DirectXCommon::PreDraw() {
     // 指定した色で画面全体をクリアする
     float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };//青っぽい色。RGBAの順
     commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
-    commandList->RSSetViewports(1, &viewport);
-    commandList->RSSetScissorRects(1, &scissorRect);
+    commandList->RSSetViewports(1, &viewport_->GetViewport());
+    commandList->RSSetScissorRects(1, &viewport_->GetScissorRect());
     // 指定した深度で画面全体をクリアする
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }

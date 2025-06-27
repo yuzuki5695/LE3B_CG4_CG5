@@ -73,7 +73,7 @@ namespace ResourceFactory {
     }
 
 
-    ComPtr <ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
+    ComPtr <ID3D12Resource> CreateRenderTextureResource(ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
         //1. metadataを基にResourceの設定
         D3D12_RESOURCE_DESC resourceDesc{};
         resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
