@@ -246,6 +246,9 @@
     <ClCompile Include="engine\base\DirectXCommon\FPSController.cpp">
       <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp">
+      <Filter>ソース ファイル\engine\base\DirectXCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -405,6 +408,9 @@
       <Filter>ヘッダー ファイル\engine\resource</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\DirectXCommon\FPSController.h">
+      <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h">
       <Filter>ヘッダー ファイル\engine\base\DirectXCommon</Filter>
     </ClInclude>
   </ItemGroup>

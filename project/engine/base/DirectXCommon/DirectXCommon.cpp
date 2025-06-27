@@ -19,25 +19,24 @@ void DirectXCommon::Initialize(WinApp* winApp){
     // NULL検出
     assert(winApp);
     // メンバ変数に記録
-    this->winApp_ = winApp;
-
-    // FPS固定生成、初期化
+    this->winApp_ = winApp;    
+    // ポインタ生成 
+    viewport_ = std::make_unique<ViewportManager>();  
+    fence_ = std::make_unique<FenceManager>();
     fpscontroller_ = std::make_unique<FPSController>();
-    fpscontroller_->Initialize();
+    swapchain_ = std::make_unique<SwapChainManager>();
     // 初期化関数
-	DebugInitialize();	                           // デバイスの初期化
-	CommandInitialize();	                       // コマンド関連の初期化
-	SwapChainGenerate();	                       // スワップチェーンの生成
-	CreateDepthStencilGenerate();	               // 深度バッファの生成
-	DescriptorHeapGenerate();	                   // 各種でスクリプタヒープの生成
-	RenderviewInitialize();		                   // レンダーターゲットビューの初期化
-	DepthstealthviewInitialization();	           // 深度ステルスビューの初期化 
-    // ポインタの初期化
-    viewport_ = std::make_unique<ViewportManager>(); // ビューポート・ シザリング矩形の生成、初期化
-    viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);    
-    fence_ = std::make_unique<FenceManager>();   // フェンスの生成、初期化
-    fence_->Initialize(device);
-
+    fpscontroller_->Initialize();                                                     // FPS固定の初期化
+	DebugInitialize();	                                                              // デバイスの初期化
+	CommandInitialize();	                                                          // コマンド関連の初期化
+    swapchain_->Initialize(winApp_->Gethwnd(), commandQueue, dxgiFactory, // スワップチェーンの生成
+    WinApp::kClientWidth, WinApp::kClientHeight);
+	CreateDepthStencilGenerate();	                                                  // 深度バッファの生成
+	DescriptorHeapGenerate();	                                                      // 各種でスクリプタヒープの生成
+	RenderviewInitialize();		                                                      // レンダーターゲットビューの初期化
+	DepthstealthviewInitialization();	                                              // 深度ステルスビューの初期化 
+    fence_->Initialize(device);                                                       // フェンスの初期化
+    viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);                // ビューポート・ シザリング矩形の初期化
 }
 
 void DirectXCommon::DebugInitialize() {
@@ -176,28 +175,6 @@ void DirectXCommon::CommandInitialize() {
     assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::SwapChainGenerate() {
-
-    HRESULT hr;
-
-    ///---------------------------------------------------------------------///
-    ///--------------SwapChain(スワップチェーン)を設定する----------------------///
-    ///---------------------------------------------------------------------///
-    swapChainDesc.Width = WinApp::kClientWidth;//画面の幅。ウィンドウのクライアント領域を同じものにしておく
-    swapChainDesc.Height = WinApp::kClientHeight;//画面の高さ。ウィンドウのクライアント領域を同じものにしておく
-    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//色の形式
-    swapChainDesc.SampleDesc.Count = 1;//マルチサンプルしない
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;//描画のターゲットとして利用する
-    swapChainDesc.BufferCount = 2;//ダブルバッファ
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;//モニタに移したら、中身居を破棄
-    
-    ///---------------------------------------------------------------------///
-    ///--------------SwapChain(スワップチェーン)を生成する----------------------///
-    ///---------------------------------------------------------------------///
-    hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), winApp_->Gethwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));
-    assert(SUCCEEDED(hr));
-}
-
 void DirectXCommon::CreateDepthStencilGenerate() {
 
     // 生成するResourceの設定
@@ -246,17 +223,7 @@ void DirectXCommon::DescriptorHeapGenerate() {
     descriptorsizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 }
 
-void DirectXCommon::RenderviewInitialize() {
-
-    HRESULT hr;
-
-    //SwapChainからResourceを引っ張ってくる
-    hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
-    //上手く取得できなければ起動できない
-    assert(SUCCEEDED(hr));
-    hr = swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainResources[1]));
-    assert(SUCCEEDED(hr));
- 
+void DirectXCommon::RenderviewInitialize() { 
     // カスタムRenderTarget用のリソース作成
     kRenderTargetClearValue = { 0.1f,0.25f,0.5f,1.0f };
     // [2]にrenderTexture を作る
@@ -283,7 +250,7 @@ void DirectXCommon::RenderviewInitialize() {
 
         ID3D12Resource* target = nullptr;
         if (i < 2) {
-            target = swapChainResources[i].Get(); // 0, 1 は swapChain
+            target = swapchain_->GetBuffer(i).Get(); // 0, 1 は swapChain
         } else {
             target = renderTextureResource.Get(); // 2 は renderTexture
         }
@@ -332,7 +299,7 @@ void DirectXCommon::PreDrawRenderTexture() {
 
     // 描画先 = rtvHandles[2]（中間テクスチャ）
     D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = rtvHandles[2];
-
+    
     dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
 
@@ -354,13 +321,13 @@ void DirectXCommon::PostDrawRenderTexture() {
 
 void DirectXCommon::PreDraw() {
     // ここから書き込むバックバッファのインデックスを取得
-    UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+    UINT backBufferIndex = swapchain_->GetSwapChain()->GetCurrentBackBufferIndex();
     // 今回のバリアはTransition
     barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
     // Noneにしておく
     barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
     // バリアを張る対象のリソース。現在のバックバッファに対して行う
-    barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();
+    barrier.Transition.pResource = swapchain_->GetBuffer(backBufferIndex).Get();
     // 遷移前のResourceState
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
     // 遷移後のResourceState
@@ -384,11 +351,11 @@ void DirectXCommon::PreDraw() {
 void DirectXCommon::PostDrow() {
     HRESULT hr;
     // バックバッファの番号を取得
-    UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+    UINT bbIndex = swapchain_->GetSwapChain()->GetCurrentBackBufferIndex();
     // 画面に描く処理はすべて終わり、画面に移すので、状態を遷移
     // 今回はRenderTargetからPresentにする
     // PostDrow 内で再設定が必要（PreDrawとは別フレームなので）：
-    barrier.Transition.pResource = swapChainResources[bbIndex].Get();
+    barrier.Transition.pResource = swapchain_->GetBuffer(bbIndex).Get();
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     // TransitionBarrierを張る
@@ -404,7 +371,7 @@ void DirectXCommon::PostDrow() {
     ID3D12CommandList* commandLists[] = { commandList.Get() };
     commandQueue->ExecuteCommandLists(1, commandLists);
     // GPUとOSに画面の交換を行うように通知する
-    swapChain->Present(1, 0);
+    swapchain_->GetSwapChain()->Present(1, 0);
  
     // 描画後のFence
     fence_->SignalAndWait(commandQueue);
@@ -433,13 +400,13 @@ ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPT
 }
 
 void DirectXCommon::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) {
-	// バリアの設定
+    // バリアの設定
     barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;                      // 今回のバリアはTransition
     barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;                           // Noneにしておく 
     barrier.Transition.pResource = resource;                                    // バリアを張る対象のリソース。
-	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;   // 全サブリソースに対してバリアを張る
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;   // 全サブリソースに対してバリアを張る
     barrier.Transition.StateBefore = beforeState;                               // 遷移前のResourceState
     barrier.Transition.StateAfter = afterState;                                 // TransitionBarrierを張る
-	// コマンドリストにバリアを追加
+    // コマンドリストにバリアを追加
     commandList->ResourceBarrier(1, &barrier);
 }

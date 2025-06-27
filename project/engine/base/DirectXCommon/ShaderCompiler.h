@@ -4,7 +4,7 @@
 // シェーダーコンパイル
 class ShaderCompiler
 {
-	private:
+private:
 	static std::unique_ptr<ShaderCompiler> instance;
 
 	ShaderCompiler(ShaderCompiler&) = delete;

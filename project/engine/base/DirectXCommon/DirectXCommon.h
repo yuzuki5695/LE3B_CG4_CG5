@@ -10,6 +10,7 @@
 #include <ViewportManager.h>
 #include <FenceManager.h>
 #include <FPSController.h>
+#include<SwapChainManager.h>
 #include "externals/DirectXTex/DirectXTex.h"
 #pragma comment(lib,"dxcompiler.lib")
 
@@ -47,8 +48,6 @@ private: // プライベートメンバ関数
 	void DebugInitialize();
 	// コマンド関連の初期化
 	void CommandInitialize();
-	// スワップチェーンの生成
-	void SwapChainGenerate();
 	// 深度バッファの生成
 	void CreateDepthStencilGenerate();
 	// 各種でスクリプタヒープの生成
@@ -71,31 +70,19 @@ private: // メンバ変数
     std::unique_ptr<ViewportManager> viewport_;
     std::unique_ptr<FenceManager> fence_;	
 	std::unique_ptr<FPSController> fpscontroller_;	
-	// Devicex12デバイス
-	Microsoft::WRL::ComPtr <ID3D12Device> device;
-	// DXGIファクトリ
-	Microsoft::WRL::ComPtr <IDXGIFactory7> dxgiFactory;
-	// コマンドアロケータ
-	Microsoft::WRL::ComPtr <ID3D12CommandAllocator> commandAllocator = nullptr;
-	// コマンドリスト
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;
-	// コマンドキュー
-	Microsoft::WRL::ComPtr <ID3D12CommandQueue> commandQueue;
-	// SwapChain(スワップチェーン)
-	Microsoft::WRL::ComPtr <IDXGISwapChain4> swapChain;
-	// スワップチェーン生成
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	// 深度バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthbufferresource;
-	// RTV用のヒープでディスクリプタ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtvDescriptorHeap;
-	// DSV用のヒープでディスクリプタ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap;
+	std::unique_ptr<SwapChainManager> swapchain_;
+	Microsoft::WRL::ComPtr <ID3D12Device> device;	                                  // Devicex12デバイス
+	Microsoft::WRL::ComPtr <IDXGIFactory7> dxgiFactory;		                          // DXGIファクトリ
+	Microsoft::WRL::ComPtr <ID3D12CommandAllocator> commandAllocator = nullptr;	      // コマンドアロケータ
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;		              // コマンドリスト
+	Microsoft::WRL::ComPtr <ID3D12CommandQueue> commandQueue;			              // コマンドキュー
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthbufferresource;			              // 深度バッファ
+	// ディスクリプタ
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtvDescriptorHeap;	// RTV用のヒープでディスクリプタ
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap;	// DSV用のヒープでディスクリプタ
 	// 各DescriptorSizeを取得する
-	uint32_t descriptorsizeRTV;
-	uint32_t descriptorsizeDSV;
-	// スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
+	uint32_t descriptorsizeRTV;  // RTV用
+	uint32_t descriptorsizeDSV;	 // DSV用
 	//RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	//ディスクリプタの先頭を取得する
@@ -103,11 +90,11 @@ private: // メンバ変数
 	//RTVを2つ作るのでディスクリプタハンドルを2つ用意
 	const uint32_t rtvHandlenum = 3;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
-	// オフスクリーン用のレンダーテクスチャ
-	Vector4 kRenderTargetClearValue{};          // カスタムRenderTarget用のリソース作成（赤でクリアされる）
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
-	RenderTextureState renderTextureState = RenderTextureState::RenderTarget; // 初期状態はRenderTarget
-	uint32_t srvIndexRenderTexture;                                           // レンダーテクスチャのSRVインデックス
+	// オフスクリーン用のレンダーテクスチャ	
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;              // カスタムRenderTarget用のリソース
+	Vector4 kRenderTargetClearValue{};                                         // カスタムRenderTargetのリソースカラー
+	RenderTextureState renderTextureState = RenderTextureState::RenderTarget;  // 初期状態はRenderTarget
+	uint32_t srvIndexRenderTexture;                                            // レンダーテクスチャのSRVインデックス
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// DXCコンパイラの初期化
@@ -126,6 +113,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return commandList.Get(); }
 	D3D12_DEPTH_STENCIL_DESC GetdepthStencilDesc() { return depthStencilDesc; }
 	// スワップチェーンリソースの数を取得
-	size_t  GetSwapChainResourcesNum() const { return  swapChainResources.size(); }
-	ID3D12Resource* GetrenderTextureResource() { return renderTextureResource.Get(); }
+	Microsoft::WRL::ComPtr<ID3D12Resource>& GetrenderTextureResource() { return renderTextureResource; }
+	SwapChainManager* GetSwapChain() { return swapchain_.get(); }
 };

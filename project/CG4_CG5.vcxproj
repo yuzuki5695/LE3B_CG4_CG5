@@ -142,6 +142,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="engine\resource\ResourceFactory.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\ViewportManager.cpp" />
+    <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h" />
@@ -197,6 +198,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\DirectXCommon\FenceManager.h" />
     <ClInclude Include="engine\base\DirectXCommon\ViewportManager.h" />
     <ClInclude Include="engine\base\DirectXCommon\FPSController.h" />
+    <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

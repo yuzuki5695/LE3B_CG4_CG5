@@ -50,7 +50,7 @@ ComPtr <IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& filePath,con
     shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
     shaderSourceBuffer.Size = shaderSource->GetBufferSize();
     shaderSourceBuffer.Encoding = DXC_CP_UTF8;//UTF8のコードであることを通知
-
+    
     //2.Compileする
     LPCWSTR arguments[] =
     {
