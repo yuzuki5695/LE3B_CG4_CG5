@@ -50,8 +50,6 @@ void GamePlayScene::Update() {
     // 更新処理 
     Object_->Update();
     grass->Update();
-    
-    Input::GetInstance()->DrawImGui();
 
     ParticleManager::GetInstance()->Update();
 #pragma endregion 全てのObject3d個々の更新処理
