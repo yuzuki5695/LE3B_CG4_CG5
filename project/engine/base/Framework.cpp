@@ -122,7 +122,7 @@ void Framework::Update() {
     ImGuiManager::GetInstance()->Begin();
     // シーンマネージャの更新処理
     SceneManager::GetInstance()->Update(); 
-    // --- デバッグ系 ImGui 表示 ---
+    // デバッグ系ImGui表示
     DrawDebug();
     // ImGuiの描画前準備
     ImGuiManager::GetInstance()->End();
@@ -146,17 +146,20 @@ void Framework::Draw() {
 void Framework::DrawDebug() {
 #ifdef USE_IMGUI
     ImGui::Begin("System Monitor");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
+    
+    // FPSと1フレームの処理時間を表示（平均処理時間 = 1000 / FPS）
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    // FPSの推移を記録するためのバッファ（100フレーム分）
     static float values[100] = {};
     static int frame = 0;
     values[frame++ % 100] = ImGui::GetIO().Framerate;
+    // FPSの履歴を折れ線グラフで表示
     ImGui::PlotLines("FPS History", values, 100, 0, nullptr, 0.0f, 100.0f);
 
-    PROCESS_MEMORY_COUNTERS pmc;
+    PROCESS_MEMORY_COUNTERS pmc;  
+    // 現在のプロセス（このプロジェクト）のメモリ使用情報を取得
     if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-        ImGui::Text("Memory Used: %.2f MB", pmc.WorkingSetSize / (1024.0f * 1024.0f));
+        ImGui::Text("Memory Used: %.2f MB", pmc.WorkingSetSize / (1024.0f * 1024.0f));    // 使用中のメモリ（物理メモリ）をMB単位で表示
     }
     ImGui::End();
 #endif

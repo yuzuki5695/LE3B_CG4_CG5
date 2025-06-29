@@ -38,6 +38,13 @@ void GamePlayScene::Update() {
     /*--------------Cameraの更新処理---------------*/
     /*------------------------------------------*/
     CameraManager::GetInstance()->Update();
+ 
+    // ENTERキーを押したら
+    if (Input::GetInstance()->Triggrkey(DIK_RETURN)) {
+        // シーン切り替え
+        SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
+    }
+
 #pragma region 全てのObject3d個々の更新処理
 
     // 更新処理 
