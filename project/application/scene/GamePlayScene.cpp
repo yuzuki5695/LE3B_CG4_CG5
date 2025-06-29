@@ -43,6 +43,8 @@ void GamePlayScene::Update() {
     // 更新処理 
     Object_->Update();
     grass->Update();
+    
+    Input::GetInstance()->DrawImGui();
 
     ParticleManager::GetInstance()->Update();
 #pragma endregion 全てのObject3d個々の更新処理
@@ -60,8 +62,6 @@ void GamePlayScene::Update() {
     // Camera
     CameraManager::GetInstance()->DrawImGui();
 
-    // ImGuiの描画前準備
-    ImGuiManager::GetInstance()->End();
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
 }

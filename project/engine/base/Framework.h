@@ -37,7 +37,8 @@ public:// メンバ関数
 
 	// 実行
 	void Run();
-
+	// imgui
+	void DrawDebug();
 protected:
 	// シーンファクトリー
 	std::unique_ptr <AbstractSceneFactory> sceneFactory_ = nullptr;

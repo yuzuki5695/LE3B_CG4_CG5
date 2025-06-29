@@ -42,7 +42,16 @@ public: // メンバ関数
 	/// <returns>トリガーか</returns>
 	bool Triggrkey(BYTE keyNumber);
 
-private: // メンバ変数
+	/// <summary>
+	/// マウスの座標を取得
+	/// </summary>
+    POINT GetMousePosition() const { return mousePosition_; }
+    
+	// ImGuiデバッグ描画
+    void DrawImGui();
+private: // メンバ変数	
+	// ポインタ
+	WinApp* winApp_ = nullptr;	
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> keyboard;
 	// 全キーの状態
@@ -51,6 +60,15 @@ private: // メンバ変数
 	BYTE keyPre[256] = {};
 	// DirectInputのインスタンス生成
 	ComPtr<IDirectInput8> dinput = nullptr;
-	// ポインタ
-	WinApp* winApp_ = nullptr;
+	// マウスのデバイス
+    ComPtr<IDirectInputDevice8> mouse;
+    // マウスの状態（DirectInput 専用構造体）
+    DIMOUSESTATE mouseState = {};
+    // 画面上のマウス座標（独自で保持）
+    POINT mousePosition_ = { 0, 0 };
+	//　マウスを使うかどうか
+	bool useMouseInput_ = false;
+public: // getter setter
+	bool GetMouseInput() { return useMouseInput_; }		
+	void SetMouseInput(bool mouse) { useMouseInput_ = mouse; }
 };

@@ -7,6 +7,7 @@
 #include <ShaderCompiler.h>
 #include<CopylmageCommon.h>
 #include<Controller.h>
+#include <psapi.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -120,7 +121,11 @@ void Framework::Update() {
     // ImGuiの受付開始
     ImGuiManager::GetInstance()->Begin();
     // シーンマネージャの更新処理
-    SceneManager::GetInstance()->Update();
+    SceneManager::GetInstance()->Update(); 
+    // --- デバッグ系 ImGui 表示 ---
+    DrawDebug();
+    // ImGuiの描画前準備
+    ImGuiManager::GetInstance()->End();
 }
 
 void Framework::Draw() {
@@ -136,4 +141,23 @@ void Framework::Draw() {
     dxCommon->PreDraw(); 
 	// ポストエフェクト描画（レンダーテクスチャ → 画面）
     CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
+}
+
+void Framework::DrawDebug() {
+#ifdef USE_IMGUI
+    ImGui::Begin("System Monitor");
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+    static float values[100] = {};
+    static int frame = 0;
+    values[frame++ % 100] = ImGui::GetIO().Framerate;
+    ImGui::PlotLines("FPS History", values, 100, 0, nullptr, 0.0f, 100.0f);
+
+    PROCESS_MEMORY_COUNTERS pmc;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+        ImGui::Text("Memory Used: %.2f MB", pmc.WorkingSetSize / (1024.0f * 1024.0f));
+    }
+    ImGui::End();
+#endif
 }
