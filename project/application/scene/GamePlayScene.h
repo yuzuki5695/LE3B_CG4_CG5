@@ -24,4 +24,6 @@ private: // メンバ変数
     std::unique_ptr <Object3d> grass = nullptr;
     std::unique_ptr <Object3d> Object_ = nullptr;
 	std::unique_ptr <Sprite> sprite_ = nullptr;
+
+    float i;
 };

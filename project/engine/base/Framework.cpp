@@ -6,6 +6,7 @@
 #include<SceneFactory.h>
 #include <ShaderCompiler.h>
 #include<CopylmageCommon.h>
+#include<Controller.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -114,6 +115,8 @@ void Framework::Update() {
     }
     // 入力の更新
     Input::GetInstance()->Update();
+    // コントローラの更新
+    Controller::GetInstance()->Update();
     // ImGuiの受付開始
     ImGuiManager::GetInstance()->Begin();
     // シーンマネージャの更新処理

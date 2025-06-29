@@ -102,6 +102,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="engine\io\Controller.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\DescriptorUtils.cpp" />
     <ClCompile Include="engine\base\CopylmageCommon.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\ShaderCompiler.cpp" />
@@ -146,6 +147,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\io\Controller.h" />
     <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h" />
     <ClInclude Include="engine\base\CopylmageCommon.h" />
     <ClInclude Include="engine\base\DirectXCommon\ShaderCompiler.h" />

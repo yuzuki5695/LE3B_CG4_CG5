@@ -10,6 +10,7 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include<Controller.h>
 
 void GamePlayScene::Finalize() {}
 
@@ -28,7 +29,7 @@ void GamePlayScene::Initialize() {
     
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
-
+    i = 1.0f;
         
     CameraManager::GetInstance()->SetTarget(Object_.get());
 }
@@ -39,6 +40,14 @@ void GamePlayScene::Update() {
     /*------------------------------------------*/
     CameraManager::GetInstance()->Update();
 #pragma region 全てのObject3d個々の更新処理
+
+    if (Controller::GetInstance()->IsPressed(XINPUT_GAMEPAD_A)) {
+        i += 0.1f;
+        Object_->SetScale(Vector3(1.0f,1.0f,i));
+    }else  if (Controller::GetInstance()->IsTriggered(XINPUT_GAMEPAD_B)) {
+        i += 0.1f;
+        Object_->SetScale(Vector3(1.0f,1.0f,i));
+    }
 
     // 更新処理 
     Object_->Update();

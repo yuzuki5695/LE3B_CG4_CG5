@@ -258,6 +258,9 @@
     <ClCompile Include="engine\loader\JsonLoader.cpp">
       <Filter>ソース ファイル\engine\loader</Filter>
     </ClCompile>
+    <ClCompile Include="engine\io\Controller.cpp">
+      <Filter>ソース ファイル\engine\io</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -424,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="engine\loader\JsonLoader.h">
       <Filter>ヘッダー ファイル\engine\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\io\Controller.h">
+      <Filter>ヘッダー ファイル\engine\io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
