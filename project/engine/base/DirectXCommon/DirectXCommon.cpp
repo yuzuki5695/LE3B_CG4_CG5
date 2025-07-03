@@ -34,7 +34,7 @@ void DirectXCommon::Initialize(WinApp* winApp){
 	CreateDepthStencilGenerate();	                                                  // 深度バッファの生成
 	DescriptorHeapGenerate();	                                                      // 各種でスクリプタヒープの生成
 	RenderviewInitialize();		                                                      // レンダーターゲットビューの初期化
-
+	DepthstealthviewInitialization();	                                              // 深度ステルスビューの初期化 
     fence_->Initialize(device);                                                       // フェンスの初期化
     viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);                // ビューポート・ シザリング矩形の初期化
 }
@@ -209,10 +209,18 @@ void DirectXCommon::CreateDepthStencilGenerate() {
 }
 
 void DirectXCommon::DescriptorHeapGenerate() {
+    /*----------------------------------------------------------------------------*/
+    /*---------------------------DescriptorHeap-----------------------------------*/
+    /*----------------------------------------------------------------------------*/
+
     // RTV用のヒープでディスクリプタの数は2。RTVはshader内で触るものではないので、ShaderVisibleはfalse
     rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
+    // DSV用のヒープでディスクリプタの数は1。DSVはshader内で触るものではないので、ShaderVisibleはfalse
+    dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+
     // DescriptorSizeを取得する
     descriptorsizeRTV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    descriptorsizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 }
 
 void DirectXCommon::RenderviewInitialize() { 
@@ -252,7 +260,34 @@ void DirectXCommon::RenderviewInitialize() {
     }
 }
 
-void DirectXCommon::PreDrawRenderTexture(DsvManager* dsvManager) {
+void DirectXCommon::DepthstealthviewInitialization() {
+
+    /*------------------------------------------------------------*/
+    /*--------------------------DSVの設定--------------------------*/
+    /*------------------------------------------------------------*/
+
+    // DepthStencilTextureをウインドウのサイズで作成
+    depthStencilResource = CreateDepthStencilTextureResource(device,WinApp::kClientWidth, WinApp::kClientHeight);
+
+    // DSVの設定
+    D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+    dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResource合わせる
+    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; //2dTexture 
+    // DSVDescの先頭にDSVを作る
+    device->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+    // DepthStencilStateの設定
+    // Depthの機能を有効化する
+    depthStencilDesc.DepthEnable = true;
+    // 書き込みする
+    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+    // 書き込みしない
+    //depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+    // 比較関数はLessEqual。つまり、近ければ描画される
+    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+}
+
+void DirectXCommon::PreDrawRenderTexture() {
     // バリア: SRV → RenderTarget
     if (renderTextureState != RenderTextureState::RenderTarget) {
         TransitionResource(
@@ -265,7 +300,7 @@ void DirectXCommon::PreDrawRenderTexture(DsvManager* dsvManager) {
     // 描画先 = rtvHandles[2]（中間テクスチャ）
     D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = rtvHandles[2];
     
-    dsvHandle = dsvManager->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
+    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
 
 	// カスタムRenderTarget用で設定した値を使って画面全体をクリアする
@@ -284,7 +319,7 @@ void DirectXCommon::PostDrawRenderTexture() {
     }
 }
 
-void DirectXCommon::PreDraw(DsvManager* dsvManager) {
+void DirectXCommon::PreDraw() {
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = swapchain_->GetSwapChain()->GetCurrentBackBufferIndex();
     // 今回のバリアはTransition
@@ -300,7 +335,7 @@ void DirectXCommon::PreDraw(DsvManager* dsvManager) {
     // TransitionBarrierを張る
     commandList->ResourceBarrier(1, &barrier);
     // 描画先のRTVとDSVを設定する
-    dsvHandle =  dsvManager->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
+    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     // 描画先のRTVを指定する
     commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
     // 指定した色で画面全体をクリアする

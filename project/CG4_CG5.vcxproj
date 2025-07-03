@@ -102,7 +102,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
-    <ClCompile Include="engine\base\DsvManager.cpp" />
     <ClCompile Include="engine\io\Controller.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\DescriptorUtils.cpp" />
     <ClCompile Include="engine\base\CopylmageCommon.cpp" />
@@ -149,7 +148,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="engine\base\DsvManager.h" />
     <ClInclude Include="engine\io\Controller.h" />
     <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h" />
     <ClInclude Include="engine\base\CopylmageCommon.h" />

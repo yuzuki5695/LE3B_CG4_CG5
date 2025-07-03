@@ -5,7 +5,7 @@ using namespace Microsoft::WRL;
 
 namespace ResourceFactory {
 
-    ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(const ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth) {
+    ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth) {
         // 生成するResourceの設定
         D3D12_RESOURCE_DESC resourceDesc{};
         resourceDesc.Width = width; // Textureの幅
