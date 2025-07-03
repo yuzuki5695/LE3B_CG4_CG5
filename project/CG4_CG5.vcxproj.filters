@@ -282,6 +282,9 @@
     <ClCompile Include="engine\base\DsvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\RtvManager.cpp">
+      <Filter>ソース ファイル\engine\base\ViewManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -454,6 +457,21 @@
     </ClInclude>
     <ClInclude Include="engine\base\DsvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\RtvManager.h">
+      <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix\TransformationMatrix.h">
+      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Light\DirectionalLight.h">
+      <Filter>ヘッダー ファイル\engine\math\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Light\PointLight.h">
+      <Filter>ヘッダー ファイル\engine\math\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Light\SpotLight.h">
+      <Filter>ヘッダー ファイル\engine\math\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
