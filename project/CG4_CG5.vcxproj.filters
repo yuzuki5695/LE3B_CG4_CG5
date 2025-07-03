@@ -279,6 +279,12 @@
     <ClCompile Include="engine\base\SrvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\DsvManager.cpp">
+      <Filter>ソース ファイル\engine\base\ViewManager</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\RrvManager.cpp">
+      <Filter>ソース ファイル\engine\base\ViewManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -459,6 +465,12 @@
       <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\SrvManager.h">
+      <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DsvManager.h">
+      <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\RrvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
   </ItemGroup>

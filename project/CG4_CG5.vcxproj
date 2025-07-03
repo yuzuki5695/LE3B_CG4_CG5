@@ -102,6 +102,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="engine\base\DsvManager.cpp" />
     <ClCompile Include="engine\io\Controller.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\DescriptorUtils.cpp" />
     <ClCompile Include="engine\base\CopylmageCommon.cpp" />
@@ -145,9 +146,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\resource\ResourceFactory.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\ViewportManager.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
+    <ClCompile Include="engine\base\RrvManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="engine\base\DsvManager.h" />
     <ClInclude Include="engine\io\Controller.h" />
     <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h" />
     <ClInclude Include="engine\base\CopylmageCommon.h" />
@@ -205,6 +208,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="engine\base\RrvManager.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="TransformationMatrix.h" />
   </ItemGroup>
