@@ -17,6 +17,7 @@ class WinApp;
 class DirectXCommon;
 class ModelCommon;
 class SrvManager;
+class DsvManager;
 class AbstractSceneFactory;
 
 // ゲーム全体
@@ -47,7 +48,8 @@ private: // メンバ変数
 	std::unique_ptr <WinApp> winApp = nullptr;
 	std::unique_ptr <DirectXCommon> dxCommon = nullptr;
 	std::unique_ptr <ModelCommon> modelCommon = nullptr;
-	std::unique_ptr <SrvManager> srvManager = nullptr;
+	std::unique_ptr <SrvManager> srvManager = nullptr;	
+	std::unique_ptr<DsvManager> dsvManager_ = nullptr;
 
 	// ゲーム終了フラグ
 	bool endRequst_ = false;

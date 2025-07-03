@@ -8,6 +8,7 @@
 #include<CopylmageCommon.h>
 #include<Controller.h>
 #include <psapi.h>
+#include<DsvManager.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -49,6 +50,8 @@ void Framework::Finalize() {
     ModelManager::GetInstance()->Finalize();
     // ImGuiマネージャの解放
     ImGuiManager::GetInstance()->Finalize();
+    // DSVマネージャの開放    
+    dsvManager_.reset();
     // SRVマネージャの開放
     srvManager.reset();
     // DirectXの解放
@@ -79,6 +82,8 @@ void Framework::Initialize() {
     // SRVマネージャーの初期化
     srvManager = std::make_unique <SrvManager>();
     srvManager->Initialize(dxCommon.get());
+    dsvManager_ =  std::make_unique <DsvManager>(); 
+    dsvManager_->Initialize(dxCommon.get());
     // ImGuiマネージャの初期化
     ImGuiManager::GetInstance()->Initialize(winApp.get(), dxCommon.get(), srvManager.get());
     // テクスチャマネージャの初期化
@@ -132,13 +137,13 @@ void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
     // レンダーテクスチャをレンダーターゲットにして描画開始準備
-    dxCommon->PreDrawRenderTexture(); 
+    dxCommon->PreDrawRenderTexture(dsvManager_.get()); 
     // シーンマネージャの描画処理
     SceneManager::GetInstance()->Draw();
     // レンダーテクスチャをSRVとして使うための状態に遷移
     dxCommon->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-    dxCommon->PreDraw(); 
+    dxCommon->PreDraw(dsvManager_.get()); 
 	// ポストエフェクト描画（レンダーテクスチャ → 画面）
     CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
 }

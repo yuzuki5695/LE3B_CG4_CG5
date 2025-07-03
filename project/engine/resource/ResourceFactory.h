@@ -15,7 +15,7 @@ namespace  ResourceFactory {
 	/// <summary>
 	/// 深度ステンシルテクスチャリソースの生成
 	/// </summary>
-	Microsoft::WRL::ComPtr <ID3D12Resource> CreateDepthStencilTextureResource(Microsoft::WRL::ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth);
+	Microsoft::WRL::ComPtr <ID3D12Resource> CreateDepthStencilTextureResource(const Microsoft::WRL::ComPtr <ID3D12Device>& device, int32_t width, int32_t heigth);
 
 
 	/// <summary>
