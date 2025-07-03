@@ -22,8 +22,17 @@ public: // メンバ関数
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 	// 共通描画設定
 	void Commondrawing(SrvManager* srvManager);
-
 private:
+	// シェーダーの種類
+	enum class PixelShaderType {
+		Fullscreen,
+		Vignette,
+		BoxFilter,
+		GaussianFilter,
+	};
+	// シェーダーのファイルパスを取得
+	std::wstring GetPixelShaderPath(PixelShaderType type);
+
 	// ルートシグネチャの生成
 	void RootSignatureGenerate();
 	// グラフィックスパイプラインの生成
@@ -31,10 +40,13 @@ private:
 	// SRVマネージャーのインデックス
 	uint32_t srvIndex;
 private:
+	// ポインタ
 	DirectXCommon* dxCommon_;
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+	// シェーダータイプ
+	PixelShaderType type_;
 public:
 	// gettre
 	DirectXCommon* GetDxCommon() const { return  dxCommon_; }

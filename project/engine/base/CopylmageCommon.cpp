@@ -142,17 +142,8 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-	// フルスクリーンシェーダーのコンパイル
-    //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.PS.hlsl", L"ps_6_0");
-
-	// Vignetteシェーダーのコンパイル
-    //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Vignette.PS.hlsl", L"ps_6_0");
-
-	// BoxFilterシェーダーのコンパイル
-    //ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/BoxFilter.PS.hlsl", L"ps_6_0");
-
-	// GaussianFilterシェーダーのコンパイル
-    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl", L"ps_6_0");
+    type_ = PixelShaderType::Fullscreen; // ファイルパスを選択
+    ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(GetPixelShaderPath(type_), L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
     /*-----------------------------------------------------------------------------------*/
@@ -180,4 +171,19 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     // 実際に生成
     hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
     assert(SUCCEEDED(hr));
+}
+
+std::wstring CopylmageCommon::GetPixelShaderPath(PixelShaderType type) {
+    switch (type) {
+    case PixelShaderType::Fullscreen:
+        return L"Resources/shaders/Fullscreen/Fullscreen.PS.hlsl";
+    case PixelShaderType::Vignette:
+        return L"Resources/shaders/Fullscreen/Vignette.PS.hlsl";
+    case PixelShaderType::BoxFilter:
+        return L"Resources/shaders/Fullscreen/BoxFilter.PS.hlsl";
+    case PixelShaderType::GaussianFilter:
+        return L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl";
+    default:
+        return L"";
+    }
 }
