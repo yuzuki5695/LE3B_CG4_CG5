@@ -62,8 +62,10 @@ void GamePlayScene::Update() {
     
 #pragma region  ImGuiの更新処理開始
 #ifdef USE_IMGUI
+    Object3dCommon::GetInstance()->DrawImGui();
+
     // object3d
-    Object_->DebugUpdata("Object");
+    Object_->DrawImGui("Object");
     // Camera
     CameraManager::GetInstance()->DrawImGui();
 

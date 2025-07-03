@@ -2,9 +2,12 @@
 #include"DirectXCommon.h"
 #include"Camera.h"
 
+class PointLight;
+class SpotLight;
+class DirectionalLight;
+
 // 3Dオブジェクト共通部
-class Object3dCommon
-{
+class Object3dCommon {
 private:
 	static std::unique_ptr<Object3dCommon> instance;
 
@@ -21,18 +24,20 @@ public: // メンバ関数
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon);
 	// 共通描画設定
-	void Commondrawing();
+	void Commondrawing();	
+	// imgui
+	void DrawImGui();
 private:
 	// ルートシグネチャの生成
 	void RootSignatureGenerate();
 	// グラフィックスパイプラインの生成
 	void GraphicsPipelineGenerate();
-	//// 平行光源リソース
-	//void DirectionalLightGenerate();
-	//// 点光源リソース
-	//void PointlightSourceGenerate();
-	//// スポットライトリソース
-	//void SpotlightGenerate();
+	// 平行光源リソース
+	void DirectionalLightGenerate();
+	// 点光源リソース
+	void PointlightSourceGenerate();
+	// スポットライトリソース
+	void SpotlightGenerate();
 
 private:
 	// ポインタ
@@ -41,15 +46,14 @@ private:
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
-	//// バッファリソース
-	//Microsoft::WRL::ComPtr <ID3D12Resource> directionalLightResource;
-	//Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource;
-	//Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource;		
-	//// バッファリソース内のデータを指すポインタ
-	//TransformationMatrix* transformationMatrixData = nullptr;
-	//DirectionalLight* directionalLightDate = nullptr;
-	//PointLight* pointLightData = nullptr;
-	//SpotLight* spotLightData = nullptr;
+	// バッファリソース
+	Microsoft::WRL::ComPtr <ID3D12Resource> directionalLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource;
+	// バッファリソース内のデータを指すポインタ
+	DirectionalLight* directionalLightDate = nullptr;
+	PointLight* pointLightData = nullptr;
+	SpotLight* spotLightData = nullptr;
 public:
 	// setter
 	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }

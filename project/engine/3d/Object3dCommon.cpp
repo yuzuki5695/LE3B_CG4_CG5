@@ -2,8 +2,19 @@
 #include <Logger.h>
 #include <StringUtility.h>
 #include <ShaderCompiler.h>
+#include<PointLight.h>
+#include<SpotLight.h>
+#include<DirectionalLight.h>
+#include <ResourceFactory.h>
+#include <numbers>
+#include <MatrixVector.h>
+#ifdef USE_IMGUI
+#include<ImGuiManager.h>
+#endif // USE_IMGUI
 
 using namespace Microsoft::WRL;
+using namespace MatrixVector;
+using namespace ResourceFactory;
 
 // 静的メンバ変数の定義
 std::unique_ptr<Object3dCommon> Object3dCommon::instance = nullptr;
@@ -27,6 +38,14 @@ void Object3dCommon::Initialize(DirectXCommon* dxCommon) {
     dxCommon_ = dxCommon;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
+
+    // リソース
+    // 平行光源の生成,初期化
+    DirectionalLightGenerate();
+    // 点光源リソースの生成、初期化
+    PointlightSourceGenerate();
+    // スポットライトリソースの生成、初期化
+    SpotlightGenerate();
 }
 
 void Object3dCommon::Commondrawing() {
@@ -35,6 +54,13 @@ void Object3dCommon::Commondrawing() {
     dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
     // 形状を設定。PSOに設定しているものとはまた別。同じものを設定する
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // 平行光源用のCBufferの場所を設定 
+    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+    // 点光源を設定 
+    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLightResource->GetGPUVirtualAddress());
+    // スポットライトを設定 
+    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLightResource->GetGPUVirtualAddress());
 }
 
 void Object3dCommon::RootSignatureGenerate() {
@@ -222,4 +248,76 @@ void Object3dCommon::GraphicsPipelineGenerate() {
     // 実際に生成
     hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
     assert(SUCCEEDED(hr));
+}
+
+
+void Object3dCommon::DirectionalLightGenerate() {
+    // 平行光源用のリソースを作る
+    directionalLightResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(DirectionalLight));
+    // 平行光源用にデータを書き込むためのアドレスを取得
+    directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightDate));
+    // デフォルト値はとりあえず以下のようにして置く
+    directionalLightDate->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    directionalLightDate->direction = { 0.0f,-1.0f,0.0f };
+    directionalLightDate->intensity = 1.0f;
+}
+
+void Object3dCommon::PointlightSourceGenerate() {
+    // 点光源用リソースを作る
+    pointLightResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(PointLight));
+    // 書き込むためのアドレスを取得
+    pointLightResource->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData));
+    // デフォルト値
+    pointLightData->color = { 1.0f,1.0f,1.0f,1.0f };
+    pointLightData->position = { 0.0f,2.0f,0.0f };
+    pointLightData->intensity = 0.0f;
+    pointLightData->radius = 10.0f;
+    pointLightData->decay = 1.0f;
+}
+
+void Object3dCommon::SpotlightGenerate() {
+    // スポットライトリソースを作る
+    spotLightResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(SpotLight));
+    // 書き込むためのアドレスを取得
+    spotLightResource->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData));
+    // デフォルト値
+    spotLightData->color = { 1.0f,1.0f,1.0f,1.0f };
+    spotLightData->position = { 2.0f,1.25f,0.0f };
+    spotLightData->distance = 7.0f;
+    spotLightData->direction =
+        Normalize({ -1.0f,-1.0f,0.0f });
+    spotLightData->intensity = 4.0f;
+    spotLightData->decay = 2.0f;
+    spotLightData->cosFalloffStart = 1.0f;
+    spotLightData->cosAngle =
+        std::cos(std::numbers::pi_v<float> / 3.0f);
+}
+
+void Object3dCommon::DrawImGui() {
+#ifdef USE_IMGUI
+    ImGui::Begin("lighting");
+    // ライトセクション
+    if (ImGui::CollapsingHeader("Directional Light")) {
+        ImGui::DragFloat3("Direction", &directionalLightDate->direction.x, 0.01f);
+        ImGui::DragFloat("Intensity", &directionalLightDate->intensity, 0.01f);
+    }
+    // ポイントライト
+    if (ImGui::CollapsingHeader("Point Light")) {
+        ImGui::DragFloat3("Point Light : Position", &pointLightData->position.x, 0.01f);
+        ImGui::DragFloat("Point Light : Intensity", &pointLightData->intensity, 0.01f);
+        ImGui::DragFloat("Point Light : Radius", &pointLightData->radius, 0.01f);
+        ImGui::DragFloat("Point Light : Decay", &pointLightData->decay, 0.01f);
+    }
+    // スポットライト
+    if (ImGui::CollapsingHeader("Spot Light")) {
+        ImGui::DragFloat3("Spot Light : Position", &spotLightData->position.x, 0.01f);
+        ImGui::DragFloat("Spot Light : Intensity", &spotLightData->intensity, 0.01f);
+        ImGui::DragFloat3("Spot Light : Direction", &spotLightData->direction.x, 0.01f);
+        ImGui::DragFloat("Spot Light : Decay", &spotLightData->decay, 0.01f);
+        ImGui::DragFloat("Spot Light : CosAngle", &spotLightData->cosAngle, 0.01f);
+        ImGui::DragFloat("Spot Light : CosFalloffStart", &spotLightData->cosFalloffStart, 0.01f);
+    }
+
+    ImGui::End();
+#endif // USE_IMGUI
 }

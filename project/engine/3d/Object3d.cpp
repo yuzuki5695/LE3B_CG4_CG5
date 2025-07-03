@@ -11,9 +11,6 @@
 #include <numbers>
 #include <CameraManager.h>
 #include <ResourceFactory.h>
-#include<PointLight.h>
-#include<SpotLight.h>
-#include<DirectionalLight.h>
 #include<TransformationMatrix.h>
 
 using namespace MatrixVector;
@@ -27,14 +24,8 @@ void Object3d::Initialize(Object3dCommon* object3dCommon) {
     this->camera = object3dCommon->GetDefaultCamera();
     // WVP,World用のリソースの生成、初期化
     TransformationMatrixGenerate();
-    // 平行光源の生成,初期化
-    DirectionalLightGenerate();
     // カメラリソースの生成、初期化
     CameraForGPUGenerate();
-    // 点光源リソースの生成、初期化
-    PointlightSourceGenerate();
-    // スポットライトリソースの生成、初期化
-    SpotlightGenerate();
 }
 
 void Object3d::Update() {
@@ -65,14 +56,9 @@ void Object3d::Update() {
 void Object3d::Draw() {
     // 座標変化行列CBufferの場所を設定
     object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
-    // 平行光源用のCBufferの場所を設定 
-    object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+
     // カメラの場所を設定 
     object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource->GetGPUVirtualAddress());
-    // 点光源を設定 
-    object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLightResource->GetGPUVirtualAddress());
-    // スポットライトを設定 
-    object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLightResource->GetGPUVirtualAddress());
 
     // 3Dモデルが割り当てられていれば描画する
     if (model) {
@@ -92,17 +78,6 @@ void Object3d::TransformationMatrixGenerate() {
     transformationMatrixData->WorldInverseTranspose = InverseTranspose(transformationMatrixData->World);
 }
 
-void Object3d::DirectionalLightGenerate() {
-    // 平行光源用のリソースを作る
-    directionalLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(DirectionalLight));
-    // 平行光源用にデータを書き込むためのアドレスを取得
-    directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightDate));
-    // デフォルト値はとりあえず以下のようにして置く
-    directionalLightDate->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    directionalLightDate->direction = { 0.0f,-1.0f,0.0f };
-    directionalLightDate->intensity = 1.0f;
-}
-
 void Object3d::CameraForGPUGenerate() {
     // カメラ用リソースを作る
     cameraResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(Object3d::CameraForGPU));
@@ -115,37 +90,6 @@ void Object3d::CameraForGPUGenerate() {
         // カメラがない場合デフォルト位置にしておく
         cameraForGPUData->worldPosition = { 0.0f, 0.0f, -100.0f };
     }
-}
-
-void Object3d::PointlightSourceGenerate() {
-    // 点光源用リソースを作る
-    pointLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(PointLight));
-    // 書き込むためのアドレスを取得
-    pointLightResource->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData));
-    // デフォルト値
-    pointLightData->color = { 1.0f,1.0f,1.0f,1.0f };
-    pointLightData->position = { 0.0f,2.0f,0.0f };
-    pointLightData->intensity = 0.0f;
-    pointLightData->radius = 10.0f;
-    pointLightData->decay = 1.0f;
-}
-
-void Object3d::SpotlightGenerate() {
-    // スポットライトリソースを作る
-    spotLightResource = CreateBufferResource(object3dCommon->GetDxCommon()->GetDevice(), sizeof(SpotLight));
-    // 書き込むためのアドレスを取得
-    spotLightResource->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData));
-    // デフォルト値
-    spotLightData->color = { 1.0f,1.0f,1.0f,1.0f };
-    spotLightData->position = { 2.0f,1.25f,0.0f };
-    spotLightData->distance = 7.0f;
-    spotLightData->direction =
-        Normalize({ -1.0f,-1.0f,0.0f });
-    spotLightData->intensity = 4.0f;
-    spotLightData->decay = 2.0f;
-    spotLightData->cosFalloffStart = 1.0f;
-    spotLightData->cosAngle =
-        std::cos(std::numbers::pi_v<float> / 3.0f);
 }
 
 void Object3d::SetModel(const std::string& filePath) {
@@ -165,7 +109,7 @@ std::unique_ptr<Object3d> Object3d::Create(std::string filePath, Transform trans
     return object3d;
 }
 
-void Object3d::DebugUpdata(const std::string& name) {
+void Object3d::DrawImGui(const std::string& name) {
 #ifdef USE_IMGUI
     ImGui::Begin(name.c_str());
     // 座標セクション
@@ -178,27 +122,6 @@ void Object3d::DebugUpdata(const std::string& name) {
     if (ImGui::CollapsingHeader("Material Color")) {
         ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&model->GetMaterialData()->color));
         ImGui::DragFloat("Shininess", &model->GetMaterialData()->shinimess, 0.01f);
-    }
-    // ライトセクション
-    if (ImGui::CollapsingHeader("Directional Light")) {
-        ImGui::DragFloat3("Direction", &directionalLightDate->direction.x, 0.01f);
-        ImGui::DragFloat("Intensity", &directionalLightDate->intensity, 0.01f);
-        // ポイントライト
-        if (ImGui::CollapsingHeader("Point Light")) {
-            ImGui::DragFloat3("Position", &pointLightData->position.x, 0.01f);
-            ImGui::DragFloat("Intensity", &pointLightData->intensity, 0.01f);
-            ImGui::DragFloat("Radius", &pointLightData->radius, 0.01f);
-            ImGui::DragFloat("Decay", &pointLightData->decay, 0.01f);
-        }
-        // スポットライト
-        if (ImGui::CollapsingHeader("Spot Light")) {
-            ImGui::DragFloat3("Position", &spotLightData->position.x, 0.01f);
-            ImGui::DragFloat("Intensity", &spotLightData->intensity, 0.01f);
-            ImGui::DragFloat3("Direction", &spotLightData->direction.x, 0.01f);
-            ImGui::DragFloat("Decay", &spotLightData->decay, 0.01f);
-            ImGui::DragFloat("CosAngle", &spotLightData->cosAngle, 0.01f);
-            ImGui::DragFloat("CosFalloffStart", &spotLightData->cosFalloffStart, 0.01f);
-        }
     }
     ImGui::End();
 #endif // USE_IMGUI

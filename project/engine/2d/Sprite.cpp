@@ -195,7 +195,7 @@ std::unique_ptr<Sprite> Sprite::Create(std::string textureFilePath, Vector2 posi
 	return sprite;
 }
 
-void Sprite::DebugUpdata() {
+void Sprite::DrawImGui() {
 #ifdef USE_IMGUI
 	// ウィンドウサイズを指定
 	ImGui::Begin("Sprite");
