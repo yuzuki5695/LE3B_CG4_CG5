@@ -27,6 +27,13 @@ private:
 	void RootSignatureGenerate();
 	// グラフィックスパイプラインの生成
 	void GraphicsPipelineGenerate();
+	//// 平行光源リソース
+	//void DirectionalLightGenerate();
+	//// 点光源リソース
+	//void PointlightSourceGenerate();
+	//// スポットライトリソース
+	//void SpotlightGenerate();
+
 private:
 	// ポインタ
 	DirectXCommon* dxCommon_;
@@ -34,6 +41,15 @@ private:
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+	//// バッファリソース
+	//Microsoft::WRL::ComPtr <ID3D12Resource> directionalLightResource;
+	//Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource;
+	//Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource;		
+	//// バッファリソース内のデータを指すポインタ
+	//TransformationMatrix* transformationMatrixData = nullptr;
+	//DirectionalLight* directionalLightDate = nullptr;
+	//PointLight* pointLightData = nullptr;
+	//SpotLight* spotLightData = nullptr;
 public:
 	// setter
 	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
