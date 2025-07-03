@@ -136,6 +136,12 @@
     <Filter Include="ヘッダー ファイル\engine\math\Light">
       <UniqueIdentifier>{afeeece8-3d7d-4291-ae32-c7137a22b928}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\base\ViewManager">
+      <UniqueIdentifier>{ea904565-cca5-4176-94f7-5488a747ba78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\base\ViewManager">
+      <UniqueIdentifier>{784c09c4-89cb-4902-930a-3c893ed64d18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="engine\3d\Model.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\base\SrvManager.cpp">
-      <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\ImGuiManager.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
@@ -273,6 +276,9 @@
     <ClCompile Include="engine\io\Controller.cpp">
       <Filter>ソース ファイル\engine\io</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\SrvManager.cpp">
+      <Filter>ソース ファイル\engine\base\ViewManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -301,9 +307,6 @@
     </ClInclude>
     <ClInclude Include="engine\3d\ModelCommon.h">
       <Filter>ヘッダー ファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\SrvManager.h">
-      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\ImGuiManager.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
@@ -454,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="TransformationMatrix.h">
       <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\SrvManager.h">
+      <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
