@@ -282,7 +282,7 @@
     <ClCompile Include="engine\base\DsvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\RrvManager.cpp">
+    <ClCompile Include="RtvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -470,7 +470,7 @@
     <ClInclude Include="engine\base\DsvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\RrvManager.h">
+    <ClInclude Include="RtvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
   </ItemGroup>
