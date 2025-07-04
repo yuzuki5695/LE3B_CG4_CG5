@@ -422,36 +422,6 @@
     <ClInclude Include="engine\io\Controller.h">
       <Filter>ヘッダー ファイル\engine\io</Filter>
     </ClInclude>
-    <ClInclude Include="engine\math\Vector3.h">
-      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Vector2.h">
-      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Vector4.h">
-      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Transform.h">
-      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Matrix3x3.h">
-      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\MaterialDate.h">
-      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Material.h">
-      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\ModelDate.h">
-      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\math\Vertex.h">
-      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\SrvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
@@ -461,9 +431,6 @@
     <ClInclude Include="engine\base\RtvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
-    <ClInclude Include="engine\math\Matrix\TransformationMatrix.h">
-      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\Light\DirectionalLight.h">
       <Filter>ヘッダー ファイル\engine\math\Light</Filter>
     </ClInclude>
@@ -472,6 +439,39 @@
     </ClInclude>
     <ClInclude Include="engine\math\Light\SpotLight.h">
       <Filter>ヘッダー ファイル\engine\math\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix\Matrix3x3.h">
+      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix\Matrix4x4.h">
+      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix\TransformationMatrix.h">
+      <Filter>ヘッダー ファイル\engine\math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Model\Material.h">
+      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Model\MaterialDate.h">
+      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Model\ModelDate.h">
+      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Model\Vertex.h">
+      <Filter>ヘッダー ファイル\engine\math\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector\Transform.h">
+      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector\Vector2.h">
+      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector\Vector3.h">
+      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector\Vector4.h">
+      <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

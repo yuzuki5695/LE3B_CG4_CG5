@@ -2,6 +2,7 @@
 #include"DirectXCommon.h"
 
 class SrvManager;
+class RtvManager;
 
 class CopylmageCommon
 {
@@ -19,7 +20,7 @@ public: // メンバ関数
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,RtvManager* rtvManager);
 	// 共通描画設定
 	void Commondrawing(SrvManager* srvManager);
 private:

@@ -12,6 +12,7 @@
 #include<SoundPlayer.h>
 #include<SceneManager.h>
 #include<ParticleManager.h>
+#include<RtvManager.h>
 
 class WinApp;
 class DirectXCommon;
@@ -47,8 +48,9 @@ private: // メンバ変数
 	std::unique_ptr <WinApp> winApp = nullptr;
 	std::unique_ptr <DirectXCommon> dxCommon = nullptr;
 	std::unique_ptr <ModelCommon> modelCommon = nullptr;
-	std::unique_ptr <SrvManager> srvManager = nullptr;
-
+	std::unique_ptr <SrvManager> srvManager = nullptr;	
+	std::unique_ptr <RtvManager> rtvManager = nullptr;
+	
 	// ゲーム終了フラグ
 	bool endRequst_ = false;
 public:

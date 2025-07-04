@@ -24,25 +24,20 @@ public: // メンバ関数
 	// 初期化
 	void Initialize(WinApp* winApp);
 	// 描画前処理
-	void PreDraw();
+	void PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
 	// 描画後処理
 	void PostDrow();
 
 	/// <summary>
 	/// レンダーテクスチャのテクスチャリソースの生成
 	/// </summary>
-	void PreDrawRenderTexture();
-
-	/// <summary>
-	/// レンダーテクスチャの描画後処理
-	/// </summary>
-	void PostDrawRenderTexture();
+	void PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles,const Vector4 color);
 
 	/// <summary>
 	/// デスクリプタヒープを生成する
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
-	
+
 private: // プライベートメンバ関数
 	// デバイスの初期化
 	void DebugInitialize();
@@ -52,16 +47,9 @@ private: // プライベートメンバ関数
 	void CreateDepthStencilGenerate();
 	// 各種でスクリプタヒープの生成
 	void DescriptorHeapGenerate();
-	// レンダーターゲットビューの初期化
-	void RenderviewInitialize();
+
 	// 深度ステルスビューの初期化
 	void DepthstealthviewInitialization();
-	
-	// レンダーテクスチャの状態変異
-	enum class RenderTextureState {
-		RenderTarget,             // 現在、描画先（RTV）として使用中
-		PixelShaderResource       // 現在、SRVとしてシェーダから読み込み可能
-	};
 
 	// リソースの状態を遷移
 	void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
@@ -79,29 +67,11 @@ private: // メンバ変数
 	Microsoft::WRL::ComPtr <ID3D12CommandQueue> commandQueue;			              // コマンドキュー
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthbufferresource;			              // 深度バッファ
 	// ディスクリプタ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtvDescriptorHeap;	// RTV用のヒープでディスクリプタ
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap;	// DSV用のヒープでディスクリプタ
 	// 各DescriptorSizeを取得する
-	uint32_t descriptorsizeRTV;  // RTV用
 	uint32_t descriptorsizeDSV;	 // DSV用
-	//RTVの設定
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-	//ディスクリプタの先頭を取得する
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle;
-	//RTVを2つ作るのでディスクリプタハンドルを2つ用意
-	const uint32_t rtvHandlenum = 3;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
-	// オフスクリーン用のレンダーテクスチャ	
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;              // カスタムRenderTarget用のリソース
-	Vector4 kRenderTargetClearValue{};                                         // カスタムRenderTargetのリソースカラー
-	RenderTextureState renderTextureState = RenderTextureState::RenderTarget;  // 初期状態はRenderTarget
-	uint32_t srvIndexRenderTexture;                                            // レンダーテクスチャのSRVインデックス
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
-	// DXCコンパイラの初期化
-	Microsoft::WRL::ComPtr <IDxcUtils> dxcUtils = nullptr;
-	Microsoft::WRL::ComPtr <IDxcCompiler3> dxcCompiler = nullptr;
-	Microsoft::WRL::ComPtr <IDxcIncludeHandler> includeHandler = nullptr;
 	// TransitionBarrierの設定
 	D3D12_RESOURCE_BARRIER barrier{};
 	// 描画先のRTVとDSVを設定する
@@ -114,6 +84,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return commandList.Get(); }
 	D3D12_DEPTH_STENCIL_DESC GetdepthStencilDesc() { return depthStencilDesc; }
 	// スワップチェーンリソースの数を取得
-	Microsoft::WRL::ComPtr<ID3D12Resource>& GetrenderTextureResource() { return renderTextureResource; }
 	SwapChainManager* GetSwapChain() { return swapchain_.get(); }
 };

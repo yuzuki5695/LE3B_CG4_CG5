@@ -49,6 +49,8 @@ void Framework::Finalize() {
     ModelManager::GetInstance()->Finalize();
     // ImGuiマネージャの解放
     ImGuiManager::GetInstance()->Finalize();
+    // RTVマネージャの開放
+    rtvManager.reset();
     // SRVマネージャの開放
     srvManager.reset();
     // DirectXの解放
@@ -79,6 +81,8 @@ void Framework::Initialize() {
     // SRVマネージャーの初期化
     srvManager = std::make_unique <SrvManager>();
     srvManager->Initialize(dxCommon.get());
+    rtvManager = std::make_unique <RtvManager>();
+    rtvManager->Initialize(dxCommon.get());
     // ImGuiマネージャの初期化
     ImGuiManager::GetInstance()->Initialize(winApp.get(), dxCommon.get(), srvManager.get());
     // テクスチャマネージャの初期化
@@ -103,7 +107,7 @@ void Framework::Initialize() {
     ParticleCommon::GetInstance()->Initialize(dxCommon.get());
  
 	// レンダーテクスチャ共通部の初期化
-    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get());
+    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get(),rtvManager.get());
 
 #pragma endregion 基盤システムの初期化
 }
@@ -132,13 +136,16 @@ void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
     // レンダーテクスチャをレンダーターゲットにして描画開始準備
-    dxCommon->PreDrawRenderTexture(); 
+    rtvManager->PreDrawRenderTexture();
+    dxCommon->PreDrawRenderTexture(rtvManager->GetRtvHandle(2), rtvManager->GetkRenderTargetClearValue());
     // シーンマネージャの描画処理
     SceneManager::GetInstance()->Draw();
     // レンダーテクスチャをSRVとして使うための状態に遷移
-    dxCommon->PostDrawRenderTexture();
+    rtvManager->PostDrawRenderTexture();
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
-    dxCommon->PreDraw(); 
+    // ここから書き込むバックバッファのインデックスを取得
+    UINT backBufferIndex = dxCommon->GetSwapChain()->GetSwapChain()->GetCurrentBackBufferIndex();
+    dxCommon->PreDraw(rtvManager->GetRtvHandle(backBufferIndex));
 	// ポストエフェクト描画（レンダーテクスチャ → 画面）
     CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
 }

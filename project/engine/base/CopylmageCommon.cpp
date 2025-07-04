@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include<SrvManager.h>
+#include<RtvManager.h>
 
 using namespace Microsoft::WRL;
 
@@ -22,14 +23,14 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager) {
     assert(dxCommon);
     // 引数を受け取ってメンバ変数に記録する
     dxCommon_ = dxCommon;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 	// SRVマネージャーの取得
-    srvIndex = srvManager->CreateSRVForRenderTexture(dxCommon->GetrenderTextureResource());
+    srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
 }
 
 void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
