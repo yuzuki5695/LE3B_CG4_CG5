@@ -276,13 +276,13 @@
     <ClCompile Include="engine\io\Controller.cpp">
       <Filter>ソース ファイル\engine\io</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\SrvManager.cpp">
+    <ClCompile Include="engine\base\ViewManager\SrvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\DsvManager.cpp">
+    <ClCompile Include="engine\base\ViewManager\DsvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\RtvManager.cpp">
+    <ClCompile Include="engine\base\ViewManager\RtvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -422,13 +422,13 @@
     <ClInclude Include="engine\io\Controller.h">
       <Filter>ヘッダー ファイル\engine\io</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\SrvManager.h">
+    <ClInclude Include="engine\base\ViewManager\SrvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\DsvManager.h">
+    <ClInclude Include="engine\base\ViewManager\DsvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\RtvManager.h">
+    <ClInclude Include="engine\base\ViewManager\RtvManager.h">
       <Filter>ヘッダー ファイル\engine\base\ViewManager</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Light\DirectionalLight.h">

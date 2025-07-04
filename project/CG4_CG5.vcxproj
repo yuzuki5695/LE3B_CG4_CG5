@@ -63,7 +63,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;$(ProjectDir)engine\math\Vector;$(ProjectDir)engine\math\Model;$(ProjectDir)engine\math\Matrix;$(ProjectDir)engine\math\Light;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;$(ProjectDir)engine\math\Vector;$(ProjectDir)engine\math\Model;$(ProjectDir)engine\math\Matrix;$(ProjectDir)engine\math\Light;$(ProjectDir)engine\base\ViewManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;$(ProjectDir)engine\math\Vector;$(ProjectDir)engine\math\Model;$(ProjectDir)engine\math\Matrix;$(ProjectDir)engine\math\Light;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;$(ProjectDir)engine\camera;$(ProjectDir)application\scene;$(ProjectDir)externals\nlohmann;$(ProjectDir)engine\resource;$(ProjectDir)engine\base\DirectXCommon;$(ProjectDir)engine\base\Utility;$(ProjectDir)engine\base\loader;$(ProjectDir)engine\math\Vector;$(ProjectDir)engine\math\Model;$(ProjectDir)engine\math\Matrix;$(ProjectDir)engine\math\Light;$(ProjectDir)engine\base\ViewManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -102,8 +102,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
-    <ClCompile Include="engine\base\DsvManager.cpp" />
-    <ClCompile Include="engine\base\RtvManager.cpp" />
+    <ClCompile Include="engine\base\ViewManager\DsvManager.cpp" />
+    <ClCompile Include="engine\base\ViewManager\RtvManager.cpp" />
     <ClCompile Include="engine\io\Controller.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\DescriptorUtils.cpp" />
     <ClCompile Include="engine\base\CopylmageCommon.cpp" />
@@ -141,7 +141,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\Utility\StringUtility.cpp" />
     <ClCompile Include="engine\resource\TextureManager.cpp" />
     <ClCompile Include="engine\base\WinApp.cpp" />
-    <ClCompile Include="engine\base\SrvManager.cpp" />
+    <ClCompile Include="engine\base\ViewManager\SrvManager.cpp" />
     <ClCompile Include="engine\scene\MyGame.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="engine\resource\ResourceFactory.cpp" />
@@ -149,8 +149,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\base\DsvManager.h" />
-    <ClInclude Include="engine\base\RtvManager.h" />
+    <ClInclude Include="engine\base\ViewManager\DsvManager.h" />
+    <ClInclude Include="engine\base\ViewManager\RtvManager.h" />
     <ClInclude Include="engine\io\Controller.h" />
     <ClInclude Include="engine\base\DirectXCommon\DescriptorUtils.h" />
     <ClInclude Include="engine\base\CopylmageCommon.h" />
@@ -196,7 +196,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\resource\TextureManager.h" />
     <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\base\WinApp.h" />
-    <ClInclude Include="engine\base\SrvManager.h" />
+    <ClInclude Include="engine\base\ViewManager\SrvManager.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GamePlayScene.h" />
