@@ -2,9 +2,6 @@
 #include <Logger.h>
 #include <StringUtility.h>
 #include <ShaderCompiler.h>
-#include<PointLight.h>
-#include<SpotLight.h>
-#include<DirectionalLight.h>
 #include <ResourceFactory.h>
 #include <numbers>
 #include <MatrixVector.h>

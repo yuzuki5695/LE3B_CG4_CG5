@@ -1,9 +1,9 @@
 #pragma once
 #include"Model.h"
 #include "Camera.h"
+#include<TransformationMatrix.h>
 
 class Object3dCommon;
-class TransformationMatrix;
 
 //  3Dオブジェクト
 class Object3d {

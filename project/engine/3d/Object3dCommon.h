@@ -1,10 +1,10 @@
 #pragma once
 #include"DirectXCommon.h"
 #include"Camera.h"
+#include<DirectionalLight.h>
+#include<SpotLight.h>
+#include<PointLight.h>
 
-class PointLight;
-class SpotLight;
-class DirectionalLight;
 class DsvManager;
 
 // 3Dオブジェクト共通部
