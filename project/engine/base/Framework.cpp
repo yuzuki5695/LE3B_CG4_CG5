@@ -48,7 +48,9 @@ void Framework::Finalize() {
     // 3Dモデルマネージャの終了
     ModelManager::GetInstance()->Finalize();
     // ImGuiマネージャの解放
-    ImGuiManager::GetInstance()->Finalize();
+    ImGuiManager::GetInstance()->Finalize();   
+    // DSVマネージャの開放
+    dsvManager.reset();
     // RTVマネージャの開放
     rtvManager.reset();
     // SRVマネージャの開放
@@ -80,9 +82,13 @@ void Framework::Initialize() {
     SoundPlayer::GetInstance()->Initialize(SoundLoader::GetInstance());
     // SRVマネージャーの初期化
     srvManager = std::make_unique <SrvManager>();
-    srvManager->Initialize(dxCommon.get());
+    srvManager->Initialize(dxCommon.get());   
+    // RTVマネージャーの初期化
     rtvManager = std::make_unique <RtvManager>();
-    rtvManager->Initialize(dxCommon.get());
+    rtvManager->Initialize(dxCommon.get());      
+    // DSVマネージャーの初期化
+    dsvManager = std::make_unique <DsvManager>();
+    dsvManager->Initialize(dxCommon.get());
     // ImGuiマネージャの初期化
     ImGuiManager::GetInstance()->Initialize(winApp.get(), dxCommon.get(), srvManager.get());
     // テクスチャマネージャの初期化
@@ -98,16 +104,16 @@ void Framework::Initialize() {
     Input::GetInstance()->Initialize(winApp.get());
 
     // スプライト共通部の初期化
-    SpriteCommon::GetInstance()->Initialize(dxCommon.get());
+    SpriteCommon::GetInstance()->Initialize(dxCommon.get(),dsvManager.get());
 
     // 3Dオブジェクト共通部の初期化
-    Object3dCommon::GetInstance()->Initialize(dxCommon.get());
+    Object3dCommon::GetInstance()->Initialize(dxCommon.get(),dsvManager.get());
 
     // パーティクル共通部の初期化
-    ParticleCommon::GetInstance()->Initialize(dxCommon.get());
+    ParticleCommon::GetInstance()->Initialize(dxCommon.get(),dsvManager.get());
  
 	// レンダーテクスチャ共通部の初期化
-    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get(),rtvManager.get());
+    CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get(),rtvManager.get(),dsvManager.get());
 
 #pragma endregion 基盤システムの初期化
 }
@@ -137,7 +143,7 @@ void Framework::Draw() {
     srvManager->PreDraw();
     // レンダーテクスチャをレンダーターゲットにして描画開始準備
     rtvManager->PreDrawRenderTexture();
-    dxCommon->PreDrawRenderTexture(rtvManager->GetRtvHandle(2), rtvManager->GetkRenderTargetClearValue());
+    dxCommon->PreDrawRenderTexture(rtvManager->GetRtvHandle(2),dsvManager->GetDsvDescriptorHeap(), rtvManager->GetkRenderTargetClearValue());
     // シーンマネージャの描画処理
     SceneManager::GetInstance()->Draw();
     // レンダーテクスチャをSRVとして使うための状態に遷移
@@ -145,7 +151,7 @@ void Framework::Draw() {
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = dxCommon->GetSwapChain()->GetSwapChain()->GetCurrentBackBufferIndex();
-    dxCommon->PreDraw(rtvManager->GetRtvHandle(backBufferIndex));
+    dxCommon->PreDraw(rtvManager->GetRtvHandle(backBufferIndex),dsvManager->GetDsvDescriptorHeap());
 	// ポストエフェクト描画（レンダーテクスチャ → 画面）
     CopylmageCommon::GetInstance()->Commondrawing(srvManager.get());
 }

@@ -8,6 +8,7 @@
 #include <ResourceFactory.h>
 #include <numbers>
 #include <MatrixVector.h>
+#include<DsvManager.h>
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
@@ -32,10 +33,12 @@ void Object3dCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void Object3dCommon::Initialize(DirectXCommon* dxCommon) {
+void Object3dCommon::Initialize(DirectXCommon* dxCommon,DsvManager* dsvManager) {
     assert(dxCommon);
+    assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
-    dxCommon_ = dxCommon;
+    dxCommon_ = dxCommon;     
+    dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 
@@ -242,7 +245,7 @@ void Object3dCommon::GraphicsPipelineGenerate() {
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // DepthStencilの設定
-    graphicsPipelineStateDesc.DepthStencilState = dxCommon_->GetdepthStencilDesc();
+    graphicsPipelineStateDesc.DepthStencilState = dsvManager_->GetDepthStencilDesc();
     graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     // 実際に生成

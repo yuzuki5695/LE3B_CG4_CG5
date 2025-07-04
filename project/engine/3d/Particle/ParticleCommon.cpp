@@ -2,6 +2,7 @@
 #include <Logger.h>
 #include <StringUtility.h>
 #include <ShaderCompiler.h>
+#include<DsvManager.h>
 
 using namespace Microsoft::WRL;
 
@@ -21,10 +22,12 @@ void ParticleCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void ParticleCommon::Initialize(DirectXCommon* dxCommon) {
+void ParticleCommon::Initialize(DirectXCommon* dxCommon, DsvManager* dsvManager) {
     assert(dxCommon);
+    assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
     dxCommon_ = dxCommon;
+    dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 }
@@ -216,7 +219,7 @@ void ParticleCommon::GraphicsPipelineGenerate() {
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // DepthStencilの設定
-    graphicsPipelineStateDesc.DepthStencilState = dxCommon_->GetdepthStencilDesc();
+    graphicsPipelineStateDesc.DepthStencilState = dsvManager_->GetDepthStencilDesc();
     graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     // 実際に生成

@@ -2,6 +2,8 @@
 #include"DirectXCommon.h"
 #include"Camera.h"
 
+class DsvManager;
+
 // 3Dオブジェクト共通部
 class ParticleCommon
 {
@@ -19,7 +21,7 @@ public: // メンバ関数
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon);
+	void Initialize(DirectXCommon* dxCommon, DsvManager* dsvManager);
 	// 共通描画設定
 	void Commondrawing();
 private:
@@ -30,6 +32,7 @@ private:
 private:
 	// ポインタ
 	DirectXCommon* dxCommon_;
+	DsvManager* dsvManager_;
 	Camera* defaultCamera = nullptr;
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;

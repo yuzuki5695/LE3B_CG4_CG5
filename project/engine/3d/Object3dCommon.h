@@ -5,6 +5,7 @@
 class PointLight;
 class SpotLight;
 class DirectionalLight;
+class DsvManager;
 
 // 3Dオブジェクト共通部
 class Object3dCommon {
@@ -22,7 +23,7 @@ public: // メンバ関数
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon);
+	void Initialize(DirectXCommon* dxCommon,DsvManager* dsvManager);
 	// 共通描画設定
 	void Commondrawing();	
 	// imgui
@@ -43,6 +44,7 @@ private:
 	// ポインタ
 	DirectXCommon* dxCommon_;
 	Camera* defaultCamera = nullptr;
+	DsvManager* dsvManager_;
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;

@@ -4,6 +4,7 @@
 #include "StringUtility.h"
 #include<SrvManager.h>
 #include<RtvManager.h>
+#include<DsvManager.h>
 
 using namespace Microsoft::WRL;
 
@@ -23,10 +24,14 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager,DsvManager* dsvManager) {
     assert(dxCommon);
+    assert(srvManager);
+    assert(rtvManager);
+    assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
-    dxCommon_ = dxCommon;
+    dxCommon_ = dxCommon;   
+    dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 	// SRVマネージャーの取得
@@ -166,7 +171,7 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // DepthStencilの設定
-    graphicsPipelineStateDesc.DepthStencilState = dxCommon_->GetdepthStencilDesc();
+    graphicsPipelineStateDesc.DepthStencilState = dsvManager_->GetDepthStencilDesc();
     graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     // 実際に生成

@@ -3,6 +3,7 @@
 
 class SrvManager;
 class RtvManager;
+class DsvManager;
 
 class CopylmageCommon
 {
@@ -20,7 +21,7 @@ public: // メンバ関数
 	// 終了
 	void Finalize();
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,RtvManager* rtvManager);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,RtvManager* rtvManager,DsvManager* dsvManager);
 	// 共通描画設定
 	void Commondrawing(SrvManager* srvManager);
 private:
@@ -42,7 +43,8 @@ private:
 	uint32_t srvIndex;
 private:
 	// ポインタ
-	DirectXCommon* dxCommon_;
+	DirectXCommon* dxCommon_;		
+	DsvManager* dsvManager_;
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;

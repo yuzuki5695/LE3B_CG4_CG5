@@ -32,8 +32,6 @@ void DirectXCommon::Initialize(WinApp* winApp){
     swapchain_->Initialize(winApp_->Gethwnd(), commandQueue, dxgiFactory, // スワップチェーンの生成
     WinApp::kClientWidth, WinApp::kClientHeight);
 	CreateDepthStencilGenerate();	                                                  // 深度バッファの生成
-	DescriptorHeapGenerate();	                                                      // 各種でスクリプタヒープの生成
-	DepthstealthviewInitialization();	                                              // 深度ステルスビューの初期化 
     fence_->Initialize(device);                                                       // フェンスの初期化
     viewport_->Initialize(WinApp::kClientWidth,WinApp::kClientHeight);                // ビューポート・ シザリング矩形の初期化
 }
@@ -207,50 +205,14 @@ void DirectXCommon::CreateDepthStencilGenerate() {
     assert(SUCCEEDED(hr));
 }
 
-void DirectXCommon::DescriptorHeapGenerate() {
-    // DSV用のヒープでディスクリプタの数は1。DSVはshader内で触るものではないので、ShaderVisibleはfalse
-    dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
-
-    // DescriptorSizeを取得する
-    descriptorsizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-}
-
-void DirectXCommon::DepthstealthviewInitialization() {
-
-    /*------------------------------------------------------------*/
-    /*--------------------------DSVの設定--------------------------*/
-    /*------------------------------------------------------------*/
-
-    // DepthStencilTextureをウインドウのサイズで作成
-    depthStencilResource = CreateDepthStencilTextureResource(device,WinApp::kClientWidth, WinApp::kClientHeight);
-
-    // DSVの設定
-    D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-    dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//Format。基本的にはResource合わせる
-    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; //2dTexture 
-    // DSVDescの先頭にDSVを作る
-    device->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
-    // DepthStencilStateの設定
-    // Depthの機能を有効化する
-    depthStencilDesc.DepthEnable = true;
-    // 書き込みする
-    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-    // 書き込みしない
-    //depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-    // 比較関数はLessEqual。つまり、近ければ描画される
-    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-}
-
-void DirectXCommon::PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles,const Vector4 color) {
-
+void DirectXCommon::PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles, Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> DsvDescriptorHeap, const Vector4 color) {
     // 描画先 = rtvHandles[2]（中間テクスチャ）
     D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = RtvHandles;
-    
-    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+
+    dsvHandle = DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     commandList->OMSetRenderTargets(1, &rtHandle, false, &dsvHandle);
 
-	// カスタムRenderTarget用で設定した値を使って画面全体をクリアする
+    // カスタムRenderTarget用で設定した値を使って画面全体をクリアする
     float clearColor[] = { color.x, color.y, color.z, color.w };
     commandList->ClearRenderTargetView(rtHandle, clearColor, 0, nullptr);
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -258,7 +220,7 @@ void DirectXCommon::PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles,
     commandList->RSSetScissorRects(1, &viewport_->GetScissorRect());
 }
 
-void DirectXCommon::PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
+void DirectXCommon::PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle,Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> DsvDescriptorHeap) {
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = swapchain_->GetSwapChain()->GetCurrentBackBufferIndex();
     // 今回のバリアはTransition
@@ -274,7 +236,7 @@ void DirectXCommon::PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
     // TransitionBarrierを張る
     commandList->ResourceBarrier(1, &barrier);
     // 描画先のRTVとDSVを設定する
-    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    dsvHandle = DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     // 描画先のRTVを指定する
     commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
     // 指定した色で画面全体をクリアする
@@ -285,7 +247,6 @@ void DirectXCommon::PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle) {
     // 指定した深度で画面全体をクリアする
     commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
-
 
 void DirectXCommon::PostDrow() {
     HRESULT hr;
@@ -336,16 +297,4 @@ ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPT
     //ディスクリプタヒープが作れなかったので起動できない
     assert(SUCCEEDED(hr));
     return descriptorHeap;
-}
-
-void DirectXCommon::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) {
-    // バリアの設定
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;                      // 今回のバリアはTransition
-    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;                           // Noneにしておく 
-    barrier.Transition.pResource = resource;                                    // バリアを張る対象のリソース。
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;   // 全サブリソースに対してバリアを張る
-    barrier.Transition.StateBefore = beforeState;                               // 遷移前のResourceState
-    barrier.Transition.StateAfter = afterState;                                 // TransitionBarrierを張る
-    // コマンドリストにバリアを追加
-    commandList->ResourceBarrier(1, &barrier);
 }
