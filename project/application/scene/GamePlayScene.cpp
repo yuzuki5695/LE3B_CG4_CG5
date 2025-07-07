@@ -28,7 +28,7 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
    
     // スプライトの作成
-    sprite_ = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
+    sprite_ = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
     
     // オブジェクトの作成
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
@@ -46,7 +46,7 @@ void GamePlayScene::Update() {
     // ENTERキーを押したら
     if (Input::GetInstance()->Triggrkey(DIK_RETURN)) {
         // シーン切り替え
-        SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
+        //SceneManager::GetInstance()->ChangeScene("GAMECLEAR");
     }
 
 #pragma region 全てのObject3d個々の更新処理
