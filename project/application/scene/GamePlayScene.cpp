@@ -97,7 +97,7 @@ void GamePlayScene::Draw() {
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
 
-    //sprite_->Draw();
+    sprite_->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }
