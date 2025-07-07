@@ -73,6 +73,19 @@ uint32_t  SrvManager::CreateSRVForRenderTexture(ComPtr<ID3D12Resource> resource)
     return index; // 作ったSRVのインデックスを返す！
 }
 
+uint32_t  SrvManager::CreateSRVDepthTexture(Microsoft::WRL::ComPtr <ID3D12Resource> resource) {
+	uint32_t index = Allocate();
+	// SRVの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	// SRVの生成
+	directXCommon->GetDevice()->CreateShaderResourceView(resource.Get(), &srvDesc, GetCPUDescriptorHandle(index));
+	return index; // 作ったSRVのインデックスを返す！
+}
+
 void SrvManager::PreDraw() {
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap.Get() };

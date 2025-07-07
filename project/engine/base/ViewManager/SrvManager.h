@@ -30,6 +30,8 @@ public: // メンバ関数
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, Microsoft::WRL::ComPtr <ID3D12Resource> pResource, UINT numElements, UINT structureByteStride);
 	// SRV生成(レンダーテクスチャ)
 	uint32_t  CreateSRVForRenderTexture(Microsoft::WRL::ComPtr <ID3D12Resource> resource);
+		// SRV生成(Depth用)
+	uint32_t  CreateSRVDepthTexture(Microsoft::WRL::ComPtr <ID3D12Resource> resource);
 
 	// 描画のセット
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);

@@ -522,5 +522,11 @@
     <FxCompile Include="Resources\shaders\Fullscreen\Vignette.PS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\DepthBasedOutline.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\LuminancsBasedOutline.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

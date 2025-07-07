@@ -148,7 +148,7 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    type_ = PixelShaderType::Fullscreen; // ファイルパスを選択
+    type_ = PixelShaderType::LuminanceBasedOutline; // ファイルパスを選択
     ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(GetPixelShaderPath(type_), L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
@@ -189,6 +189,10 @@ std::wstring CopylmageCommon::GetPixelShaderPath(PixelShaderType type) {
         return L"Resources/shaders/Fullscreen/BoxFilter.PS.hlsl";
     case PixelShaderType::GaussianFilter:
         return L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl";
+        case PixelShaderType::LuminanceBasedOutline:
+        return L"Resources/shaders/Fullscreen/LuminancsBasedOutline.PS.hlsl";
+    case PixelShaderType::DepthBasedOutline:
+        return L"Resources/shaders/Fullscreen/DepthBasedOutline.PS.hlsl";
     default:
         return L"";
     }
