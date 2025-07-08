@@ -32,7 +32,9 @@ void TextureManager::Initialize(DirectXCommon* birectxcommon, SrvManager* srvman
 	// SRVの数と同数
 	textureDatas.reserve(SrvManager::kMaxSRVCount);
 }
-void TextureManager::LoadTexture(const std::string& filePath) {
+void TextureManager::LoadTexture(const std::string& filePath) {		
+	HRESULT hr;
+
 	// 読み込み済みテクスチャの検索
 	if (textureDatas.contains(filePath)) {
 		return; // 読み込み済みなら早期return
@@ -43,11 +45,20 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	// テクスチャファイルを読み込でプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = StringUtility::ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	if (filePathW.ends_with(L".dds")) { // .ddsで終わっていたらddsとみなす。より安全な方法はいくらでもあるので余裕があれば対応すると良い
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	} else {
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	assert(SUCCEEDED(hr));
+
 	//ミップマップの作成
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	if (DirectX::IsCompressed(image.GetMetadata().format)) { // 圧縮するフォーマットかどうか調べる
+		mipImages = std::move(image); // 圧縮フォーマットならそのまま使うのでmoveする
+	} else {
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+	}
 	assert(SUCCEEDED(hr));
 
 	// 追加したテクスチャデータの参照を取得する
@@ -64,7 +75,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	textureData.srvHandleGPU = srvmanager_->GetGPUDescriptorHandle(textureData.srvIndex);
 
 	// metaDataを基にSRVの設定
-	srvmanager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, (UINT)textureData.metadata.mipLevels);
+	srvmanager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, (UINT)textureData.metadata.mipLevels, textureData.metadata.IsCubemap());
 }
 
 const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filepath)
