@@ -102,6 +102,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="engine\3d\SkyboxCommon.cpp" />
     <ClCompile Include="engine\base\ViewManager\DsvManager.cpp" />
     <ClCompile Include="engine\base\ViewManager\RtvManager.cpp" />
     <ClCompile Include="engine\io\Controller.cpp" />
@@ -147,8 +148,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\resource\ResourceFactory.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\ViewportManager.cpp" />
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
+    <ClCompile Include="engine\3d\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\SkyboxCommon.h" />
     <ClInclude Include="engine\base\ViewManager\DsvManager.h" />
     <ClInclude Include="engine\base\ViewManager\RtvManager.h" />
     <ClInclude Include="engine\io\Controller.h" />
@@ -211,6 +214,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\DirectXCommon\FPSController.h" />
     <ClInclude Include="engine\base\DirectXCommon\SwapChainManager.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
+    <ClInclude Include="engine\3d\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -224,6 +228,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <None Include="Resources\shaders\Fullscreen\Fullscreen.hlsli" />
     <None Include="Resources\shaders\Object3d\Object3d.hlsli" />
     <None Include="Resources\shaders\Particle\Particle.hlsli" />
+    <None Include="Resources\shaders\Skybox\Skybox.hlsli" />
     <None Include="Resources\shaders\Sprite\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +265,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\shaders\Particle\Particle.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

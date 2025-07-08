@@ -142,6 +142,9 @@
     <Filter Include="ヘッダー ファイル\engine\base\ViewManager">
       <UniqueIdentifier>{784c09c4-89cb-4902-930a-3c893ed64d18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shaders\Skybox">
+      <UniqueIdentifier>{3cefbb72-4f42-43e9-961a-eae8cff70076}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -284,6 +287,12 @@
     </ClCompile>
     <ClCompile Include="engine\base\ViewManager\RtvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\SkyboxCommon.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Skybox.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,6 +482,12 @@
     <ClInclude Include="engine\math\Vector\Vector4.h">
       <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
     </ClInclude>
+    <ClInclude Include="engine\3d\SkyboxCommon.h">
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Skybox.h">
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d\Object3d.hlsli">
@@ -486,6 +501,9 @@
     </None>
     <None Include="Resources\shaders\Fullscreen\Fullscreen.hlsli">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </None>
+    <None Include="Resources\shaders\Skybox\Skybox.hlsli">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -521,6 +539,12 @@
     </FxCompile>
     <FxCompile Include="Resources\shaders\Fullscreen\Vignette.PS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include<SkyboxCommon.h>
 
 void GamePlayScene::Finalize() {}
 
@@ -87,7 +88,10 @@ void GamePlayScene::Update() {
 }
 
 void GamePlayScene::Draw() {
-#pragma region 全てのObject3d個々の描画処理
+#pragma region 全てのObject3d個々の描画処理 
+    // 箱オブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
+    SkyboxCommon::GetInstance()->Commondrawing();
+
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
     
