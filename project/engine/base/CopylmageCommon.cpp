@@ -36,6 +36,15 @@ void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,
     GraphicsPipelineGenerate();
 	// SRVマネージャーの取得
     srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
+
+    // カラーテクスチャのSRV登録（既存）
+    srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
+
+    // 深度テクスチャのSRV登録（DepthBasedOutline用）
+    depthSrvIndex_ = srvManager->CreateSRVDepthTexture(dsvManager->GetDepthTexture());
+
+    // CBV作成（行列 projectionInverse を渡す）
+    cbvIndex_ = srvManager->CreateCBV(sizeof(Material), &materialData_);
 }
 
 void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
@@ -46,6 +55,14 @@ void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// SRVのディスクリプタテーブルをピクセルシェーダーへバインド
     srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
+
+
+    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);        // t0
+    srvManager->SetGraphicsRootDescriptorTable(1, depthSrvIndex_);  // t1
+
+    // CBV（b0）
+    srvManager->SetGraphicsRootCBV(2, cbvIndex_);
+
     // 描画命令を出す
     dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
@@ -61,36 +78,60 @@ void CopylmageCommon::RootSignatureGenerate() {
     descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
     // ===== Root Parameters ===== //
-    D3D12_ROOT_PARAMETER rootParameters[2] = {};
+    D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
-    // SRV (コピー元テクスチャ)
+    // t0 : ColorTexture
     rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
     rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
-    rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange;
+    D3D12_DESCRIPTOR_RANGE range0{};
+    range0.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    range0.BaseShaderRegister = 0; // t0
+    range0.NumDescriptors = 1;
+    range0.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[0].DescriptorTable.pDescriptorRanges = &range0;
 
-    // CBV（トーンマップパラメータなど、必要に応じて）
-    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    // t1 : DepthTexture
+    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    rootParameters[1].Descriptor.ShaderRegister = 0;
+    rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+    D3D12_DESCRIPTOR_RANGE range1{};
+    range1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    range1.BaseShaderRegister = 1; // t1
+    range1.NumDescriptors = 1;
+    range1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[1].DescriptorTable.pDescriptorRanges = &range1;
+
+    // b0 : ConstantBuffer
+    rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    rootParameters[2].Descriptor.ShaderRegister = 0;
 
     // ===== Static Sampler ===== //
-    D3D12_STATIC_SAMPLER_DESC staticSampler{};
-    staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-    staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-    staticSampler.ShaderRegister = 0;
-    staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    staticSampler.MaxLOD = D3D12_FLOAT32_MAX;
+    D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
+
+    // s0 : Linear
+    staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[0].ShaderRegister = 0;  // s0
+    staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+
+    // s1 : Point
+    staticSamplers[1] = staticSamplers[0];
+    staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+    staticSamplers[1].ShaderRegister = 1;  // s1
+
+    rootSigDesc.NumStaticSamplers = 2;
+    rootSigDesc.pStaticSamplers = staticSamplers;
 
     // ===== Root Signature Description ===== //
     D3D12_ROOT_SIGNATURE_DESC rootSigDesc{};
     rootSigDesc.NumParameters = _countof(rootParameters);
     rootSigDesc.pParameters = rootParameters;
     rootSigDesc.NumStaticSamplers = 1;
-    rootSigDesc.pStaticSamplers = &staticSampler;
+    rootSigDesc.pStaticSamplers = &staticSamplers;
     rootSigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
     // ===== Serialize and Create Root Signature ===== //
@@ -148,7 +189,7 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    type_ = PixelShaderType::LuminanceBasedOutline; // ファイルパスを選択
+    type_ = PixelShaderType::DepthBasedOutline; // ファイルパスを選択
     ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(GetPixelShaderPath(type_), L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
