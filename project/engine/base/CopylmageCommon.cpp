@@ -5,6 +5,7 @@
 #include<SrvManager.h>
 #include<RtvManager.h>
 #include<DsvManager.h>
+#include <TextureManager.h>
 
 using namespace Microsoft::WRL;
 
@@ -24,17 +25,17 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager,DsvManager* dsvManager) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, RtvManager* rtvManager, DsvManager* dsvManager) {
     assert(dxCommon);
     assert(srvManager);
     assert(rtvManager);
     assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
-    dxCommon_ = dxCommon;   
+    dxCommon_ = dxCommon;
     dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
-	// SRVマネージャーの取得
+    // SRVマネージャーの取得
     srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
 }
 
@@ -54,25 +55,25 @@ void CopylmageCommon::RootSignatureGenerate() {
     HRESULT hr;
 
     // ===== DescriptorTable(SRV) ===== //
-    D3D12_DESCRIPTOR_RANGE descriptorRange{};
-    descriptorRange.BaseShaderRegister = 0;
-    descriptorRange.NumDescriptors = 1;
-    descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    D3D12_DESCRIPTOR_RANGE descriptorRanges[1]{};
+    descriptorRanges[0].BaseShaderRegister = 0; // t0 から始まる
+    descriptorRanges[0].NumDescriptors = 2; // t0 (color), t1 (mask)
+    descriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    descriptorRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
     // ===== Root Parameters ===== //
     D3D12_ROOT_PARAMETER rootParameters[2] = {};
 
-    // SRV (コピー元テクスチャ)
+    // [0] DescriptorTable (SRVs: t0, t1)
     rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
     rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
-    rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange;
+    rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRanges;
 
-    // CBV（トーンマップパラメータなど、必要に応じて）
+    // [1] CBV (b0) - dissolve params（任意）
     rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
     rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    rootParameters[1].Descriptor.ShaderRegister = 0;
+    rootParameters[1].Descriptor.ShaderRegister = 0; 
 
     // ===== Static Sampler ===== //
     D3D12_STATIC_SAMPLER_DESC staticSampler{};
@@ -148,7 +149,7 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    type_ = PixelShaderType::RadialBlur; // ファイルパスを選択
+    type_ = PixelShaderType::Dissolve; // ファイルパスを選択
     ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(GetPixelShaderPath(type_), L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
@@ -191,6 +192,8 @@ std::wstring CopylmageCommon::GetPixelShaderPath(PixelShaderType type) {
         return L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl";
     case PixelShaderType::RadialBlur:
         return L"Resources/shaders/Fullscreen/RadialBlur.PS.hlsl";
+    case PixelShaderType::Dissolve:
+        return L"Resources/shaders/Fullscreen/Dissolve.PS.hlsl";
     default:
         return L"";
     }

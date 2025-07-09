@@ -19,8 +19,11 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->Initialize();
 
     // テクスチャを読み込む
+    TextureManager::GetInstance()->LoadTexture("Resources/noise0.png");
     TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
-    TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
+    TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png"); 
+    TextureManager::GetInstance()->LoadTexture("Resources/noise0.png");
+    TextureManager::GetInstance()->LoadTexture("Resources/noise1.png");
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");

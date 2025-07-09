@@ -32,6 +32,7 @@ private:
 		BoxFilter,
 		GaussianFilter,
 		RadialBlur,
+		Dissolve,
 	};
 	// シェーダーのファイルパスを取得
 	std::wstring GetPixelShaderPath(PixelShaderType type);
@@ -51,6 +52,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	// シェーダータイプ
 	PixelShaderType type_;
+
+	uint32_t maskSrvIndex;
 public:
 	// gettre
 	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
