@@ -525,5 +525,8 @@
     <FxCompile Include="Resources\shaders\Fullscreen\RadialBlur.PS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Fullscreen\Random.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

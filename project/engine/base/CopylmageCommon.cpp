@@ -7,6 +7,10 @@
 #include<DsvManager.h>
 
 using namespace Microsoft::WRL;
+struct TimeConstBuffer {
+    float time;
+    float pad[3]; // 16バイトアライメント
+};
 
 // 静的メンバ変数の定義
 std::unique_ptr<CopylmageCommon> CopylmageCommon::instance = nullptr;
@@ -24,28 +28,57 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager,DsvManager* dsvManager) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, RtvManager* rtvManager, DsvManager* dsvManager) {
     assert(dxCommon);
     assert(srvManager);
     assert(rtvManager);
     assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
-    dxCommon_ = dxCommon;   
+    dxCommon_ = dxCommon;
     dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
-	// SRVマネージャーの取得
+    // SRVマネージャーの取得
     srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
+
+   // --- 時間用定数バッファ作成 ---
+    D3D12_HEAP_PROPERTIES heapProps{};
+    heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+    D3D12_RESOURCE_DESC resourceDesc{};
+    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    resourceDesc.Width = (sizeof(float) + 255) & ~255; // 256バイトアライン
+    resourceDesc.Height = 1;
+    resourceDesc.DepthOrArraySize = 1;
+    resourceDesc.MipLevels = 1;
+    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+    dxCommon_->GetDevice()->CreateCommittedResource(
+        &heapProps,
+        D3D12_HEAP_FLAG_NONE,
+        &resourceDesc,
+        D3D12_RESOURCE_STATE_GENERIC_READ,
+        nullptr,
+        IID_PPV_ARGS(&timeConstBuffer_));
+
+    // マッピング
+    timeConstBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedTime_));
 }
 
-void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
+void CopylmageCommon::Commondrawing(SrvManager* srvManager) { 
+    // ---- 時間を更新 ----
+    mappedTime_->time += 1.0f / 60.0f; // 毎フレーム進む。
+
     // RootSignatureを設定。PSOに設定しているけど別途設定が必要
     dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
     dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
     // 形状を設定。PSOに設定しているものとはまた別。同じものを設定する
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// SRVのディスクリプタテーブルをピクセルシェーダーへバインド
-    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
+    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex); 
+    // 定数バッファ（b0）をセット
+    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, timeConstBuffer_->GetGPUVirtualAddress());
     // 描画命令を出す
     dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
@@ -148,7 +181,7 @@ void CopylmageCommon::GraphicsPipelineGenerate() {
     /*----------------------------------------------------------------------------------*/
     ComPtr <IDxcBlob> vertexShaderBlob = ShaderCompiler::GetInstance()->CompileShader(L"Resources/shaders/Fullscreen/Fullscreen.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    type_ = PixelShaderType::RadialBlur; // ファイルパスを選択
+    type_ = PixelShaderType::Random; // ファイルパスを選択
     ComPtr <IDxcBlob> pixelShaderBlob = ShaderCompiler::GetInstance()->CompileShader(GetPixelShaderPath(type_), L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
@@ -191,6 +224,8 @@ std::wstring CopylmageCommon::GetPixelShaderPath(PixelShaderType type) {
         return L"Resources/shaders/Fullscreen/GaussianFilter.PS.hlsl";
     case PixelShaderType::RadialBlur:
         return L"Resources/shaders/Fullscreen/RadialBlur.PS.hlsl";
+    case PixelShaderType::Random:
+        return L"Resources/shaders/Fullscreen/Random.PS.hlsl";
     default:
         return L"";
     }
