@@ -3,6 +3,9 @@
 #include <ResourceFactory.h>
 #include <MatrixVector.h>
 #include <CameraManager.h>
+#include <TextureManager.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace ResourceFactory;
 using namespace MatrixVector;
@@ -12,7 +15,7 @@ void Skybox::Initialize(SkyboxCommon* skyboxCommon) {
     assert(skyboxCommon);
     // 引数で受け取ってメンバ変数に記録する
     this->skyboxCommon = skyboxCommon;
-    this->camera = skyboxCommon->GetDefaultCamera(); 
+    this->camera = skyboxCommon->GetDefaultCamera();
     // 頂点データの作成
     VertexDatacreation();
     // マテリアルの生成、初期化
@@ -21,6 +24,9 @@ void Skybox::Initialize(SkyboxCommon* skyboxCommon) {
     TransformationMatrixGenerate();
     // カメラリソースの生成、初期化
     CameraForGPUGenerate();
+    transform_.scale = { 10.0f,10.0f,10.0f }; 
+    transform_.rotate = { 0.0f,0.0f,0.0f };    
+    transform_.translate = { 0.0f,0.0f,0.0f };
 }
 
 void Skybox::Update() {   
@@ -48,78 +54,40 @@ void Skybox::Update() {
     transformationMatrixData->WorldInverseTranspose = InverseTranspose(worldMatrix);
 }
 
-void Skybox::Draw() {    
-    // VB & IB 設定
+void Skybox::Draw() {
+    // 頂点バッファの設定
     skyboxCommon->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
-    // CBV設定（b0: Material、b1: Transform）
+    // ルートパラメータ[0] = b1 : マテリアル用CBV
     skyboxCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
-    // 座標変化行列CBufferの場所を設定
+    // ルートパラメータ[1] = b0 : 変換行列用CBV
     skyboxCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
-    // SRV設定（t0: CubeMap）
-   // skyboxCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, skyboxCommon->GetCubeMapGpuHandle());
-    // 描画（Indexed）
-    skyboxCommon->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(36, 1, 0, 0, 0);
+    // ルートパラメータ[2] = t0 : キューブマップSRV
+    skyboxCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelDate.material.textureFilePath));
+    // 描画呼び出しを変更！
+    skyboxCommon->GetDxCommon()->GetCommandList()->DrawInstanced(vertexCount, 1, 0, 0);
 }
 
-std::vector<VertexData> Skybox::CreateSkyboxCubeVertices()
-{
-    float halfSize = 1.0f;
-    VertexData vertices[24];
-
-    // 右面。描画インデックスは内側を向く
-    vertices[0].position = { halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[1].position = { halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[2].position = { halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[3].position = { halfSize, -halfSize, -halfSize, 1.0f };
-
-    // 左面 (-X)
-    vertices[4].position  = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[5].position  = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[6].position  = { -halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[7].position  = { -halfSize, -halfSize,  halfSize, 1.0f };
-
-    // 前面 (+Z)
-    vertices[8].position = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[9].position = {  halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[10].position = { -halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[11].position = {  halfSize, -halfSize,  halfSize, 1.0f };
-
-    // 背面 (-Z)
-    vertices[12].position = {  halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[13].position = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[14].position = {  halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[15].position = { -halfSize, -halfSize, -halfSize, 1.0f };
-
-    // 上面 (+Y)
-    vertices[16].position = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[17].position = {  halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[18].position = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[19].position = {  halfSize,  halfSize,  halfSize, 1.0f };
-
-    // 底面 (-Y)
-    vertices[20].position = { -halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[21].position = {  halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[22].position = { -halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[23].position = {  halfSize, -halfSize, -halfSize, 1.0f };
-
-    return std::vector<VertexData>(vertices, vertices + 24);
+void Skybox::SetTexture(const std::string& textureFilePath) {
+    // モデルデータのテクスチャファイルにファイル名を取得
+    modelDate.material.textureFilePath = textureFilePath;
+    // 読み込んだテクスチャの番号を取得
+    modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
 }
 
-void Skybox::VertexDatacreation() {
-    // 頂点データ生成（24頂点）
-    modelDate.vertices = Skybox::CreateSkyboxCubeVertices();
+void Skybox::VertexDatacreation() {   
+    // 頂点データ生成
+    modelDate.vertices = CreateSkyboxCubeVertices();
     // 頂点数更新
     vertexCount = static_cast<uint32_t>(modelDate.vertices.size());
     // 頂点バッファ用リソース作成
-    vertexResoruce = CreateBufferResource(skyboxCommon->GetDxCommon()->GetDevice(), sizeof(VertexData) * vertexCount);
+    vertexResoruce = CreateBufferResource(skyboxCommon->GetDxCommon()->GetDevice(), sizeof(VertexShaderInput) * vertexCount);
     // 頂点バッファビューの設定
     vertexBufferView.BufferLocation = vertexResoruce->GetGPUVirtualAddress();
-    vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexCount;
-    vertexBufferView.StrideInBytes = sizeof(VertexData);
+    vertexBufferView.SizeInBytes = sizeof(VertexShaderInput) * vertexCount;
+    vertexBufferView.StrideInBytes = sizeof(VertexShaderInput);
     // GPUバッファに書き込み（Map/Unmap）
-    VertexData* mappedData = nullptr;
-    vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
-    memcpy(mappedData, modelDate.vertices.data(), sizeof(VertexData) * vertexCount);
+    vertexResoruce->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+    memcpy(vertexData, modelDate.vertices.data(), sizeof(VertexShaderInput) * vertexCount);
     vertexResoruce->Unmap(0, nullptr);
 }
 
@@ -157,4 +125,54 @@ void Skybox::CameraForGPUGenerate() {
         // カメラがない場合デフォルト位置にしておく
         cameraForGPUData->worldPosition = { 0.0f, 0.0f, -100.0f };
     }
+}
+
+std::vector<Skybox::VertexShaderInput> Skybox::CreateSkyboxCubeVertices()
+{
+    float halfSize = 1.0f;
+    VertexShaderInput vertices[24];
+
+    // 右面。描画インデックスは内側を向く
+    vertices[0].position = { halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[1].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[2].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[3].position = { halfSize, -halfSize, -halfSize, 1.0f };
+
+    // 左面 (-X)
+    vertices[4].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[5].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[6].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[7].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+
+    // 前面 (+Z)
+    vertices[8].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[9].position = { halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[10].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[11].position = { halfSize, -halfSize,  halfSize, 1.0f };
+
+    // 背面 (-Z)
+    vertices[12].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[13].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[14].position = { halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[15].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+
+    // 上面 (+Y)
+    vertices[16].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[17].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[18].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[19].position = { halfSize,  halfSize,  halfSize, 1.0f };
+
+    // 底面 (-Y)
+    vertices[20].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[21].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[22].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[23].position = { halfSize, -halfSize, -halfSize, 1.0f };
+
+    for (int i = 0; i < 24; ++i) {
+        vertices[i].texcoord.x = vertices[i].position.x;
+        vertices[i].texcoord.y = vertices[i].position.y;
+        vertices[i].texcoord.z = vertices[i].position.z;
+    }
+
+    return std::vector<VertexShaderInput>(vertices, vertices + 24);
 }

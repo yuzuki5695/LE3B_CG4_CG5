@@ -28,8 +28,10 @@ void SkyboxCommon::Initialize(DirectXCommon* dxCommon,DsvManager* dsvManager) {
     // 引数を受け取ってメンバ変数に記録する
     dxCommon_ = dxCommon;
     dsvManager_ = dsvManager;
-    // Skybox では深度書き込みを無効化
+    // Skybox では深度書き込みを無効化        
+    skyboxDepthStencilDesc.DepthEnable = true;
     skyboxDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+    skyboxDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 }
@@ -55,15 +57,15 @@ void SkyboxCommon::RootSignatureGenerate() {
     // ルートパラメータ（Material定数バッファ、Transform定数バッファ、SRV、必要に応じて追加）
     D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
-    // Material 定数バッファ（PixelShader用）
+    // rootParameters[0]: gMaterial → register(b1)
     rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
     rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    rootParameters[0].Descriptor.ShaderRegister = 0;
+    rootParameters[0].Descriptor.ShaderRegister = 1; // ← b1 に修正！
 
-    // TransformationMatrix 定数バッファ（VertexShader用）
+    // rootParameters[1]: gTransformationMatrix → register(b0)（変更なし）
     rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
     rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-    rootParameters[1].Descriptor.ShaderRegister = 0;
+    rootParameters[1].Descriptor.ShaderRegister = 0; // b0
 
     // キューブマップ用 SRV（PixelShader用）
     rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -123,7 +125,7 @@ void SkyboxCommon::GraphicsPipelineGenerate() {
 
     inputElementDescs[1].SemanticName = "TEXCOORD";
     inputElementDescs[1].SemanticIndex = 0;
-    inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+    inputElementDescs[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
     inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -147,7 +149,7 @@ void SkyboxCommon::GraphicsPipelineGenerate() {
     //===== RasterizerStateの設定を行う ======//   
     D3D12_RASTERIZER_DESC rasterizerDesc{};
     //裏面(時計回り)を表示しない
-    rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+    rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
     //三角形の中を塗りつぶす
     rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 

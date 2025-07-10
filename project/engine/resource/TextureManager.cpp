@@ -58,8 +58,8 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 		mipImages = std::move(image); // 圧縮フォーマットならそのまま使うのでmoveする
 	} else {
 		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+		assert(SUCCEEDED(hr));
 	}
-	assert(SUCCEEDED(hr));
 
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas[filePath];

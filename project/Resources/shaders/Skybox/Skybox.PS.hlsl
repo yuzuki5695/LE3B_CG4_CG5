@@ -11,7 +11,7 @@ struct PixelShaderOutput
     float4 color : SV_TARGET0;
 };
 
-ConstantBuffer<Material> gMaterial : register(b0);
+ConstantBuffer<Material> gMaterial : register(b1);
 TextureCube<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
