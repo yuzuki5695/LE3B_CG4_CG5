@@ -33,9 +33,9 @@ void Model::Draw() {
     // マテリアルCBufferの場所を設定
     modelCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
     //SRVのDescriptortableの先頭を設定。２はrootParameter[2]である。
-    //SRVを切り替えて画像を変えるS
+    //SRVを切り替えて画像を変えるS    
     modelCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelDate.material.textureFilePath));
-
+    modelCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(3, TextureManager::GetInstance()->GetSrvHandleGPU("Resources/rostock_laage_airport_4k.dds"));
     // 描画！(今回は球)
     modelCommon->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelDate.vertices.size()), 1, 0, 0);
 }

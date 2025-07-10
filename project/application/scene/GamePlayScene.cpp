@@ -33,7 +33,9 @@ void GamePlayScene::Initialize() {
     
     // オブジェクトの作成
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} }));
-    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} })); 
+    //Object_->SetEnvironmentMap("Resources/rostock_laage_airport_4k.dds");
+    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
+    //grass->SetEnvironmentMap("Resources/rostock_laage_airport_4k.dds");
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
  
