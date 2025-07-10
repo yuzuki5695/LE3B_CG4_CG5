@@ -69,11 +69,18 @@ void Object3dCommon::RootSignatureGenerate() {
     /*----------------------------------------------------------------------------------*/
     /*---------------------------------DescriptorRange作成-------------------------------*/
     /*----------------------------------------------------------------------------------*/
-    D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+    D3D12_DESCRIPTOR_RANGE descriptorRange[2] = {};
+    // t0 用 SRV
     descriptorRange[0].BaseShaderRegister = 0;
     descriptorRange[0].NumDescriptors = 1;
     descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    // t1 用 SRV (環境マップ)
+    descriptorRange[1].BaseShaderRegister = 1;  // register(t1)
+    descriptorRange[1].NumDescriptors = 1;
+    descriptorRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    descriptorRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
     /*----------------------------------------------------------------------------------*/
     /*---------------------------------RootParameter作成---------------------------------*/

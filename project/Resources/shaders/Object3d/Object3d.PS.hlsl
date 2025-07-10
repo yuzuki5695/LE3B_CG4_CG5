@@ -152,8 +152,9 @@ PixeShaderOutput main(VertexShaderOutput input)
         float3 spotLightSpecular =
         gPointLight.color.rgb * gPointLight.intensity * spotLightSpecularPow * float3(1.0f, 1.0f, 1.0f) * spotLightfactor;
         
-        
-        
+        ///-----------------------------------------------------------------------------------///
+        ///-----------------------------------環境マップ----------------------------------------///
+        ///-----------------------------------------------------------------------------------///
         // 環境マップの反射色を計算
         float3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
         float3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
