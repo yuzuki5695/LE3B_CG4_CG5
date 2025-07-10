@@ -52,6 +52,7 @@ namespace ResourceFactory {
         resourceDesc.Format = metadata.format;										//TextureのFormat
         resourceDesc.SampleDesc.Count = 1;											//サンプリングカウント。1固定
         resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);		//Textureの次元数。普段使っているのは二次元
+        resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
         //2. 利用するHeapの設定。非常に特殊な運用。02_04exで一般的なケース版がある
         D3D12_HEAP_PROPERTIES heapProperties{};

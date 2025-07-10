@@ -24,9 +24,6 @@ void Skybox::Initialize(SkyboxCommon* skyboxCommon) {
     TransformationMatrixGenerate();
     // カメラリソースの生成、初期化
     CameraForGPUGenerate();
-    transform_.scale = { 10.0f,10.0f,10.0f }; 
-    transform_.rotate = { 0.0f,0.0f,0.0f };    
-    transform_.translate = { 0.0f,0.0f,0.0f };
 }
 
 void Skybox::Update() {   
@@ -72,6 +69,17 @@ void Skybox::SetTexture(const std::string& textureFilePath) {
     modelDate.material.textureFilePath = textureFilePath;
     // 読み込んだテクスチャの番号を取得
     modelDate.material.textureindex = TextureManager::GetInstance()->GetSrvIndex(modelDate.material.textureFilePath);
+}
+
+std::unique_ptr<Skybox> Skybox::Create(const std::string& textureFilePath, Transform transform) {
+    std::unique_ptr<Skybox> object = std::make_unique<Skybox>();
+    // 初期化
+    object->Initialize(SkyboxCommon::GetInstance());
+    // モデルをセットする
+    object->SetTexture(textureFilePath);
+    // 座標をセット
+    object->transform_ = transform;
+    return object;
 }
 
 void Skybox::VertexDatacreation() {   
@@ -130,49 +138,64 @@ void Skybox::CameraForGPUGenerate() {
 std::vector<Skybox::VertexShaderInput> Skybox::CreateSkyboxCubeVertices()
 {
     float halfSize = 1.0f;
-    VertexShaderInput vertices[24];
 
-    // 右面。描画インデックスは内側を向く
+    // 6面 × 2三角形 × 3頂点 = 36頂点
+    Skybox::VertexShaderInput vertices[36] = {};
+
+    // 右面 (+X)
     vertices[0].position = { halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[1].position = { halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[2].position = { halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[3].position = { halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[1].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[2].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[3].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[4].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[5].position = { halfSize, -halfSize, -halfSize, 1.0f };
 
     // 左面 (-X)
-    vertices[4].position = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[5].position = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[6].position = { -halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[7].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[6].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[7].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[8].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[9].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[10].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[11].position = { -halfSize, -halfSize,  halfSize, 1.0f };
 
     // 前面 (+Z)
-    vertices[8].position = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[9].position = { halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[10].position = { -halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[11].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[12].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[13].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[14].position = { halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[15].position = { halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[16].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[17].position = { halfSize, -halfSize,  halfSize, 1.0f };
 
     // 背面 (-Z)
-    vertices[12].position = { halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[13].position = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[14].position = { halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[15].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[18].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[19].position = { halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[20].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[21].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[22].position = { halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[23].position = { -halfSize, -halfSize, -halfSize, 1.0f };
 
     // 上面 (+Y)
-    vertices[16].position = { -halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[17].position = { halfSize,  halfSize, -halfSize, 1.0f };
-    vertices[18].position = { -halfSize,  halfSize,  halfSize, 1.0f };
-    vertices[19].position = { halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[24].position = { -halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[25].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[26].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[27].position = { -halfSize,  halfSize,  halfSize, 1.0f };
+    vertices[28].position = { halfSize,  halfSize, -halfSize, 1.0f };
+    vertices[29].position = { halfSize,  halfSize,  halfSize, 1.0f };
 
     // 底面 (-Y)
-    vertices[20].position = { -halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[21].position = { halfSize, -halfSize,  halfSize, 1.0f };
-    vertices[22].position = { -halfSize, -halfSize, -halfSize, 1.0f };
-    vertices[23].position = { halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[30].position = { -halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[31].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[32].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[33].position = { -halfSize, -halfSize, -halfSize, 1.0f };
+    vertices[34].position = { halfSize, -halfSize,  halfSize, 1.0f };
+    vertices[35].position = { halfSize, -halfSize, -halfSize, 1.0f };
 
-    for (int i = 0; i < 24; ++i) {
-        vertices[i].texcoord.x = vertices[i].position.x;
-        vertices[i].texcoord.y = vertices[i].position.y;
-        vertices[i].texcoord.z = vertices[i].position.z;
+    // 正規化が必要
+    for (int i = 0; i < 36; ++i) {
+        Vector3 dir = Vector3(vertices[i].position.x, vertices[i].position.y, vertices[i].position.z);
+        dir = Normalize(dir);
+        vertices[i].texcoord = dir;
     }
 
-    return std::vector<VertexShaderInput>(vertices, vertices + 24);
+    return std::vector<VertexShaderInput>(vertices, vertices + 36);
 }

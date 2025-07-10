@@ -36,6 +36,9 @@ public: // メンバ関数
 	void Draw();
 	std::vector<VertexShaderInput> CreateSkyboxCubeVertices();
 	void SetTexture(const std::string& textureFilePath);
+	
+	static std::unique_ptr<Skybox> Create(const std::string& textureFilePath, Transform transform);
+
 private:
 	// リソース
 	// 頂点データ作成

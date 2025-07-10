@@ -32,16 +32,14 @@ void GamePlayScene::Initialize() {
     sprite_ = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
     
     // オブジェクトの作成
-    Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 5.0f, 0.0f} }));
-    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, -5.0f, 0.0f} })); 
+    Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} }));
+    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} })); 
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
  
     TextureManager::GetInstance()->LoadTexture("Resources/rostock_laage_airport_4k.dds");
-    skybox_ =  std::make_unique<Skybox>();
-    skybox_->Initialize(SkyboxCommon::GetInstance());
-    //skybox_->SetTexture("Resources/monsterBall.png");s
-    skybox_->SetTexture("Resources/rostock_laage_airport_4k.dds");
+
+    skybox_ = Skybox::Create("Resources/rostock_laage_airport_4k.dds", Transform({ 1000.0f,1000.0f,1000.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
 
 }
 
@@ -101,7 +99,7 @@ void GamePlayScene::Draw() {
     
     // 描画処理
     Object_->Draw();
-    //grass->Draw();
+    grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
