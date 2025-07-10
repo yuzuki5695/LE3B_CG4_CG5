@@ -32,11 +32,15 @@ public: // メンバ関数
 
 private:
 	// リソース
-//	// トランスフォームマトリックス
-//	void TransformationMatrixGenerate();
-//	// カメラリソース
-//	void CameraForGPUGenerate();
-//
+	// 頂点データ作成
+	void VertexDatacreation();
+	// マテリアル
+	void MaterialGenerate();
+	// トランスフォームマトリックス
+	void TransformationMatrixGenerate();
+	// カメラリソース
+	void CameraForGPUGenerate();
+
 
 
 private:
@@ -54,6 +58,14 @@ private:
 	VertexData* vertexData = nullptr;
 	uint32_t vertexCount;
 	Material* materialData = nullptr;
+
+	
+	// バッファリソース
+	Microsoft::WRL::ComPtr <ID3D12Resource> transformationMatrixResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource;
+	// バッファリソース内のデータを指すポインタ
+	TransformationMatrix* transformationMatrixData = nullptr;
+	CameraForGPU* cameraForGPUData = nullptr;
 
 
 	Transform transform_;

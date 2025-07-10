@@ -41,7 +41,8 @@ void GamePlayScene::Initialize() {
         
     TextureManager::GetInstance()->LoadTexture("Resources/rostock_laage_airport_4k.dds");
 
-
+    skybox_ =  std::make_unique<Skybox>();
+    skybox_->Initialize(SkyboxCommon::GetInstance());
 
 }
 
