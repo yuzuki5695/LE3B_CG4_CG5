@@ -35,7 +35,7 @@ void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
 	// SRVマネージャーの取得
-    srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
+    srvIndex = srvManager->CreateSRVDepthTexture(rtvManager->GetrenderTextureResource());
 }
 
 void CopylmageCommon::Commondrawing(SrvManager* srvManager) {

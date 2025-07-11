@@ -9,6 +9,7 @@ SamplerState gSampler : register(s0);
 
 Texture2D<float> gDepthTexture : register(t1);
 SamplerState gSamplerPoint : register(s1);
+ConstantBuffer<Material> gMaterial : register(b0);
 
 static const float2 kIndex3x3[3][3] ={
     { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
@@ -46,9 +47,6 @@ struct Material
     float4x4 projectionInverse; // ← 追加
 
 };
-
-ConstantBuffer<Material> gMaterial : register(b0);
-
 
 PixeShaderOutput main(VertexShaderOutput input)
 {
