@@ -33,9 +33,7 @@ void GamePlayScene::Initialize() {
     
     // オブジェクトの作成
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} }));
-    //Object_->SetEnvironmentMap("Resources/rostock_laage_airport_4k.dds");
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
-    //grass->SetEnvironmentMap("Resources/rostock_laage_airport_4k.dds");
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
  
@@ -59,18 +57,18 @@ void GamePlayScene::Update() {
 
 #pragma region 全てのObject3d個々の更新処理
 
-    // 更新処理 
-    Object_->Update();
-    grass->Update();
+    //// 更新処理 
+    //Object_->Update();
+    //grass->Update();
 
-    skybox_->Update();
+    //skybox_->Update();
 
     ParticleManager::GetInstance()->Update();
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
 
-    sprite_->Update();
+ //   sprite_->Update();
 
 #pragma endregion 全てのSprite個々の更新処理
     
@@ -94,14 +92,14 @@ void GamePlayScene::Draw() {
     // 箱オブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     SkyboxCommon::GetInstance()->Commondrawing();
 
-    skybox_->Draw();
+   // skybox_->Draw();
 
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
     
-    // 描画処理
-    Object_->Draw();
-    grass->Draw();
+    //// 描画処理
+    //Object_->Draw();
+    //grass->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
@@ -112,7 +110,7 @@ void GamePlayScene::Draw() {
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
 
-    sprite_->Draw();
+  //  sprite_->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }
