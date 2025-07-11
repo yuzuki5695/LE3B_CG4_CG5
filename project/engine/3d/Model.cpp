@@ -1,5 +1,4 @@
 #include "Model.h"
-#include "Object3d.h"
 #include "MatrixVector.h"
 #include "TextureManager.h"
 #include <ResourceFactory.h>
