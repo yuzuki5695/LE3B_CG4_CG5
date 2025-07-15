@@ -5,6 +5,10 @@ class SrvManager;
 class RtvManager;
 class DsvManager;
 
+struct TimeBuffer {
+	float time;
+};
+
 class CopylmageCommon
 {
 private:
@@ -31,6 +35,9 @@ private:
 		Vignette,
 		BoxFilter,
 		GaussianFilter,
+		LuminancsBasedOutline,			
+		RadialBlur,		
+		Random,
 	};
 	// シェーダーのファイルパスを取得
 	std::wstring GetPixelShaderPath(PixelShaderType type);
@@ -50,6 +57,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	// シェーダータイプ
 	PixelShaderType type_;
+	Microsoft::WRL::ComPtr <ID3D12Resource> timeConstBuffer_;
+	TimeBuffer* mappedTime_;
 public:
 	// gettre
 	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
