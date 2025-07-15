@@ -31,7 +31,8 @@ private:
 		Vignette,
 		BoxFilter,
 		GaussianFilter,
-		LuminancsBasedOutline,
+		LuminancsBasedOutline,			
+		RadialBlur,
 	};
 	// シェーダーのファイルパスを取得
 	std::wstring GetPixelShaderPath(PixelShaderType type);
