@@ -46,7 +46,7 @@ void ImGuiManager::Initialize([[maybe_unused]] WinApp* winApp, [[maybe_unused]] 
 	// DirectX12用初期化
 	ImGui_ImplDX12_Init(
 		DxCommon_->GetDevice().Get(),
-		static_cast<int>(DxCommon_->GetSwapChainResourcesNum()),
+		static_cast<int>(DxCommon_->GetSwapChain()->GetResources().size()),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		srvManager_->GetDescriptorHeap().Get(),
 		ImGuiHandleCPU,

@@ -8,28 +8,14 @@
 #include<d3d12.h>
 #include<cstdint>
 #include<fstream>
+#include<Vertex.h>
+#include<Material.h>
 
 class SpriteCommon;
 
 class Sprite
 {
 public: // メンバ関数	
-	// 頂点データ
-	struct VertexData
-	{
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	// マテリアルデータ
-	struct Material {
-		Vector4 color;
-		int32_t endbleLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
-
 	// 座標変換行列データ
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
@@ -48,7 +34,7 @@ public: // メンバ関数
 	static std::unique_ptr<Sprite> Create(std::string textureFilePath, Vector2 position, float rotation, Vector2 size);
 
 	// ImGuiの更新
-	void DebugUpdata();
+	void DrawImGui();
 
 private:
 	// 頂点データ作成	

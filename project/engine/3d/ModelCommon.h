@@ -13,5 +13,5 @@ private:
 	DirectXCommon* dxCommon_;
 public:
 	// getter
-	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
+	DirectXCommon* GetDxCommon()  { return  dxCommon_; }
 };

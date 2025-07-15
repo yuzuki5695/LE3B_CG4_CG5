@@ -1,6 +1,7 @@
 #pragma once
 #include<Windows.h>
 #include<cstdint>
+#include <string>
 
 // WindowsAPI
 class WinApp
@@ -26,8 +27,10 @@ private: // メンバ変数
 	HWND hwnd = nullptr;
 	// ウィンドウクラスの設定
 	WNDCLASS wc{};
+	std::wstring windowTitle_ = L"LE3B"; // ← デフォルト値
 public:
 	// getter
 	HWND Gethwnd() const { return hwnd; }
 	HINSTANCE GetHInstance() const { return wc.hInstance; }
+	void SetWindowTitle(const std::wstring& title);
 };

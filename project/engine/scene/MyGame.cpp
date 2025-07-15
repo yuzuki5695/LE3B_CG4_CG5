@@ -14,8 +14,9 @@ void MyGame::Initialize() {
     SceneManager::GetInstance()->SetSceneFactory(sceneFactory_.get());
     // シーンマネージャに最初のシーンをセットした
 
-    // TITLE
-    // GAMEPLAY
+    // TITLE              タイトル
+	// GAMEPLAY           ゲームプレイ
+	// GAMECLEAR          ゲームクリア
     SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 }
 
@@ -26,9 +27,7 @@ void MyGame::Update() {
 
 void MyGame::Draw() {
     // 描画処理
-    Framework::Draw();
-    // シーンマネージャの描画処理
-    SceneManager::GetInstance()->Draw();
+    Framework::Draw(); 
     // デバックテキスト描画
     ImGuiManager::GetInstance()->Draw();
     // 描画後処理
