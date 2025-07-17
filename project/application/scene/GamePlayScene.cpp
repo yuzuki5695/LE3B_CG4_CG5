@@ -26,7 +26,10 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("plane.obj");
     ModelManager::GetInstance()->LoadModel("terrain.obj"); 
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
-   
+    
+    // 音声ファイルを追加
+    SoundData soundData = SoundLoader::GetInstance()->SoundLoadWave("Alarm01.wav");
+
     // スプライトの作成
     sprite_ = Sprite::Create("uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
     

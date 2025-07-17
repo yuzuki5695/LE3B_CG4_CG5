@@ -33,8 +33,10 @@ SoundData SoundLoader::SoundLoadWave(const char* filename)
     // ①ファイルオープン
     // ファイル入力ストリームのインスタンス
     std::ifstream file;
+    // Resources/Audio/ を前につけてファイルパスを構築
+    std::string fullPath = "Resources/Audio/" + std::string(filename);
     // .wavファイルをバイナリモードで開く
-    file.open(filename, std::ios_base::binary);
+    file.open(fullPath, std::ios_base::binary);
     // ファイルオープン失敗を検出する
     assert(file.is_open());
     // ②.wavデータ読み込み
