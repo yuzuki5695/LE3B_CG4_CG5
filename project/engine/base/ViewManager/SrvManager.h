@@ -25,7 +25,7 @@ public: // メンバ関数
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);
 
 	// SRV生成 (テクスチャ)
-	void CreateSRVforTexture2D(uint32_t srvIndex, Microsoft::WRL::ComPtr <ID3D12Resource> pResource, DXGI_FORMAT Format, UINT MipLevels);
+	void CreateSRVforTexture2D(uint32_t srvIndex, Microsoft::WRL::ComPtr <ID3D12Resource> pResource, DXGI_FORMAT Format, UINT MipLevels, bool isCubemap);
 	// SRV生成 (Structured Buffer用)
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, Microsoft::WRL::ComPtr <ID3D12Resource> pResource, UINT numElements, UINT structureByteStride);
 	// SRV生成(レンダーテクスチャ)
