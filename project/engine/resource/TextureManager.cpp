@@ -150,3 +150,28 @@ void TextureManager::UploadTextureData(ComPtr<ID3D12Resource>& texture, const Di
         }
     }
 }
+
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetContiguousSrvHandleGPU(const std::vector<std::string>& filePaths) {
+    // GPUハンドルのベースを取得（最初のテクスチャ）
+    assert(!filePaths.empty());
+
+    // 最初のテクスチャを必ずロードしておく
+    LoadTexture(filePaths[0]);
+
+    // 最初のSRVインデックスを取得
+    uint32_t baseIndex = GetSrvIndex(filePaths[0]);
+
+    // すべてのテクスチャを連続して読み込んで確保
+    for (size_t i = 0; i < filePaths.size(); ++i) {
+        LoadTexture(filePaths[i]);
+
+        uint32_t expectedIndex = baseIndex + static_cast<uint32_t>(i);
+        uint32_t actualIndex = GetSrvIndex(filePaths[i]);
+
+        // SRVが連続していなければエラー（DescriptorTableが連続前提なので）
+        assert(expectedIndex == actualIndex && "SRV descriptors must be allocated consecutively!");
+    }
+
+    // 最初のSRVのGPUハンドルを返す（連続している前提）
+    return srvmanager_->GetGPUDescriptorHandle(baseIndex);
+}

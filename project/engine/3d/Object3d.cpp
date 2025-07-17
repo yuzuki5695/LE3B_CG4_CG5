@@ -57,7 +57,7 @@ void Object3d::Draw() {
     object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
 
     // カメラの場所を設定 
-    object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource->GetGPUVirtualAddress());
+    object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(5, cameraResource->GetGPUVirtualAddress());
 
     // 3Dモデルが割り当てられていれば描画する
     if (model) {
