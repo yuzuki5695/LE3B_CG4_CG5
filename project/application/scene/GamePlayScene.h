@@ -4,6 +4,7 @@
 #include<Object3d.h>
 #include<ParticleEmitter.h>
 #include<SoundPlayer.h>
+#include<Skybox.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -23,5 +24,6 @@ private: // メンバ変数
     // 地面
     std::unique_ptr <Object3d> grass = nullptr;
     std::unique_ptr <Object3d> Object_ = nullptr;
-	std::unique_ptr <Sprite> sprite_ = nullptr;
+	std::unique_ptr <Sprite> sprite_ = nullptr; 
+    std::unique_ptr <Skybox> skybox_ = nullptr;
 };

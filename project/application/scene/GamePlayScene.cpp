@@ -11,6 +11,7 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include<SkyboxCommon.h>
 
 void GamePlayScene::Finalize() {}
 
@@ -38,6 +39,10 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} })); 
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
+
+    TextureManager::GetInstance()->LoadTexture("rostock_laage_airport_4k.dds");    
+    skybox_ = Skybox::Create("rostock_laage_airport_4k.dds", Transform({ 1000.0f,1000.0f,1000.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
+
 }
 
 void GamePlayScene::Update() {
@@ -53,6 +58,8 @@ void GamePlayScene::Update() {
     }
 
 #pragma region 全てのObject3d個々の更新処理
+        
+    skybox_->Update();
 
     // 更新処理 
     Object_->Update();
@@ -84,6 +91,11 @@ void GamePlayScene::Update() {
 
 void GamePlayScene::Draw() {
 #pragma region 全てのObject3d個々の描画処理
+    // 箱オブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
+    SkyboxCommon::GetInstance()->Commondrawing();
+
+    skybox_->Draw();
+
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
     

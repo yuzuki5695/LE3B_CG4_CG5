@@ -8,6 +8,7 @@
 #include<CopylmageCommon.h>
 #include<Controller.h>
 #include <psapi.h>
+#include<SkyboxCommon.h>
 
 void Framework::Run() {
     // ゲームの初期化
@@ -34,6 +35,7 @@ void Framework::Finalize() {
     // シーンマネージャの解放
     SceneManager::GetInstance()->Finalize();
     // 基盤システムの解放
+    SkyboxCommon::GetInstance()->Finalize();
     ParticleCommon::GetInstance()->Finalize();
     SpriteCommon::GetInstance()->Finalize();
     Object3dCommon::GetInstance()->Finalize();
@@ -96,8 +98,7 @@ void Framework::Initialize() {
     // 3Dモデルマネージャの初期化
     ModelManager::GetInstance()->Initialize(dxCommon.get());
     // パーティクルマネージャの初期化
-    ParticleManager::GetInstance()->Initialize(dxCommon.get(), srvManager.get());
-
+    ParticleManager::GetInstance()->Initialize(dxCommon.get(), srvManager.get()); 
 #pragma region 基盤システムの初期化
 
     // 入力の初期化
@@ -114,6 +115,9 @@ void Framework::Initialize() {
  
 	// レンダーテクスチャ共通部の初期化
     CopylmageCommon::GetInstance()->Initialize(dxCommon.get(), srvManager.get(),rtvManager.get(),dsvManager.get());
+    
+    // 箱の共通部の初期化
+    SkyboxCommon::GetInstance()->Initialize(dxCommon.get(),dsvManager.get());
 
 #pragma endregion 基盤システムの初期化
 }
