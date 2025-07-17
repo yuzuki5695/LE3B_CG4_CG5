@@ -39,10 +39,10 @@ void GamePlayScene::Initialize() {
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} })); 
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
-
+   
+    // 箱の生成
     TextureManager::GetInstance()->LoadTexture("rostock_laage_airport_4k.dds");    
     skybox_ = Skybox::Create("rostock_laage_airport_4k.dds", Transform({ 1000.0f,1000.0f,1000.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
-
 }
 
 void GamePlayScene::Update() {
