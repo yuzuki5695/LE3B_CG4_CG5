@@ -29,9 +29,26 @@ void ModelManager::LoadModel(const std::string& filePath) {
 		// 読み込み済みなら早期return
 		return;
 	}
+
+	// Resources/ を前に追加
+	std::string fullPath = "Resources/" + filePath;
+
+	// ディレクトリとファイル名を分割
+	size_t lastSlash = filePath.find_last_of("/\\");
+	std::string directory;
+	std::string filename;
+
+	if (lastSlash != std::string::npos) {
+		directory = "Resources/" + filePath.substr(0, lastSlash);
+		filename = filePath.substr(lastSlash + 1);
+	} else {
+		directory = "Resources";
+		filename = filePath;
+	}
+	
 	// モデルの生成とファイル読み込み,初期化
 	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->Initialize(modelCommon, "Resources", filePath);
+	model->Initialize(modelCommon, directory, filename);
 	// モデルをmapコンテナに格納する
 	models.insert(std::make_pair(filePath, std::move(model)));
 }

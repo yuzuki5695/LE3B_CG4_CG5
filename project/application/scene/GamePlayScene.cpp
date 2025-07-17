@@ -19,8 +19,8 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->Initialize();
 
     // テクスチャを読み込む
-    TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
-    TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
+    TextureManager::GetInstance()->LoadTexture("uvChecker.png");
+    TextureManager::GetInstance()->LoadTexture("monsterBall.png");
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -28,7 +28,7 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
    
     // スプライトの作成
-    sprite_ = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
+    sprite_ = Sprite::Create("uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
     
     // オブジェクトの作成
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 1.0f, 0.0f} }));
@@ -73,7 +73,7 @@ void GamePlayScene::Update() {
     // Camera
     CameraManager::GetInstance()->DrawImGui();
 
-    sprite_->DrawImGui();
+    //sprite_->DrawImGui();
 
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
