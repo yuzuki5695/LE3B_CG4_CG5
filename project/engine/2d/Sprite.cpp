@@ -182,7 +182,7 @@ std::unique_ptr<Sprite> Sprite::Create(std::string textureFilePath, Vector2 posi
 	std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
 	sprite->Initialize(SpriteCommon::GetInstance());
 	// 引数で受け取ってメンバ変数に記録する
-	sprite->textureFilePath_ = textureFilePath;
+	sprite->textureFilePath_ = "Resources/" + textureFilePath;
 	// 単位行列を書き込んでおく
 	sprite->textureindex = TextureManager::GetInstance()->GetSrvIndex(sprite->textureFilePath_);
 	sprite->position_ = position;
