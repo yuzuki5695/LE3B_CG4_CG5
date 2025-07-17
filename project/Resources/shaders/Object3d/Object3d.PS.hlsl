@@ -4,7 +4,7 @@ struct Material
 {
     float4 color;
     int endbleLighting;
-    float32_t4x4 uvTransform;
+    float4x4 uvTransform;
     float shininess;
 };
 
@@ -54,6 +54,8 @@ struct PixeShaderOutput
 
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
+
+TextureCube<float4> gEnvironmentTexture : register(t1);
 
 PixeShaderOutput main(VertexShaderOutput input)
 {
@@ -150,8 +152,20 @@ PixeShaderOutput main(VertexShaderOutput input)
         float3 spotLightSpecular =
         gPointLight.color.rgb * gPointLight.intensity * spotLightSpecularPow * float3(1.0f, 1.0f, 1.0f) * spotLightfactor;
         
+        ///-----------------------------------------------------------------------------------///
+        ///-----------------------------------環境マップ----------------------------------------///
+        ///-----------------------------------------------------------------------------------///
+        // 環境マップの反射色を計算
+        float3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+        float3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+
+        // 環境マップの色をライティング結果に加算（適宜重みは調整してください）
+        float3 finalColor = diffuse + specular + pointLightDiffuse + pointLightSpecular + spotLightDiffuse + spotLightSpecular;
+        finalColor += environmentColor.rgb * 0.5f; // 反射の強さは0.5に設定
+
         // ライト
-        output.color.rgb = diffuse + specular + pointLightDiffuse + pointLightSpecular + spotLightDiffuse + spotLightSpecular;
+        output.color.rgb = finalColor;
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else

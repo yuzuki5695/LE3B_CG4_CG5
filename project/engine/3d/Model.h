@@ -48,7 +48,5 @@ private:
 	Material* materialData = nullptr;
 public:
 	// getter
-
 	Material* GetMaterialData() { return materialData; }
-
 };

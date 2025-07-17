@@ -50,6 +50,9 @@ public: // メンバ関数
 	/// <param name="mipImages"></param>
 	void UploadTextureData(Microsoft::WRL::ComPtr <ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
 
+	
+	D3D12_GPU_DESCRIPTOR_HANDLE GetContiguousSrvHandleGPU(const std::vector<std::string>& filePaths);
+
 private: // メンバ変数
 	// テクスチャ1枚分のデータ
 	struct TextureData {
