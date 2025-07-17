@@ -142,6 +142,9 @@
     <Filter Include="ヘッダー ファイル\engine\base\ViewManager">
       <UniqueIdentifier>{784c09c4-89cb-4902-930a-3c893ed64d18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shaders\Skybox">
+      <UniqueIdentifier>{343efa34-4d79-483f-9cbe-49c1b93104f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -487,6 +490,9 @@
     <None Include="Resources\shaders\Fullscreen\Fullscreen.hlsli">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
     </None>
+    <None Include="Resources\shaders\Skybox\Skybox.hlsli">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\Object3d\Object3d.PS.hlsl">
@@ -530,6 +536,12 @@
     </FxCompile>
     <FxCompile Include="Resources\shaders\Fullscreen\Random.PS.hlsl">
       <Filter>リソース ファイル\shaders\Fullscreen</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.PS.hlsl">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Skybox\Skybox.VS.hlsl">
+      <Filter>リソース ファイル\shaders\Skybox</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
