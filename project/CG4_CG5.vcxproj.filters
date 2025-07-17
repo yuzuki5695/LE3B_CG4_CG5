@@ -288,6 +288,12 @@
     <ClCompile Include="engine\base\ViewManager\RtvManager.cpp">
       <Filter>ソース ファイル\engine\base\ViewManager</Filter>
     </ClCompile>
+    <ClCompile Include="engine\3d\Skybox.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\SkyboxCommon.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -475,6 +481,12 @@
     </ClInclude>
     <ClInclude Include="engine\math\Vector\Vector4.h">
       <Filter>ヘッダー ファイル\engine\math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Skybox.h">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\SkyboxCommon.h">
+      <Filter>ソース ファイル\engine\3d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -102,6 +102,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="application\scene\GamePlayScene.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="engine\3d\Skybox.cpp" />
+    <ClCompile Include="engine\3d\SkyboxCommon.cpp" />
     <ClCompile Include="engine\base\ViewManager\DsvManager.cpp" />
     <ClCompile Include="engine\base\ViewManager\RtvManager.cpp" />
     <ClCompile Include="engine\io\Controller.cpp" />
@@ -149,6 +151,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\DirectXCommon\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\3d\Skybox.h" />
+    <ClInclude Include="engine\3d\SkyboxCommon.h" />
     <ClInclude Include="engine\base\ViewManager\DsvManager.h" />
     <ClInclude Include="engine\base\ViewManager\RtvManager.h" />
     <ClInclude Include="engine\io\Controller.h" />
