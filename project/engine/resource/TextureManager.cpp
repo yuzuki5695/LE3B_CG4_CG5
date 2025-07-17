@@ -32,9 +32,19 @@ void TextureManager::Initialize(DirectXCommon* birectxcommon, SrvManager* srvman
 	// SRVの数と同数
 	textureDatas.reserve(SrvManager::kMaxSRVCount);
 }
-void TextureManager::LoadTexture(const std::string& filePath) {
+
+void TextureManager::LoadTexture(const std::string& filePath) {	
+	std::string fullPath;
+
+	// 既に Resources/ から始まっているならそのまま使う（model読み込み時など）
+	if (filePath.starts_with("Resources/")) {
+		fullPath = filePath;
+	} else {
+		fullPath = "Resources/" + filePath ;
+	}
+
 	// 読み込み済みテクスチャの検索
-	if (textureDatas.contains(filePath)) {
+	if (textureDatas.contains(fullPath)) {
 		return; // 読み込み済みなら早期return
 	}
 	// テクスチャ枚数上限チェック
@@ -42,7 +52,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 
 	// テクスチャファイルを読み込でプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
-	std::wstring filePathW = StringUtility::ConvertString(filePath);
+	std::wstring filePathW = StringUtility::ConvertString(fullPath);
 	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
 	assert(SUCCEEDED(hr));
 	//ミップマップの作成
@@ -51,7 +61,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	assert(SUCCEEDED(hr));
 
 	// 追加したテクスチャデータの参照を取得する
-	TextureData& textureData = textureDatas[filePath];
+	TextureData& textureData = textureDatas[fullPath];
 	textureData.metadata = mipImages.GetMetadata();
 	textureData.resource = CreateTextureResource(dxCommon_->GetDevice(), textureData.metadata);
 
