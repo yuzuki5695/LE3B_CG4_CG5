@@ -38,6 +38,8 @@ public: // メンバ関数
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
+	void depthTransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
+
 private: // プライベートメンバ関数
 	// デバイスの初期化
 	void DebugInitialize();

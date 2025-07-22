@@ -206,6 +206,7 @@ void DirectXCommon::CreateDepthStencilGenerate() {
 }
 
 void DirectXCommon::PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles, Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> DsvDescriptorHeap, const Vector4 color) {
+    assert(DsvDescriptorHeap); // nullptr チェック（デバッグ用）
     // 描画先 = rtvHandles[2]（中間テクスチャ）
     D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = RtvHandles;
 
@@ -221,6 +222,7 @@ void DirectXCommon::PreDrawRenderTexture(D3D12_CPU_DESCRIPTOR_HANDLE RtvHandles,
 }
 
 void DirectXCommon::PreDraw(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle,Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> DsvDescriptorHeap) {
+    assert(DsvDescriptorHeap); // nullptr チェック（デバッグ用）
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = swapchain_->GetSwapChain()->GetCurrentBackBufferIndex();
     // 今回のバリアはTransition
@@ -297,4 +299,15 @@ ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPT
     //ディスクリプタヒープが作れなかったので起動できない
     assert(SUCCEEDED(hr));
     return descriptorHeap;
+}
+
+void DirectXCommon::depthTransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after) {
+    D3D12_RESOURCE_BARRIER barrier{};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    barrier.Transition.pResource = resource;
+    barrier.Transition.StateBefore = before;
+    barrier.Transition.StateAfter = after;
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    commandList->ResourceBarrier(1, &barrier);
 }

@@ -2,11 +2,15 @@
 #include <ShaderCompiler.h>
 #include "Logger.h"
 #include "StringUtility.h"
-#include<SrvManager.h>
-#include<RtvManager.h>
-#include<DsvManager.h>
+#include <SrvManager.h>
+#include <RtvManager.h>
+#include <DsvManager.h>
+#include <ResourceFactory.h>
+#include <MatrixVector.h>
 
 using namespace Microsoft::WRL;
+using namespace ResourceFactory;
+using namespace MatrixVector;
 
 // 静的メンバ変数の定義
 std::unique_ptr<CopylmageCommon> CopylmageCommon::instance = nullptr;
@@ -35,17 +39,31 @@ void CopylmageCommon::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
     // SRVマネージャーの取得
-    srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
+    srvIndex = srvManager->CreateSRVDepthTexture(dsvManager_->GetDepthStencilResource());
+    
+    // マテリアル用のリソース
+    materialResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(Material));
+    // マテリアル用にデータを書き込むためのアドレスを取得
+    materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+    // マテリアルデータの初期値を書き込む
+	materialData->projectionInverse = MakeIdentity4x4(); // 単位行列を設定
 }
 
-void CopylmageCommon::Commondrawing(SrvManager* srvManager) {
+void CopylmageCommon::Commondrawing(SrvManager* srvManager) {    
+    // カメラから逆射影行列を取得して更新
+    if (defaultCamera) {
+        materialData->projectionInverse = Inverse(defaultCamera->GetProjectionMatrix());
+    }
+    
     // RootSignatureを設定。PSOに設定しているけど別途設定が必要
     dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
     dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
     // 形状を設定。PSOに設定しているものとはまた別。同じものを設定する
     dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// SRVのディスクリプタテーブルをピクセルシェーダーへバインド
-    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);
+    srvManager->SetGraphicsRootDescriptorTable(0, srvIndex);     
+    // 描画時にバインド
+    dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, materialResource->GetGPUVirtualAddress());
     // 描画命令を出す
     dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
@@ -56,7 +74,7 @@ void CopylmageCommon::RootSignatureGenerate() {
     // ===== DescriptorTable(SRV) ===== //
     D3D12_DESCRIPTOR_RANGE descriptorRanges[1]{};
     descriptorRanges[0].BaseShaderRegister = 0;
-    descriptorRanges[0].NumDescriptors = 1; // gTexture, gDepthTexture
+    descriptorRanges[0].NumDescriptors = 2; // gTexture, gDepthTexture
     descriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     descriptorRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
@@ -69,30 +87,38 @@ void CopylmageCommon::RootSignatureGenerate() {
     rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
     rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
     rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRanges;
-
-
-    // CBV（トーンマップパラメータなど、必要に応じて）
+    
+    // ConstantBuffer<Material> gMaterial : register(b0);
     rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-    rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    rootParameters[1].Descriptor.ShaderRegister = 0;
+    rootParameters[1].Descriptor.ShaderRegister = 0; // b0
+
 
     // ===== Static Sampler ===== //
-    D3D12_STATIC_SAMPLER_DESC staticSampler{};
-    staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-    staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-    staticSampler.ShaderRegister = 0;
-    staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-    staticSampler.MaxLOD = D3D12_FLOAT32_MAX;
+    D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
+
+    // s0: 線形
+    staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+    staticSamplers[0].ShaderRegister = 0;
+
+    // s1: ポイント
+    staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+    staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+    staticSamplers[1].ShaderRegister = 1;
+
 
     // ===== Root Signature Description ===== //
     D3D12_ROOT_SIGNATURE_DESC rootSigDesc{};
     rootSigDesc.NumParameters = _countof(rootParameters);
     rootSigDesc.pParameters = rootParameters;
-    rootSigDesc.NumStaticSamplers = 1;
-    rootSigDesc.pStaticSamplers = &staticSampler;
+    rootSigDesc.NumStaticSamplers = 2;
+    rootSigDesc.pStaticSamplers = staticSamplers;
     rootSigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
     // ===== Serialize and Create Root Signature ===== //

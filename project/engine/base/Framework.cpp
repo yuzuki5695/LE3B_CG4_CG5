@@ -141,13 +141,22 @@ void Framework::Update() {
 void Framework::Draw() {
     //  描画用のDescriptorHeapの設定
     srvManager->PreDraw();
+
     // レンダーテクスチャをレンダーターゲットにして描画開始準備
     rtvManager->PreDrawRenderTexture();
+    
+    // ←追加！深度ステート切替え
+    dsvManager->PreDraw();
+
     dxCommon->PreDrawRenderTexture(rtvManager->GetRtvHandle(2),dsvManager->GetDsvDescriptorHeap(), rtvManager->GetkRenderTargetClearValue());
     // シーンマネージャの描画処理
     SceneManager::GetInstance()->Draw();
     // レンダーテクスチャをSRVとして使うための状態に遷移
     rtvManager->PostDrawRenderTexture();
+    
+    // ←追加！深度もSRVに戻す
+    dsvManager->PostDraw();
+    
     //  DirectXの描画準備。全ての描画に共通のグラフィックスコマンドを積む
     // ここから書き込むバックバッファのインデックスを取得
     UINT backBufferIndex = dxCommon->GetSwapChain()->GetSwapChain()->GetCurrentBackBufferIndex();

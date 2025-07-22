@@ -1,6 +1,7 @@
 #pragma once
 #include"DirectXCommon.h"
 #include <Matrix4x4.h>
+#include <Camera.h>
 
 class SrvManager;
 class RtvManager;
@@ -49,23 +50,23 @@ private:
 	struct Material {
 		Matrix4x4 projectionInverse;
 	};
-	Material materialData_;
 private:
 	// ポインタ
 	DirectXCommon* dxCommon_;
-	DsvManager* dsvManager_;
+	DsvManager* dsvManager_;		
+	Camera* defaultCamera;
 	// RootSignature
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	// シェーダータイプ
 	PixelShaderType type_;
-	//Microsoft::WRL::ComPtr <ID3D12Resource> materialResource;
-	//uint32_t depthSrvIndex_ = 0;
-	//uint32_t samplerIndexPoint_ = 0;  // PointSampler用（必要に応じて）
-	//uint32_t cbvIndex_ = 0;
-	//uint32_t colorSrvIndex = 0;
-	//uint32_t depthSrvIndex = 0;
+	
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+	Material* materialData;
+
 public:
+	// setter
+	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
 	// gettre
 	DirectXCommon* GetDxCommon() const { return  dxCommon_; }
 };

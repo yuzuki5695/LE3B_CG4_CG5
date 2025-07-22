@@ -39,3 +39,35 @@ void DsvManager::Initialize(DirectXCommon* directXCommon) {
     // 比較関数はLessEqual。つまり、近ければ描画される
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 }
+
+void DsvManager::PreDraw() {
+    if (depthState != DSVState::DepthWrite) {
+        TransitionResource(
+            depthStencilResource.Get(),
+            D3D12_RESOURCE_STATE_DEPTH_WRITE,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        depthState = DSVState::DepthWrite;
+    }
+}
+void DsvManager::PostDraw() {
+    if (depthState != DSVState::PixelShaderResource) {
+        TransitionResource(
+            depthStencilResource.Get(),
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            D3D12_RESOURCE_STATE_DEPTH_WRITE);
+        depthState = DSVState::PixelShaderResource;
+    }
+}
+
+void DsvManager::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) {
+    // バリアの設定
+    D3D12_RESOURCE_BARRIER barrier{};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;                      // 今回のバリアはTransition
+    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;                           // Noneにしておく 
+    barrier.Transition.pResource = resource;                                    // バリアを張る対象のリソース。
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;   // 全サブリソースに対してバリアを張る
+    barrier.Transition.StateBefore = beforeState;                               // 遷移前のResourceState
+    barrier.Transition.StateAfter = afterState;                                 // TransitionBarrierを張る
+    // コマンドリストにバリアを追加
+    dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
+}

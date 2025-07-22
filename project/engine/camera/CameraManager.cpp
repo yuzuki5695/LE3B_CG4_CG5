@@ -6,6 +6,7 @@
 #include <ImGuiManager.h>
 #endif // USE_IMGUI
 #include<json.hpp>
+#include <CopylmageCommon.h>
 
 using json = nlohmann::json;
 
@@ -150,5 +151,6 @@ void CameraManager::SetActiveCamera() {
     if (active) {
         Object3dCommon::GetInstance()->SetDefaultCamera(active);
         ParticleCommon::GetInstance()->SetDefaultCamera(active);
+        CopylmageCommon::GetInstance()->SetDefaultCamera(active);
     }
 }
