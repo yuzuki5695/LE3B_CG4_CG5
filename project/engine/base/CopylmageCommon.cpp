@@ -24,17 +24,17 @@ void CopylmageCommon::Finalize() {
     instance.reset();  // `delete` 不要
 }
 
-void CopylmageCommon::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,RtvManager* rtvManager,DsvManager* dsvManager) {
+void CopylmageCommon::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, RtvManager* rtvManager, DsvManager* dsvManager) {
     assert(dxCommon);
     assert(srvManager);
     assert(rtvManager);
     assert(dsvManager);
     // 引数を受け取ってメンバ変数に記録する
-    dxCommon_ = dxCommon;   
+    dxCommon_ = dxCommon;
     dsvManager_ = dsvManager;
     // グラフィックスパイプラインの生成
     GraphicsPipelineGenerate();
-	// SRVマネージャーの取得
+    // SRVマネージャーの取得
     srvIndex = srvManager->CreateSRVForRenderTexture(rtvManager->GetrenderTextureResource());
 }
 
@@ -54,20 +54,22 @@ void CopylmageCommon::RootSignatureGenerate() {
     HRESULT hr;
 
     // ===== DescriptorTable(SRV) ===== //
-    D3D12_DESCRIPTOR_RANGE descriptorRange{};
-    descriptorRange.BaseShaderRegister = 0;
-    descriptorRange.NumDescriptors = 1;
-    descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    D3D12_DESCRIPTOR_RANGE descriptorRanges[1]{};
+    descriptorRanges[0].BaseShaderRegister = 0;
+    descriptorRanges[0].NumDescriptors = 1; // gTexture, gDepthTexture
+    descriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    descriptorRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
- // ===== Root Parameters ===== //
+
+    // ===== Root Parameters ===== //
     D3D12_ROOT_PARAMETER rootParameters[2] = {};
 
     // SRV (コピー元テクスチャ)
     rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
     rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
-    rootParameters[0].DescriptorTable.pDescriptorRanges = &descriptorRange;
+    rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRanges;
+
 
     // CBV（トーンマップパラメータなど、必要に応じて）
     rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
