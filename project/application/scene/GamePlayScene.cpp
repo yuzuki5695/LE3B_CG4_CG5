@@ -22,24 +22,21 @@ void GamePlayScene::Initialize() {
     // テクスチャを読み込む
     TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
     TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
+    TextureManager::GetInstance()->LoadTexture("Resources/rostock_laage_airport_4k.dds");
 
     // .objファイルからモデルを読み込む
     ModelManager::GetInstance()->LoadModel("plane.obj");
     ModelManager::GetInstance()->LoadModel("terrain.obj"); 
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
    
-    // スプライトの作成
-    sprite_ = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 180.0f,180.0f });
-    
     // オブジェクトの作成
     Object_ =  Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} }));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} })); 
     // ターゲットカメラの追従対象を設定
     CameraManager::GetInstance()->SetTarget(Object_.get());
  
-    TextureManager::GetInstance()->LoadTexture("Resources/rostock_laage_airport_4k.dds");
 
-    skybox_ = Skybox::Create("Resources/rostock_laage_airport_4k.dds", Transform({ 1000.0f,1000.0f,1000.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
+ //   skybox_ = Skybox::Create("Resources/rostock_laage_airport_4k.dds", Transform({ 1000.0f,1000.0f,1000.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
 
 }
 
@@ -61,14 +58,12 @@ void GamePlayScene::Update() {
     Object_->Update();
     grass->Update();
 
-    skybox_->Update();
+  //  skybox_->Update();
 
     ParticleManager::GetInstance()->Update();
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
-
-    sprite_->Update();
 
 #pragma endregion 全てのSprite個々の更新処理
     
@@ -77,11 +72,9 @@ void GamePlayScene::Update() {
     Object3dCommon::GetInstance()->DrawImGui();
 
     // object3d
-    Object_->DrawImGui("Object");
+   // Object_->DrawImGui("Object");
     // Camera
     CameraManager::GetInstance()->DrawImGui();
-
-    sprite_->DrawImGui();
 
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
@@ -92,7 +85,7 @@ void GamePlayScene::Draw() {
     // 箱オブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     SkyboxCommon::GetInstance()->Commondrawing();
 
-    skybox_->Draw();
+   // skybox_->Draw();
 
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
@@ -109,8 +102,6 @@ void GamePlayScene::Draw() {
 #pragma region 全てのSprite個々の描画処理
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
-
-    sprite_->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }
